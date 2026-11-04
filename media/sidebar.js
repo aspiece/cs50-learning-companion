@@ -6,6 +6,8 @@
  const tabs=['start','learn','test','submit'];
  const fields=['support','inputNotes','outputNotes','plan','prediction','observed','reflection','debugNotes'];
  let currentAssignmentId=null;
+ const noteTimers=new Map();
+ const lastSent=new Map();
  let state=null;
  const saved=api.getState()||{};
  let tab=tabs.includes(saved.tab)?saved.tab:'start';
@@ -14,6 +16,35 @@
  const escapeHtml=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function persist(){api.setState({tab,query,set:setFilter});}
  function post(type,extra={}){api.postMessage({type,...extra});}
+ function journalStatusMessage(status){
+  if(status==='saved')return 'Saved to LEARNING_JOURNAL.md in this assignment folder.';
+  if(status==='pending')return 'Notes are stored in this Codespace for now. Create starter files to make the journal.';
+  return 'This folder already has a journal in a different format. The Companion will not overwrite it.';
+ }
+ function sendLearning(element){
+  if(!state)return;
+  const id=state.assignment.id,field=element.dataset.field,value=element.value;
+  const key=id+':'+field;
+  if(lastSent.get(key)===value)return;
+  lastSent.set(key,value);
+  $('journalStatus').textContent='Saving your notes...';
+  post('learning',{id,field,value});
+ }
+ function scheduleLearning(element,immediate=false){
+  const id=state?.assignment.id,field=element.dataset.field;
+  if(!id||!field)return;
+  const key=id+':'+field;
+  if(noteTimers.has(key))clearTimeout(noteTimers.get(key));
+  noteTimers.delete(key);
+  if(immediate){sendLearning(element);return;}
+  const value=element.value;
+  noteTimers.set(key,setTimeout(()=>{
+   noteTimers.delete(key);
+   if(lastSent.get(key)===value)return;
+   lastSent.set(key,value);
+   post('learning',{id,field,value});
+  },650));
+ }
  function applyFilters(){
   if(!state)return;
   const options=state.options.filter(a=>(setFilter<0||a.set===setFilter)&&[a.title,a.slug,String(a.set)].join(' ').toLowerCase().includes(query.toLowerCase()));
@@ -28,7 +59,7 @@
  function render(){
   if(!state)return;
   const a=state.assignment,p=state.progress||{};
-  const changed=a.id!==currentAssignmentId;
+  const changed=a.id!==currentAssignmentId||!!state.forceNotes;
   currentAssignmentId=a.id;
   $('heading').textContent=a.title;
   $('setTag').textContent='Problem Set '+a.set;
@@ -61,6 +92,9 @@
   $('openFiles').disabled=!state.folderExists;
   $('updateGuide').disabled=!state.folderExists;
   $('folderStatus').textContent=state.folderExists?'Folder found':'Not set up yet';
+  $('openJournal').disabled=!state.folderExists;
+  $('reloadJournal').disabled=!state.folderExists;
+  $('journalStatus').textContent=journalStatusMessage(state.journalStatus);
   $('entry').textContent=a.entryFile;
   applyFilters();
   tabs.forEach(id=>{
@@ -79,16 +113,18 @@
   const b=e.target.closest('button[data-action]');
   if(b&&!b.disabled)post(b.dataset.action);
  });
+ document.addEventListener('input',e=>{
+  if(e.target.matches('textarea[data-field]'))scheduleLearning(e.target);
+ });
  document.addEventListener('change',e=>{
   if(e.target.matches('input[data-step]'))post('progress',{step:e.target.dataset.step,value:e.target.checked});
   if(e.target.matches('[data-field]')){
-   post('learning',{field:e.target.dataset.field,value:e.target.value});
+   scheduleLearning(e.target,true);
    if(e.target.id==='support')render();
   }
  });
- // Only transmit completed edits (change/blur), not individual keystrokes.
  document.addEventListener('focusout',e=>{
-  if(e.target.matches('textarea[data-field]'))post('learning',{field:e.target.dataset.field,value:e.target.value});
+  if(e.target.matches('textarea[data-field]'))scheduleLearning(e.target,true);
  });
  $('tabs').addEventListener('keydown',e=>{
   if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
@@ -97,6 +133,10 @@
   persist();render();$('tab-'+tab).focus();e.preventDefault();
  });
  window.addEventListener('message',e=>{
+  if(e.data?.type==='journalSaved'){
+   $('journalStatus').textContent=journalStatusMessage(e.data.status);
+   return;
+  }
   if(e.data?.type!=='state')return;
   state=e.data;render();
  });
