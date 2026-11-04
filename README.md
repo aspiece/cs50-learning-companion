@@ -41,3 +41,19 @@ You can use `workflow_dispatch` from Actions to rerun packaging. After successfu
 ## Status
 
 Version 0.2.0 is an initial pilot and has not been validated in an actual authenticated CS50 Codespace.
+
+## Installation troubleshooting
+
+GitHub Actions **Artifacts are ZIP files**, not installable VSIX files. Download the artifact, **extract the ZIP**, and install the **.vsix inside**. Do not select the artifact ZIP or the source-code ZIP in the VS Code installer.
+
+For a Codespace, you can upload the extracted `.vsix` into your workspace and run the following from its directory:
+
+```bash
+code --install-extension ./cs50-learning-companion-0.2.0.vsix --force
+code --list-extensions --show-versions | grep -i geneseelearninglab
+```
+
+If the filename differs, replace it in the command. Reload the VS Code window after installation. If the CLI reports an error, **copy the entire error message**, or open **View → Output → Log (Remote Extension Host)** to investigate activation.
+
+Verify that the GitHub Actions run is **green** before downloading. The workflow now checks that the VSIX is a readable ZIP containing the required manifest, extension entry point, and assignment catalog. A successful build is not proof that cs50.dev permits the installation; that requires a real Codespace test.
+
