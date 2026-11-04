@@ -68,6 +68,19 @@ After watching, students see one brief planning question and are invited to writ
 
 **Some Help** and **Independent** do not display the video card. Choosing a different assignment swaps the recommended topic immediately. The original student README, Python starter, submitted files, and saved notes are not changed by the new feature.
 
+## Contextual Start screen (v0.7.5)
+
+The **Start** tab now has one primary action instead of a stack of equally prominent buttons. Its status and button respond to the actual selected assignment folder:
+
+- **No folder:** **Create starter files** creates the assignment in its standard slug-named folder and opens the README and Python entry file side by side.
+- **Existing folder with Python file:** **Continue coding** reopens the student's files without recreating or replacing them.
+- **Existing folder missing the main Python file:** **Inspect assignment folder** reveals the existing directory in Explorer without overwriting anything. A clear explanation describes the missing file.
+- **Existing Python file but missing README:** **Continue coding** still works. **More options → Create missing README guide** can restore just the README.
+
+The Start page keeps secondary shortcuts to **Read README**, **Learning help** (opens the Learn tab), and **Open official CS50 instructions**. Less-used actions, including **Open README and Python side by side** and **Update my README guide**, live in a collapsed **More options** section.
+
+This UI update affects only the extension sidebar. It does **not** modify existing student assignments, journal entries, solutions, or submissions. The previous safe README-refresh confirmation and backup behavior remain in place.
+
 ## String Methods Toolkit expansion (v0.7.4)
 
 A review of the private instructor CS50P assignment solutions identified eight additional Python string methods worth teaching: `.lstrip()`, `.rstrip()`, `.isupper()`, `.isalpha()`, `.isalnum()`, `.isdecimal()`, `.title()`, and `.capitalize()`. The built-in reference now includes **16 methods**, all with short, unrelated examples and safe live Python practice.
