@@ -121,7 +121,7 @@ function guideForCodespace(a){
  const extra=a.extraFiles||[];
  const filesBlock=extra.map(file=>'- ['+code(file.name)+']('+file.url+') — '+file.kind);
  const neededFiles=extra.length?[
-  '**Needed files:** Download the required sample files from Harvard and keep them in this assignment folder.',
+  '**Needed files:** Get the required files from Harvard. Optional samples can help with testing. Keep the files you use in this assignment folder.',
   ...filesBlock
  ]:a.slug==='lines'?[
   '**For testing:** Put a sample Python file beside '+code(a.entryFile)+' so your program has a file to read.'
