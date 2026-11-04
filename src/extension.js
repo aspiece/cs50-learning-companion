@@ -29,8 +29,9 @@ class Companion {
  resolveWebviewView(view){
   this.view=view;
   view.webview.options={enableScripts:true,localResourceRoots:[vscode.Uri.joinPath(this.ctx.extensionUri,'media')]};
-  view.webview.html=renderSidebar(view.webview,this.ctx.extensionUri);
+  // Register the message handler before loading the page so the initial ready event is never missed.
   view.webview.onDidReceiveMessage(msg=>{void this.handle(msg);},null,this.ctx.subscriptions);
+  view.webview.html=renderSidebar(view.webview,this.ctx.extensionUri);
  }
  key(){return 'progress:'+this.id;}
  async refresh(){
