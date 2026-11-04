@@ -153,12 +153,57 @@
   const payload=stringPracticePayload();
   if(payload)post('copyStringPractice',payload);
  }
+ function startScreenModel(folderExists,entryExists,guideExists){
+  if(!folderExists)return {
+   title:'Ready to begin',
+   description:'Your assignment folder has not been created yet.',
+   action:'create',button:'Create starter files',
+   next:'Creates a folder and opens your README and Python file side by side.',
+   status:'new',symbol:'○'
+  };
+  if(!entryExists)return {
+   title:'Folder needs attention',
+   description:'Your folder exists, but the main Python file is missing. Your other files are safe.',
+   action:'openFolder',button:'Inspect assignment folder',
+   next:'Check the files in Explorer. The Companion will not replace your work.',
+   status:'attention',symbol:'!'
+  };
+  if(!guideExists)return {
+   title:'Your code is ready',
+   description:'Your Python file is here, but the README is missing.',
+   action:'openFiles',button:'Continue coding',
+   next:'You can create the README from More options without changing your code.',
+   status:'attention',symbol:'!'
+  };
+  return {
+   title:'Starter files ready',
+   description:'Your assignment folder and Python file are here.',
+   action:'openFiles',button:'Continue coding',
+   next:'Opens your README and Python file side by side. Your work is not replaced.',
+   status:'ready',symbol:'✓'
+  };
+ }
+ function renderStartScreen(){
+  const model=startScreenModel(state.folderExists,state.entryExists,state.guideExists);
+  $('startStatus').dataset.status=model.status;
+  $('startStatusTitle').textContent=model.title;
+  $('startStatusDescription').textContent=model.description;
+  $('startStatusIcon').textContent=model.symbol;
+  $('startPrimary').textContent=model.button;
+  $('startPrimary').dataset.action=model.action;
+  $('startNextStep').textContent=model.next;
+  $('openGuide').disabled=!state.guideExists;
+  $('openFiles').disabled=!state.folderExists||!state.entryExists;
+  $('updateGuide').disabled=!state.folderExists;
+  $('updateGuide').textContent=state.guideExists?'Update my README guide':'Create missing README guide';
+ }
  function render(){
   if(!state)return;
   const a=state.assignment,p=state.progress||{};
   const changed=a.id!==currentAssignmentId||!!state.forceNotes;
   currentAssignmentId=a.id;
   if(changed){lastStringRequestId++;$('stringPracticeResult').textContent='Choose a method and try your own text.';$('tryStringMethod').disabled=false;}
+  if(changed)$('startMore').open=false;
   $('heading').textContent=a.title;
   $('setTag').textContent='Problem Set '+a.set;
   $('description').textContent=a.description;
@@ -195,11 +240,7 @@
   $('conceptVideoTitle').textContent=video?.title||'';
   $('conceptVideoFocus').textContent=video?.focus||'';
   $('conceptVideoQuestion').textContent=video?('After watching: '+video.question):'';
-  $('create').textContent=state.folderExists?'Starter folder already exists':'Create starter files';
-  $('create').disabled=!!state.folderExists;
-  $('openGuide').disabled=!state.guideExists;
-  $('openFiles').disabled=!state.folderExists;
-  $('updateGuide').disabled=!state.folderExists;
+  renderStartScreen();
   $('folderStatus').textContent=state.folderExists?'Folder found':'Not set up yet';
   $('openJournal').disabled=!state.folderExists;
   $('editJournal').disabled=!state.folderExists;
@@ -229,6 +270,7 @@
   if(b&&!b.disabled){
    if(b.dataset.action==='practiceString'){tryStringPractice();return;}
    if(b.dataset.action==='copyStringPractice'){copyStringPractice();return;}
+   if(b.dataset.action==='goLearn'){tab='learn';persist();render();$('tab-learn').focus();return;}
    post(b.dataset.action);
   }
  });
