@@ -87,7 +87,21 @@ The **Start** tab uses a single **Open official CS50 instructions** button. It o
 
 Keep Codespaces open for the README, Python file, terminal, planning notes, and testing. This avoids browser-embedding errors and does not copy Harvard's instructions into the project.
 
+## Learning Journals (v0.6.0)
+
+Every CS50P assignment now has a separate **LEARNING_JOURNAL.md** beside its README and Python source. Students can write their input/output thinking, pseudocode, predictions, test results, debugging notes, and reflections from the sidebar. The extension saves to the journal file and reloads its contents when students revisit the assignment. The support level is stored with the notes.
+
+- When a student first opens an existing assignment folder, the companion creates a journal if it is missing and **imports any earlier sidebar notes** from workspace storage. It never replaces a journal that already exists.
+- In the **Learn** tab, **Open learning journal file** lets students review or edit the Markdown directly; **Reload notes from journal** imports those edits into sidebar fields.
+- Textarea changes auto-save after a short pause or when a field loses focus. If the assignment folder does not exist yet, notes remain in the extension's workspace storage and are copied into the journal when the starter folder is created.
+- If a file named LEARNING_JOURNAL.md already exists but is **not** in the companion's recognized format, it is preserved. The sidebar displays a warning rather than overwriting it.
+- The journal is a normal file within the student's Codespace. It can be downloaded or backed up; it will not automatically survive deleting that Codespace unless backed up elsewhere.
+
+**Keeping the journal out of CS50 submission:** The extension's **Run check50** and **Open submit50 in terminal** actions run the official commands against a temporary copy of the assignment. LEARNING_JOURNAL.md, the generated README.md, and README backups are removed from the temporary copy; the original assignment and journal are untouched. All other support files stay in the copy, so students should still inspect CS50's proposed file list before confirming. Running check50 or submit50 manually in the original folder does **not** use this protection.
+
 ## Status
+
+v0.6.0 saves learning notes to a per-assignment LEARNING_JOURNAL.md, migrates previous sidebar notes, and stages CS50 checking/submission without journal files.
 
 v0.5.5 opens official instructions directly in the student's browser instead of trying unsupported in-editor browser commands. Generated READMEs use the same workflow.
 
