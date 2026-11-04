@@ -13,13 +13,15 @@ git clone https://github.com/aspiece/cs50-learning-companion.git "$HOME/cs50-lea
 bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"
 ```
 
-For future updates, use **one command**:
+If you already cloned the repository in `/workspaces/cs50-learning-companion`, there is no need for a second clone. Instead, open that folder and run `bash scripts/update-in-codespaces.sh`.
+
+For future updates from a clone in your home directory, use **one command**:
 
 ```bash
 bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"
 ```
 
-The script performs a fast-forward Git pull, installs npm dependencies, runs tests, builds the VSIX with `@vscode/vsce`, and installs it using `code --install-extension ... --force`. It prints the installed version. Then open the Command Palette and select **Developer: Reload Window**. It does not modify student assignment files.
+The script updates its own Git checkout with a fast-forward pull, installs npm dependencies, runs tests, builds the VSIX with `@vscode/vsce`, and installs it using `code --install-extension ... --force`. It prints the installed version. Then open the Command Palette and select **Developer: Reload Window**. It does not modify student assignment files.
 
 **Alternative:** Download an attached `.vsix` from [Releases](https://github.com/aspiece/cs50-learning-companion/releases), then install via Extensions → `...` → **Install from VSIX**. A GitHub Actions **artifact** is a ZIP file containing the VSIX and checksum; extract it first.
 
