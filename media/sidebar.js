@@ -13,6 +13,9 @@
  let tab=tabs.includes(saved.tab)?saved.tab:'start';
  let query=typeof saved.query==='string'?saved.query:'';
  let setFilter=Number.isInteger(saved.set)?saved.set:-1;
+ let stringQuery='';
+ let selectedStringMethod=null;
+ let lastStringRequestId=0;
  const escapeHtml=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function persist(){api.setState({tab,query,set:setFilter});}
  function post(type,extra={}){api.postMessage({type,...extra});}
@@ -73,11 +76,86 @@
   select.value=chosen;
   $('results').textContent=options.length+' assignment'+(options.length===1?'':'s')+' shown';
  }
+ function currentStringMethod(){
+  const methods=state?.learning?.stringToolkit?.methods||[];
+  return methods.find(item=>item.id===selectedStringMethod)||null;
+ }
+ function stringPracticePayload(){
+  const method=currentStringMethod();
+  if(!method)return null;
+  const args=[];
+  if(method.args.length>0)args.push($('stringArg1').value);
+  if(method.args.length>1)args.push($('stringArg2').value);
+  return {method:method.id,text:$('stringPracticeText').value,args};
+ }
+ function renderStringToolkit(){
+  const toolkit=state?.learning?.stringToolkit;
+  if(!toolkit)return;
+  const suggested=toolkit.suggestion;
+  $('stringSuggestion').hidden=!suggested;
+  $('stringSuggestion').textContent=suggested?
+   'For this problem, explore: '+suggested.label+'. '+suggested.description:'';
+  const matches=toolkit.methods.filter(method=>
+   [method.label,method.purpose,method.category].join(' ').toLowerCase().includes(stringQuery.toLowerCase())
+  );
+  $('stringNoResults').hidden=matches.length>0;
+  $('stringMethodList').innerHTML=matches.map(method=>{
+   const recommended=!!suggested&&method.category===suggested.category;
+   return '<details class="method-entry" data-string-method="'+escapeHtml(method.id)+'"'+
+    (method.id===selectedStringMethod?' open':'')+'>'+
+    '<summary><code>'+escapeHtml(method.label)+'</code>'+
+    (recommended?'<span class="method-recommended">Explore this group</span>':'')+
+    '<span class="method-purpose">'+escapeHtml(method.purpose)+'</span></summary>'+
+    '<p>Example</p><pre><code>'+escapeHtml(method.example)+'</code></pre>'+
+    '<p>Python returns</p><pre><code>'+escapeHtml(method.result)+'</code></pre>'+
+    '<button class="button secondary" type="button" data-select-string="'+escapeHtml(method.id)+'">Try this method</button>'+
+    '</details>';
+  }).join('');
+  const method=currentStringMethod();
+  $('stringPracticeBox').hidden=!method;
+  if(!method)return;
+  $('stringSelectedMethod').textContent='Selected: '+method.label+' — '+method.purpose;
+  for(let i=0;i<2;i++){
+   const arg=method.args[i],index=i+1;
+   $('stringArg'+index+'Wrap').hidden=!arg;
+   if(arg){
+    $('stringArg'+index+'Label').textContent=arg.label+(arg.required?' (required)':'');
+    $('stringArg'+index).placeholder=arg.placeholder||'';
+   }
+  }
+ }
+ function chooseStringMethod(id){
+  const methods=state?.learning?.stringToolkit?.methods||[];
+  if(!methods.some(m=>m.id===id))return;
+  selectedStringMethod=id;
+  lastStringRequestId++;
+  $('stringArg1').value='';
+  $('stringArg2').value='';
+  $('stringPracticeResult').textContent='Add your own text, then run this method.';
+  $('stringPracticeResult').dataset.error='false';
+  $('tryStringMethod').disabled=false;
+  renderStringToolkit();
+  $('stringPracticeText').focus();
+ }
+ function tryStringPractice(){
+  const payload=stringPracticePayload();
+  if(!payload)return;
+  const requestId=++lastStringRequestId;
+  $('stringPracticeResult').dataset.error='false';
+  $('stringPracticeResult').textContent='Running your example with Python...';
+  $('tryStringMethod').disabled=true;
+  post('practiceString',{...payload,requestId});
+ }
+ function copyStringPractice(){
+  const payload=stringPracticePayload();
+  if(payload)post('copyStringPractice',payload);
+ }
  function render(){
   if(!state)return;
   const a=state.assignment,p=state.progress||{};
   const changed=a.id!==currentAssignmentId||!!state.forceNotes;
   currentAssignmentId=a.id;
+  if(changed){lastStringRequestId++;$('stringPracticeResult').textContent='Choose a method and try your own text.';$('tryStringMethod').disabled=false;}
   $('heading').textContent=a.title;
   $('setTag').textContent='Problem Set '+a.set;
   $('description').textContent=a.description;
@@ -107,6 +185,7 @@
   $('guidedQuestions').hidden=level==='independent';
   $('questions').hidden=level!=='guided';
   $('steps').hidden=level==='independent';
+  renderStringToolkit();
   const video=state.learning.conceptVideo;
   $('conceptVideoCard').hidden=level!=='guided'||!video;
   $('openConceptVideo').disabled=!video;
@@ -136,11 +215,18 @@
  $('search').addEventListener('input',e=>{query=e.target.value;persist();applyFilters();});
  $('setFilter').addEventListener('change',e=>{setFilter=Number(e.target.value);persist();applyFilters();});
  $('problem').addEventListener('change',e=>post('select',{id:e.target.value}));
+ $('stringSearch').addEventListener('input',e=>{stringQuery=e.target.value;renderStringToolkit();});
  document.addEventListener('click',e=>{
   const tabButton=e.target.closest('button[data-tab]');
   if(tabButton){tab=tabButton.dataset.tab;persist();render();return;}
+  const choose=e.target.closest('button[data-select-string]');
+  if(choose){chooseStringMethod(choose.dataset.selectString);return;}
   const b=e.target.closest('button[data-action]');
-  if(b&&!b.disabled)post(b.dataset.action);
+  if(b&&!b.disabled){
+   if(b.dataset.action==='practiceString'){tryStringPractice();return;}
+   if(b.dataset.action==='copyStringPractice'){copyStringPractice();return;}
+   post(b.dataset.action);
+  }
  });
  document.addEventListener('input',e=>{
   if(e.target.matches('textarea[data-field]'))scheduleLearning(e.target);
@@ -163,6 +249,15 @@
  });
  window.addEventListener('message',e=>{
   if(e.data?.type==='updateStatus'){updateDisplay(e.data);return;}
+  if(e.data?.type==='stringPracticeResult'){
+   if(e.data.requestId!==lastStringRequestId)return;
+   $('tryStringMethod').disabled=false;
+   $('stringPracticeResult').dataset.error=e.data.ok?'false':'true';
+   $('stringPracticeResult').textContent=e.data.ok?
+    'Python returns ('+e.data.kind+'): '+e.data.value:
+    'Could not run: '+e.data.error;
+   return;
+  }
   if(e.data?.type==='journalSaved'){
    $('journalStatus').textContent=journalStatusMessage(e.data.status);
    return;
