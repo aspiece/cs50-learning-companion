@@ -33,11 +33,11 @@ test('selected problem and progress remain workspace scoped',()=>{
  assert.match(source,/folderExists/);
  assert.match(source,/guideExists/);
 });
-test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.6.0'));
+test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.6.1'));
 
 test('starter opens the README and entry Python file in separate editor columns',()=>{
  assert.match(source,/async function openStarterFiles/);
- assert.match(source,/showTextDocument\(guide,\{viewColumn:vscode\.ViewColumn\.One/);
+ assert.match(source,/openFormattedMarkdown\(guide,vscode\.ViewColumn\.One\)/);
  assert.match(source,/showTextDocument\(script,\{viewColumn:vscode\.ViewColumn\.Two/);
  assert.match(source,/if\(await exists\(dir\)\)/);
  assert.match(source,/await openStarterFiles\(a\)/);
@@ -81,4 +81,16 @@ test('learning notes sync to the Markdown journal with a separate editor action'
 test('check50 and submit50 run from isolated copies without the journal',()=>{
  assert.match(source,/clean-cs50-command\.sh/);
  assert.match(source,/case 'submit'/);
+});
+
+test('Markdown previews render student guides and journal without changing files',()=>{
+ assert.match(source,/async function openFormattedMarkdown/);
+ assert.match(source,/executeCommand\('markdown\.showPreview',uri/);
+ assert.match(source,/case 'openJournal'/);
+ assert.match(source,/case 'editJournal'/);
+ assert.match(source,/case 'guide'/);
+ assert.match(ui,/data-action="editJournal"/);
+ assert.match(ui,/Preview formatted learning journal/);
+ assert.match(ui,/Preview student guide/);
+ assert.match(browser,/editJournal/);
 });
