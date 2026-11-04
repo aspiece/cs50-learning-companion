@@ -34,4 +34,47 @@ function explain(error){
  if(/TypeError|ValueError/i.test(error))return 'Check the kind of data you gave the function and whether it can be converted.';
  return 'Read the last line of the error and find the filename and line number above it. Try a smaller test.';
 }
-module.exports={list,get,submissionPath,safeAssignment,guideForCodespace,explain};
+
+function section(readme,heading){
+ const start=readme.indexOf('## '+heading+'\n');
+ if(start<0)return '';
+ const rest=readme.slice(start+heading.length+4);
+ return rest.split(/\n## /)[0].trim();
+}
+function bulletItems(text){
+ return text.split('\n').map(line=>line.replace(/^\s*(?:\d+\.|[-*])\s+/,'').trim()).filter(line=>line&&!/^##?\s/.test(line));
+}
+function teachingGuide(a){
+ safeAssignment(a);
+ const readme=a.files['README.md']||'';
+ const tasks=bulletItems(section(readme,'Step-by-step plan')).slice(0,6);
+ const checks=bulletItems(section(readme,'Check your work')).filter(s=>s.startsWith('Try ')||s.startsWith('Check ')||s.startsWith('Test ')).slice(0,4);
+ const subject=a.subject||'Python';
+ const custom={
+  'cs50p-0-indoor':{
+   understand:['What changes when a message is made quiet?','What should happen to spaces and punctuation?'],
+   hints:['What kind of data is a message in Python?','Look up a string method that changes letter case. Practice it with a word of your own.','Test a word with uppercase and lowercase letters. Compare your prediction with the result.']
+  },
+  'cs50p-0-playback':{
+   understand:['What separates the words in an ordinary sentence?','What should appear between words in the output?'],
+   hints:['Treat the message as a single string.','Explore a Python string method that replaces one piece of text with another.','Try replacing a character in a different sentence before returning to the assignment.']
+  },
+  'cs50p-0-faces':{
+   understand:['Which parts of the message should change?','Should other words and punctuation stay the same?'],
+   hints:['Think about separating a text change into a function.','Review functions with parameters and returned values.','Practice replacing a short symbol in an unrelated string before writing your solution.']
+  }
+ };
+ const specific=custom[a.id]||{};
+ const understand=specific.understand||[
+  'What information does this program start with?',
+  'What result should it produce?',
+  'Which details in the official task must stay the same?'
+ ];
+ const hints=specific.hints||[
+  'Read the first step in your README. Explain it in your own words.',
+  'This problem practices '+subject+'. Review one small example from class or the CS50 notes.',
+  'Choose one step from your plan and test that idea with a different example.'
+ ];
+ return {understand,steps:tasks,checks,hints,concept:subject};
+}
+module.exports={list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide};
