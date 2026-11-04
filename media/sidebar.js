@@ -14,6 +14,7 @@
  let query=typeof saved.query==='string'?saved.query:'';
  let setFilter=Number.isInteger(saved.set)?saved.set:-1;
  let stringQuery='';
+ let stringCategory='all';
  let selectedStringMethod=null;
  let lastStringRequestId=0;
  const escapeHtml=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -96,7 +97,8 @@
   $('stringSuggestion').textContent=suggested?
    'For this problem, explore: '+suggested.label+'. '+suggested.description:'';
   const matches=toolkit.methods.filter(method=>
-   [method.label,method.purpose,method.category].join(' ').toLowerCase().includes(stringQuery.toLowerCase())
+   (stringCategory==='all'||method.category===stringCategory)&&
+   [method.label,method.purpose,method.category,method.tip||''].join(' ').toLowerCase().includes(stringQuery.toLowerCase())
   );
   $('stringNoResults').hidden=matches.length>0;
   $('stringMethodList').innerHTML=matches.map(method=>{
@@ -108,6 +110,7 @@
     '<span class="method-purpose">'+escapeHtml(method.purpose)+'</span></summary>'+
     '<p>Example</p><pre><code>'+escapeHtml(method.example)+'</code></pre>'+
     '<p>Python returns</p><pre><code>'+escapeHtml(method.result)+'</code></pre>'+
+    (method.tip?'<p class="method-tip">Good to know: '+escapeHtml(method.tip)+'</p>':'')+
     '<button class="button secondary" type="button" data-select-string="'+escapeHtml(method.id)+'">Try this method</button>'+
     '</details>';
   }).join('');
@@ -216,6 +219,7 @@
  $('setFilter').addEventListener('change',e=>{setFilter=Number(e.target.value);persist();applyFilters();});
  $('problem').addEventListener('change',e=>post('select',{id:e.target.value}));
  $('stringSearch').addEventListener('input',e=>{stringQuery=e.target.value;renderStringToolkit();});
+ $('stringCategory').addEventListener('change',e=>{stringCategory=e.target.value;renderStringToolkit();});
  document.addEventListener('click',e=>{
   const tabButton=e.target.closest('button[data-tab]');
   if(tabButton){tab=tabButton.dataset.tab;persist();render();return;}
