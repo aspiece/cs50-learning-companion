@@ -55,6 +55,40 @@ function html(webview,extensionUri){
  <option value="standard">Some help</option>
  <option value="independent">Independent — less help</option>
  </select>
+ <details id="stringToolkit" class="card toolkit">
+  <summary><strong>Python String Methods Toolkit</strong> <span class="note">Search · Examples · Practice</span></summary>
+  <p class="note">A string is text in Python. Try these tools on your own examples. This reference is available at every help level.</p>
+  <p id="stringSuggestion" class="toolkit-suggestion" hidden></p>
+  <label for="stringSearch">Find a string method</label>
+  <input id="stringSearch" type="search" placeholder="Try: lowercase, spaces, check..." aria-label="Search string methods">
+  <div id="stringMethodList" class="string-method-list" aria-live="polite"></div>
+  <p id="stringNoResults" class="note" hidden>No methods found. Try a different word.</p>
+  <div class="practice-box" id="stringPracticeBox" hidden>
+   <h3>Try it yourself</h3>
+   <p id="stringSelectedMethod" class="note"></p>
+   <label for="stringPracticeText">Your sample text</label>
+   <input id="stringPracticeText" type="text" maxlength="200" value="Hello, Python!" autocomplete="off">
+   <div id="stringArg1Wrap" hidden>
+    <label id="stringArg1Label" for="stringArg1"></label>
+    <input id="stringArg1" type="text" maxlength="100" autocomplete="off">
+   </div>
+   <div id="stringArg2Wrap" hidden>
+    <label id="stringArg2Label" for="stringArg2"></label>
+    <input id="stringArg2" type="text" maxlength="100" autocomplete="off">
+   </div>
+   <div class="actions">
+    <button class="button" id="tryStringMethod" type="button" data-action="practiceString">Run in Python</button>
+    <button class="button secondary" type="button" data-action="copyStringPractice">Copy practice code</button>
+   </div>
+   <p id="stringPracticeResult" class="practice-result" role="status" aria-live="polite">Try a method to see what Python returns.</p>
+   <p class="note">This practice does not edit or submit your assignment.</p>
+  </div>
+  <p class="note"><strong>Remember:</strong> Strings cannot be changed in place. Most string methods return a new value, so save it if you need it later.</p>
+  <div class="actions">
+   <button class="button link" type="button" data-action="stringMethodsVideo">Watch CS50 String Methods</button>
+   <button class="button link" type="button" data-action="stringMethodsDocs">Python method docs</button>
+  </div>
+ </details>
  <div id="guidedQuestions" class="card">
  <h2>1. Understand</h2>
  <div id="questions"></div>
