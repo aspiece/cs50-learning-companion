@@ -22,6 +22,19 @@ async function openStarterFiles(a){
  if(await exists(script))await vscode.window.showTextDocument(script,{viewColumn:vscode.ViewColumn.Two,preview:false});
  return true;
 }
+async function openOfficialInWorkspace(a){
+ // VS Code's bundled Simple Browser can show the live official page in an editor tab.
+ // Some sites disallow iframe embedding, so keep a separate external-browser option.
+ try{
+  const commands=await vscode.commands.getCommands(true);
+  if(!commands.includes('simpleBrowser.api.open'))throw new Error('Simple Browser is unavailable');
+  await vscode.commands.executeCommand('simpleBrowser.api.open',vscode.Uri.parse(a.url),{viewColumn:vscode.ViewColumn.One,preserveFocus:true});
+  vscode.window.showInformationMessage('Official instructions opened in the editor. If the page is blank or blocked, use Open in browser.');
+ }catch(e){
+  vscode.window.showWarningMessage('In-editor browser is unavailable here. Opening the official CS50 page in your browser.');
+  await vscode.env.openExternal(vscode.Uri.parse(a.url));
+ }
+}
 async function updateStudentGuide(a){
  safeAssignment(a);
  if(!root()){vscode.window.showWarningMessage('Open your CS50 Codespace workspace first.');return false;}
@@ -112,7 +125,8 @@ class Companion {
     case 'openFiles':await openStarterFiles(a);break;
     case 'updateGuide':await updateStudentGuide(a);await this.refresh();break;
     case 'updates':await vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL));break;
-    case 'official':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
+    case 'official':await openOfficialInWorkspace(a);break;
+    case 'officialExternal':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
     case 'guide':{
       if(!root())break;
       const uri=join(root(),a.slug,'README.md');
@@ -160,4 +174,4 @@ function activate(ctx){
   if(choice)await createStarter(get(choice.id));
  }));
 }
-module.exports={activate,createStarter,openStarterFiles,updateStudentGuide};
+module.exports={activate,createStarter,openStarterFiles,updateStudentGuide,openOfficialInWorkspace};
