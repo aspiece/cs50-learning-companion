@@ -16,6 +16,23 @@
  const escapeHtml=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function persist(){api.setState({tab,query,set:setFilter});}
  function post(type,extra={}){api.postMessage({type,...extra});}
+ function updateDisplay(message){
+  if(!message)return;
+  const state=message.state;
+  const descriptions={
+   idle:'Update status: not checked yet.',
+   checking:'Checking for new versions...',
+   current:'You have the latest companion version (v'+(message.installed||'?')+').',
+   available:'Update available: v'+message.latest+'. Installed: v'+message.installed+'.',
+   installing:'Installing the verified update v'+message.latest+'...',
+   installed:'Update v'+message.latest+' installed. Reload Codespaces to use it.',
+   manual:'Update v'+message.latest+' verified. Install the saved VSIX using the Extensions menu.',
+   error:'Update check failed: '+(message.message||'Please try again later.')
+  };
+  $('updateStatus').textContent=descriptions[state]||'Check for updates when you are ready.';
+  $('checkUpdate').disabled=state==='checking'||state==='installing';
+  $('checkUpdate').textContent=state==='available'?'Install v'+message.latest:'Check for updates';
+ }
  function journalStatusMessage(status){
   if(status==='saved')return 'Saved to LEARNING_JOURNAL.md in this assignment folder.';
   if(status==='pending')return 'Notes are stored in this Codespace for now. Create starter files to make the journal.';
@@ -138,6 +155,7 @@
   persist();render();$('tab-'+tab).focus();e.preventDefault();
  });
  window.addEventListener('message',e=>{
+  if(e.data?.type==='updateStatus'){updateDisplay(e.data);return;}
   if(e.data?.type==='journalSaved'){
    $('journalStatus').textContent=journalStatusMessage(e.data.status);
    return;
