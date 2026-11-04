@@ -33,7 +33,7 @@ test('selected problem and progress remain workspace scoped',()=>{
  assert.match(source,/folderExists/);
  assert.match(source,/guideExists/);
 });
-test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.5.3'));
+test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.5.4'));
 
 test('starter opens the README and entry Python file in separate editor columns',()=>{
  assert.match(source,/async function openStarterFiles/);
@@ -66,4 +66,11 @@ test('official instructions use built-in VS Code editor with external fallback',
  assert.match(source,/officialExternal/);
  assert.match(ui,/data-action="officialExternal"/);
  assert.match(ui,/Open official instructions in editor/);
+});
+
+test('official-page action tries integrated, API and simple browser commands',()=>{
+ assert.match(source,/workbench\.action\.browser\.open/);
+ assert.match(source,/simpleBrowser\.show/);
+ assert.match(source,/simpleBrowser\.api\.open/);
+ assert.match(source,/Open official CS50 page/);
 });
