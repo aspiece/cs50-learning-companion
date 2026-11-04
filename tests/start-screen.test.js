@@ -64,7 +64,7 @@ test('Start screen rerenders for assignment changes and preserves student work',
  assert.match(client,/\$\('openGuide'\)\.disabled=!state\.guideExists/);
  assert.match(client,/\$\('openFiles'\)\.disabled=!state\.folderExists\|\|!state\.entryExists/);
  assert.match(client,/\$\('updateGuide'\)\.disabled=!state\.folderExists/);
- assert.match(client,/data-action==='goLearn'/);
+ assert.match(client,/b\.dataset\.action==='goLearn'/);
  assert.match(client,/tab='learn';persist\(\);render\(\)/);
  assert.match(server,/const entryExists=folderExists\?await exists\(join\(directory,a\.entryFile\)\):false/);
  assert.match(server,/folderExists,guideExists,entryExists/);
