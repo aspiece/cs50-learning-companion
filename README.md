@@ -111,7 +111,21 @@ Every CS50P assignment now has a separate **LEARNING_JOURNAL.md** beside its REA
 
 **Keeping the journal out of CS50 submission:** The extension's **Run check50** and **Open submit50 in terminal** actions run the official commands against a temporary copy of the assignment. LEARNING_JOURNAL.md, the generated README.md, and README backups are removed from the temporary copy; the original assignment and journal are untouched. All other support files stay in the copy, so students should still inspect CS50's proposed file list before confirming. Running check50 or submit50 manually in the original folder does **not** use this protection.
 
+## Formatted Markdown previews (v0.6.1)
+
+The companion uses VS Code's built-in **Markdown preview** to display student guides and journals with formatted headings, lists, links, and text.
+
+- **Create starter files** and **Open formatted README and Python file** open a rendered README in the left editor group and the assignment's Python file in the right.
+- **Preview student guide** opens a rendered README.
+- **Preview formatted learning journal** opens a rendered Learning Journal. It updates as saved changes arrive from the sidebar.
+- **Edit journal as Markdown** opens the original Markdown source for students who want to type directly into the file. **Reload notes from journal** loads changes back into the sidebar.
+- If the built-in Markdown renderer is unavailable, the companion falls back to showing the plain Markdown file. No extra extension or browser is needed when VS Code's Markdown support is enabled.
+
+Students can also preview any open Markdown file manually with **Ctrl+Shift+V** (Windows/Linux) or **Cmd+Shift+V** (Mac), and open a preview beside the source with **Ctrl+K, V** (Windows/Linux) or **Cmd+K, V** (Mac).
+
 ## Status
+
+v0.6.1 adds formatted, built-in Markdown previews for the assignment README and Learning Journal, while preserving source-editing controls and Python code.
 
 v0.6.0 saves learning notes to a per-assignment LEARNING_JOURNAL.md, migrates previous sidebar notes, and stages CS50 checking/submission without journal files.
 
