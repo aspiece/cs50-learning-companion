@@ -127,7 +127,11 @@ function html(webview,extensionUri){
  <p class="note">These checkmarks are saved in this workspace and are self-reported.</p>
  <p id="practiceSummary" class="note" aria-live="polite"></p>
 </section>
-<footer><button type="button" data-action="updates">View releases and updates</button></footer>
+<footer>
+ <button class="button secondary" id="checkUpdate" type="button" data-action="checkUpdate">Check for updates</button>
+ <p id="updateStatus" class="note" aria-live="polite">Update status: not checked yet.</p>
+ <button type="button" data-action="updates">View GitHub releases</button>
+</footer>
 <script nonce="${nonce}" src="${js}"></script>
 </body></html>`;
 }
