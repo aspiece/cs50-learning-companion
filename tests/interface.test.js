@@ -33,7 +33,7 @@ test('selected problem and progress remain workspace scoped',()=>{
  assert.match(source,/folderExists/);
  assert.match(source,/guideExists/);
 });
-test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.5.0'));
+test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.5.1'));
 
 test('starter opens the README and entry Python file in separate editor columns',()=>{
  assert.match(source,/async function openStarterFiles/);
@@ -50,4 +50,13 @@ test('guided learning prompts and notes are present',()=>{
  assert.match(browser,/state\.learning\.understand/);
  assert.match(browser,/state\.learning\.steps/);
  assert.match(source,/workspaceState\.update\(this\.key\(\)/);
+});
+
+test('students can refresh existing README without overwriting Python files',()=>{
+ assert.match(ui,/data-action="updateGuide"/);
+ assert.match(browser,/updateGuide/);
+ assert.match(source,/async function updateStudentGuide/);
+ assert.match(source,/README\.backup-/);
+ assert.match(source,/choice!=='Update README'/);
+ assert.match(source,/case 'updateGuide'/);
 });
