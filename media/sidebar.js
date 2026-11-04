@@ -59,6 +59,7 @@
   $('create').disabled=!!state.folderExists;
   $('openGuide').disabled=!state.guideExists;
   $('openFiles').disabled=!state.folderExists;
+  $('updateGuide').disabled=!state.folderExists;
   $('folderStatus').textContent=state.folderExists?'Folder found':'Not set up yet';
   $('entry').textContent=a.entryFile;
   applyFilters();
