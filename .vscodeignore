@@ -2,5 +2,8 @@
 .github
 node_modules
 tests
+scripts
 *.vsix
 *.zip
+SHA256SUMS.txt
+.gitignore
