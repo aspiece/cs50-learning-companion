@@ -2,16 +2,14 @@
 # Run this from anywhere inside a Codespace with Node.js and npm available.
 set -euo pipefail
 REPO="https://github.com/aspiece/cs50-learning-companion.git"
-TARGET="${HOME}/cs50-learning-companion"
+TARGET="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ -d "$TARGET/.git" ]]; then
   echo "Updating extension source in $TARGET"
   git -C "$TARGET" pull --ff-only
-elif [[ -e "$TARGET" ]]; then
-  echo "Cannot use $TARGET: it already exists and is not a Git checkout." >&2
-  exit 1
 else
-  echo "Cloning source to $TARGET"
-  git clone "$REPO" "$TARGET"
+  echo "This updater must be run from a cloned extension repository." >&2
+  echo "First clone $REPO, then run scripts/update-in-codespaces.sh" >&2
+  exit 1
 fi
 cd "$TARGET"
 if ! command -v code >/dev/null || ! command -v npm >/dev/null; then
