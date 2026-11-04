@@ -18,13 +18,6 @@ function safeAssignment(a){
  }
  return a;
 }
-function guideForCodespace(a){
- return a.files['README.md']
- .replace('in Python Lab.', 'in CS50 Codespaces.')
- .replace('## Move your code to CS50 Codespaces', '## Work in this Codespace')
- .replace(/Use \*\*Move to Codespaces\*\* in Python Lab[\s\S]*?(?=Check your code:)/,
-  'Your folder and starter files are already here. Read the official instructions and write your own code. Add any data or images from the official problem page when needed.\n\n');
-}
 function explain(error){
  if(/IndentationError|TabError/i.test(error))return 'Check the spaces before each line. Code inside an if, loop, or function must be indented evenly.';
  if(/NameError/i.test(error))return 'Python does not recognize a name. Check spelling and whether you created that variable first.';
@@ -77,4 +70,83 @@ function teachingGuide(a){
  ];
  return {understand,steps:tasks,checks,hints,concept:subject};
 }
+
+function guideForCodespace(a){
+ safeAssignment(a);
+ const base=a.files['README.md']||'';
+ const guide=teachingGuide(a);
+ const mission=section(base,'What will you make?')||a.description;
+ const terms=section(base,'Words to know');
+ const filesNeeded=section(base,'Files your program may need');
+ const otherNotes=section(base,'Need another file or package?');
+ const codeFiles=Object.keys(a.files).filter(name=>name.endsWith('.py'));
+ const code=text=>String.fromCharCode(96)+text+String.fromCharCode(96);
+ const listItems=items=>items.map(item=>'- '+item).join('\n');
+ const numbering=items=>items.map((item,i)=>(i+1)+'. '+item).join('\n');
+ const runCmd='python '+a.entryFile;
+ const checkCmd='check50 '+submissionPath(a);
+ const submitCmd='submit50 '+submissionPath(a);
+ const expectedFiles=codeFiles.map(name=>'- '+code(name)).join('\n');
+ const testIdeas=guide.checks.length?listItems(guide.checks):'- Try a common input from the official instructions.\n- Try an edge case listed in the problem.';
+ return [
+  '# '+a.title,'',
+  '**CS50P · Problem Set '+a.set+' · Student learning guide**','',
+  '> This README is a help sheet. The [official CS50 problem instructions]('+a.url+') are the source of truth for requirements, tests, and submission. Write your own code.','',
+  '**Use the CS50 Companion sidebar:** Start → Learn → Test → Submit.','',
+  '## Start — Understand the assignment','',
+  '### Your mission','',mission,'',
+  '### Get ready','',
+  '1. Read the [official CS50 problem]('+a.url+') carefully.',
+  '2. Find your folder: '+code(a.slug+'/')+'.',
+  '3. Open '+code('README.md')+' and your Python file side by side.',
+  '4. Check the files below. Do not rename the required Python files.','',
+  '**Code files in your folder:**','',expectedFiles,'',
+  'Your program may need other files to **run**, even if CS50 does not ask you to **submit** them.','',
+  '## Learn — Understand, Plan, Get Unstuck','',
+  '### 1. Understand','',
+  'Think about these questions before you type code:','',
+  listItems(guide.understand),'',
+  'In the companion, write down the input and the expected output in your own words.','',
+  '### 2. Plan','',
+  'Turn the task into smaller steps. Use these ideas from the assignment:','',
+  numbering(guide.steps),'',
+  'Write a short plan or pseudocode in the Learn tab. You can change it as you work.','',
+  '### 3. Get unstuck','',
+  'Try your plan first. If you are stuck, use the companion hints one at a time.','',
+  '- Getting Started: use extra questions and reminders.',
+  '- Some Help: use the plan and hints as needed.',
+  '- Independent: try the task with fewer prompts.','',
+  'Try to understand each change before you add it to your program. Do not copy a completed solution.','',
+  '## Test — Predict, Run, Debug','',
+  '### Predict before running','',
+  'Pick an input from the official problem. Write down what you think the output will be.','',
+  '### Run and check','',
+  '1. Open a terminal in the '+code(a.slug)+' folder.',
+  '2. Run your program: '+code(runCmd)+'.',
+  '3. Compare the output with your prediction and the official examples.',
+  '4. Try another input. Use these test ideas:','',
+  testIdeas,'',
+  '5. Run '+code(checkCmd)+' and read the results.',
+  '6. If useful, run '+code('style50 '+a.entryFile)+' and review the style feedback.','',
+  '### Debug with a plan','',
+  'If your code does not work, read the error message. Find the related line. Change one thing, then run it again.',
+  'Use the companion to explain common errors and record what you tried.','',
+  '## Submit — Check, Reflect, Send','',
+  '### Before you submit','',
+  '- Check the [official assignment page]('+a.url+') for the exact required files.',
+  '- Keep needed CSV, image, or Python files in the correct folder while you run and test.',
+  '- Do not include this README in your submission unless CS50 explicitly asks for it.',
+  '- Reflect: What did you learn? Which tests helped you know your code worked?','',
+  '### Submit with CS50','',
+  'In the '+code(a.slug)+' folder, run '+code(submitCmd)+' when your work is ready.',
+  'Follow the prompts and confirm submission with CS50. The companion checklist cannot verify your submission.','',
+  '## Extra files and useful terms','',
+  filesNeeded||'Check the official problem for any required data files or images.','',
+  ...(otherNotes?['### Package or file notes','',otherNotes,'']:[]),
+  ...(terms?['### Words to know','',terms,'']:[]),
+  '## Remember','',
+  'This is your learning guide, not an answer key. Use the companion for planning, hints, testing, and reflection. Follow CS50 academic honesty rules.',''
+ ].join('\n');
+}
+
 module.exports={list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide};
