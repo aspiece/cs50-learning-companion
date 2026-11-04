@@ -97,6 +97,7 @@
   $('updateGuide').disabled=!state.folderExists;
   $('folderStatus').textContent=state.folderExists?'Folder found':'Not set up yet';
   $('openJournal').disabled=!state.folderExists;
+  $('editJournal').disabled=!state.folderExists;
   $('reloadJournal').disabled=!state.folderExists;
   $('journalStatus').textContent=journalStatusMessage(state.journalStatus);
   $('entry').textContent=a.entryFile;
