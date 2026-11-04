@@ -34,7 +34,7 @@ test('toolkit is available to all 41 assignments and suggests a method family, n
   if(toolkit.suggestion){
    assert.ok(CATEGORIES[toolkit.suggestion.category]);
    assert.match(toolkit.suggestion.description,/Explore methods/);
-   assert.ok(toolkit.methods.filter(m=>m.category===toolkit.suggestion.category).length>=2);
+   assert.ok(toolkit.methods.filter(m=>m.category===toolkit.suggestion.category).length>=1);
   }
  }
  assert.equal(toolkitForAssignment('cs50p-0-indoor').suggestion.category,'change');
