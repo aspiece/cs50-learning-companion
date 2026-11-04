@@ -59,7 +59,7 @@ If you don't see the icon, open the Extensions panel and search for **CS50 Learn
 1. In **CS50 Companion**, find **Problem Set 0 → Indoor Voice**.
 2. Select **Create starter files**.
 3. The `indoor/` folder will be created with `README.md` and `indoor.py`.
-4. Your guide should open in one editor group and your Python file in the other.
+4. The **formatted README** should open on the left, and your Python code should open on the right.
 5. Use the tabs in the companion:
    - **Start:** Read the assignment and official CS50 page.
    - **Learn:** Make a plan and request a hint if you need one.
@@ -72,8 +72,10 @@ If you don't see the icon, open the Extensions panel and search for **CS50 Learn
 
 When you write a plan, prediction, debugging note, or reflection in the companion, it saves to **LEARNING_JOURNAL.md** in that assignment's folder.
 
-- Choose **Open learning journal file** in the Learn tab to read or edit your notes.
+- Choose **Preview formatted learning journal** in the Learn tab to read your notes with headings and formatting.
+- Choose **Edit journal as Markdown** if you want to change the journal file directly.
 - Choose **Reload notes from journal** if you changed the file yourself and want to see those changes in the sidebar.
+- You can also preview any `.md` file with **Ctrl+Shift+V** (or **Cmd+Shift+V** on a Mac).
 - Your journal is separate from your Python code. The companion's **check50** and **submit50** buttons use a temporary copy that leaves the journal out.
 - If you type `submit50` yourself in the terminal, **check the files CS50 lists before you confirm**. Your journal should not be part of the submission.
 - Keep a backup of your important notes if you plan to delete or move to another Codespace.
