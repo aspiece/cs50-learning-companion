@@ -81,19 +81,16 @@ The original Python Lab content remains the source for assignment goals, plan st
 ### Open both files
 The Create starter files action opens the README in the left editor group and the selected assignment Python entry file in the right group. Existing folders can also use **Open README and Python file**.
 
-## Official CS50 problem pages in the workspace (v0.5.4)
+## Official CS50 instructions in a separate browser tab or window (v0.5.5)
 
-The **Start** tab has **Open official instructions in editor**. The extension first checks for VS Code's integrated browser, then its Simple Browser APIs, so it can work across more VS Code environments. Where supported, the live official CS50 page opens inside the editor while the Python file can remain in another group. This is a link to the official page, not a copied assignment or a static snapshot. It does not require a server or new student accounts.
+The **Start** tab uses a single **Open official CS50 instructions** button. It opens the live, authoritative CS50 assignment page in the user's regular browser using VS Code's external-link action. The browser decides whether to use a separate tab or window; students can move the page into a separate window if preferred.
 
-**Important:** Browser-based CS50 Codespaces may not expose any internal browser command. Some websites also block the iframe used by Simple Browser. If the page appears blank or displays a blocked-content message, select **Open official CS50 page in browser**, which uses the normal external browser. The extension cannot override Harvard's website security rules. Internet access is needed to view the live official page.
-
-The generated README now uses clear stop-and-check questions at each stage, distinguishes official requirements from our learning tips, and avoids treating a checked progress box as proof of mastery or submission.
-
-## GCI icon (v0.5.3)
-
-The VS Code activity-bar icon uses the approved GCI lettermark: orange G, blue C, green I, on a transparent background. The SVG is stored at `media/icon.svg`. Rebuild and reload the window to apply it. Some VS Code themes may render activity-bar icons using a theme tint rather than their source colors.
+Keep Codespaces open for the README, Python file, terminal, planning notes, and testing. This avoids browser-embedding errors and does not copy Harvard's instructions into the project.
 
 ## Status
+
+v0.5.5 opens official instructions directly in the student's browser instead of trying unsupported in-editor browser commands. Generated READMEs use the same workflow.
+
 
 v0.5.4 tries integrated browser and Simple Browser commands when available and provides a clear external-page fallback for Codespaces without an in-editor browser.\n\nv0.5.3 updates the VS Code activity-bar icon to the approved GCI lettermark.\n\nv0.5.2 audits the instructional wording across all 41 generated READMEs and adds live official CS50 pages in the VS Code editor, with an external browser fallback. In-editor display depends on CS50's iframe policy and still requires a Codespaces check.\n\nv0.5.1 aligns generated READMEs with Start → Learn → Test → Submit and adds an opt-in, backed-up guide update for existing folders. The GitHub build and live Codespaces behavior still need verification.\n\nv0.5.0 adds guided learning, prediction and reflection, and side-by-side opening of README and the entry Python file. This is a pilot and needs a live Codespaces check.\n\nv0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
 
