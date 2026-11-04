@@ -16,15 +16,30 @@ If the CLI is unavailable, the script prints the generated VSIX location and ins
 
 The source repository remains at <https://github.com/aspiece/cs50-learning-companion>. Follow the [student installation guide](STUDENT_INSTALL.md) for classroom steps and error help. **Do not delete a Codespace to retry installation.** The script does not modify Python assignment files.
 
+## Built-in classroom updates (v0.7.0)
+
+Students install the companion once. After that, they can update it directly from the **GCI CS50 Companion sidebar**:
+
+1. The sidebar checks GitHub for newer classroom releases when opened (no automatic installation).
+2. If an update exists, **Check for updates** shows its version. Select it to review the update.
+3. Choose **Install update**. The extension downloads the signed-off release artifact from our GitHub repository, checks its SHA-256 checksum, and uses the Codespaces VS Code CLI to install it.
+4. Choose **Reload now** to start the new version. Students are asked before installation and before reloading.
+
+There is also a Command Palette option **CS50 Companion: Check for Updates**. If the Codespace cannot install a VSIX through the CLI, the extension keeps the verified file, shows its exact path, and explains **Extensions → ... → Install from VSIX**. It never modifies student assignment folders, code, or Learning Journals.
+
+GitHub Actions now publishes **versioned classroom prereleases automatically after tests pass on main**. Each prerelease has a versioned `.vsix` and `SHA256SUMS.txt`. Release downloads are constrained to the `aspiece/cs50-learning-companion` GitHub repository and checksummed before installation. The updater requires an accessible network and VS Code CLI and does not silently install new code.
+
+**First-time installation or upgrading from pre-v0.7.0:** Use the [one-command student installer](STUDENT_INSTALL.md) one last time. After v0.7.0 is installed, later versions can be installed with the sidebar button.
+
 ## Versioning and publication
 
 - Versions follow `major.minor.patch` semantic versioning in `package.json`. Example: `0.3.0`.
 - Every push or pull request runs automated tests, builds a validated VSIX, and uploads a **temporary Actions artifact**. These are development builds, not releases.
-- A **tag matching the package version** (for example `v0.3.0`) triggers publication of a **GitHub prerelease**, attaching the validated VSIX and a SHA-256 checksum file. A mismatched tag fails the build rather than publishing the wrong version.
+- Every validated **main-branch build** now publishes or refreshes the matching versioned GitHub classroom prerelease (including its VSIX and SHA-256 checksum). A matching `vX.Y.Z` tag can still trigger a prerelease build; mismatched tags fail validation.
 - Release workflow: test on your own Codespace, update the version in `package.json`, commit the changes, create/push the matching `vX.Y.Z` tag in GitHub, and verify the new entry on Releases.
-- Version `0.x` is still a classroom pilot. GitHub Releases and self-built VSIX files **do not automatically update installed extensions**. The one-command Codespaces updater is the supported interim path; Marketplace publishing is a separate future step.
+- Version `0.x` is still a classroom pilot, and **Marketplace auto-updates are not in use**. The extension's built-in updater checks GitHub prereleases and installs only after student confirmation. The one-command installer remains available for first setup or recovery.
 
-The sidebar displays the installed extension version and includes **View new versions on GitHub**. Command Palette also includes **CS50 Companion: View Updates**.
+The sidebar displays the installed version, an available update when detected, and **Check for updates**. The Command Palette supports **CS50 Companion: Check for Updates** and **CS50 Companion: View Updates**.
 
 ## Features
 
@@ -123,6 +138,8 @@ The companion uses VS Code's built-in **Markdown preview** to display student gu
 Students can also preview any open Markdown file manually with **Ctrl+Shift+V** (Windows/Linux) or **Cmd+Shift+V** (Mac), and open a preview beside the source with **Ctrl+K, V** (Windows/Linux) or **Cmd+K, V** (Mac).
 
 ## Status
+
+v0.7.0 introduces built-in confirmed update installs, verified GitHub release downloads, and automatically published classroom packages.
 
 Installation guide refreshed for CS50 Codespaces: one-command, folder-independent installer, fewer student prerequisites, and clearer VSIX fallback.
 
