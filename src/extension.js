@@ -58,7 +58,9 @@ class Companion {
   const directory=root()?join(root(),a.slug):null;
   const folderExists=directory?await exists(directory):false;
   const guideExists=folderExists?await exists(join(directory,'README.md')):false;
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,hint:this.hint,hints,learning,progress:this.ctx.workspaceState.get(this.key(),{})});
+  const tested=list().filter(item=>this.ctx.workspaceState.get('progress:'+item.id,{})?.tested===true);
+  const practicedSubjects=[...new Set(tested.map(item=>item.subject))];
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,hint:this.hint,hints,learning,practice:{testedCount:tested.length,subjects:practicedSubjects},progress:this.ctx.workspaceState.get(this.key(),{})});
  }
  async term(a,kind){
   if(!root()){vscode.window.showWarningMessage('Open a CS50 Codespace folder first.');return;}
