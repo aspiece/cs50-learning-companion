@@ -42,13 +42,25 @@ async function writeJournalField(a,field,value,oldNotes){
  return 'saved';
 }
 async function openFormattedMarkdown(uri,viewColumn=vscode.ViewColumn.One){
- // Use VS Code's built-in Markdown renderer. No HTML copies or extra dependencies.
- await vscode.window.showTextDocument(uri,{viewColumn,preview:false});
+ // Open the real Markdown preview editor directly in the requested pane.
+ // This avoids leaving a raw README or journal tab in front of the preview.
  try{
-  await vscode.commands.executeCommand('markdown.showPreview',uri,undefined,{locked:true});
+  await vscode.commands.executeCommand(
+   'vscode.openWith',uri,'vscode.markdown.preview.editor',
+   {viewColumn,preview:false,preserveFocus:false}
+  );
+  return true;
  }catch(error){
-  // If the built-in Markdown extension is disabled, leave the editable file open.
-  vscode.window.showWarningMessage('Markdown preview is unavailable. Showing the text file instead. You can enable Markdown Language Features in VS Code.');
+  // Older Codespaces versions may not expose the preview editor type.
+  // Try the classic built-in Markdown command before falling back to text.
+  await vscode.window.showTextDocument(uri,{viewColumn,preview:false});
+  try{
+   await vscode.commands.executeCommand('markdown.showPreview',uri,undefined,{locked:true});
+   return true;
+  }catch(fallbackError){
+   vscode.window.showWarningMessage('Markdown preview is unavailable here. Showing the text file instead.');
+   return false;
+  }
  }
 }
 async function openStarterFiles(a){
@@ -150,11 +162,21 @@ class Companion {
  async handle(m){
   if(!m||typeof m.type!=='string')return;
   try{
-   if(m.type==='ready'){await this.refresh();return;}
+   if(m.type==='ready'){
+    await this.refresh();
+    if(!this.initialPreviewOpened){
+     this.initialPreviewOpened=true;
+     const selected=get(this.id);
+     if(root()&&await exists(join(root(),selected.slug)))await openStarterFiles(selected);
+    }
+    return;
+   }
    if(m.type==='select'){
     if(!list().some(a=>a.id===m.id))return;
     await this.journalWrites.catch(()=>{});
-    this.id=m.id;this.hint=0;await this.ctx.workspaceState.update('selectedAssignment',this.id);await this.refresh();return;
+    this.id=m.id;this.hint=0;await this.ctx.workspaceState.update('selectedAssignment',this.id);await this.refresh();
+    if(root()&&await exists(join(root(),get(this.id).slug)))await openStarterFiles(get(this.id));
+    return;
    }
    const a=get(this.id);
    switch(m.type){
