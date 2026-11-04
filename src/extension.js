@@ -23,17 +23,31 @@ async function openStarterFiles(a){
  return true;
 }
 async function openOfficialInWorkspace(a){
- // VS Code's bundled Simple Browser can show the live official page in an editor tab.
- // Some sites disallow iframe embedding, so keep a separate external-browser option.
- try{
-  const commands=await vscode.commands.getCommands(true);
-  if(!commands.includes('simpleBrowser.api.open'))throw new Error('Simple Browser is unavailable');
-  await vscode.commands.executeCommand('simpleBrowser.api.open',vscode.Uri.parse(a.url),{viewColumn:vscode.ViewColumn.One,preserveFocus:true});
-  vscode.window.showInformationMessage('Official instructions opened in the editor. If the page is blank or blocked, use Open in browser.');
- }catch(e){
-  vscode.window.showWarningMessage('In-editor browser is unavailable here. Opening the official CS50 page in your browser.');
-  await vscode.env.openExternal(vscode.Uri.parse(a.url));
+ // The browser commands differ between desktop VS Code and web Codespaces.
+ // Try both built-in browser implementations without assuming they are installed.
+ const url=a.url;
+ const available=new Set(await vscode.commands.getCommands(true));
+ const commands=[
+  ['workbench.action.browser.open',()=>vscode.commands.executeCommand('workbench.action.browser.open',url)],
+  ['simpleBrowser.api.open',()=>vscode.commands.executeCommand('simpleBrowser.api.open',vscode.Uri.parse(url),{viewColumn:vscode.ViewColumn.One,preserveFocus:true})],
+  ['simpleBrowser.show',()=>vscode.commands.executeCommand('simpleBrowser.show',url)]
+ ];
+ for(const [name,run] of commands){
+  if(!available.has(name))continue;
+  try{
+   await run();
+   return true;
+  }catch(e){
+   // A command can be listed but fail in a remote web Codespace.
+  }
  }
+ // Don't claim an embedded browser is available when it is not.
+ const choice=await vscode.window.showInformationMessage(
+  'This Codespace does not provide an in-editor web browser. Open Harvard\'s official problem in a regular browser tab.',
+  'Open official CS50 page'
+ );
+ if(choice==='Open official CS50 page')await vscode.env.openExternal(vscode.Uri.parse(url));
+ return false;
 }
 async function updateStudentGuide(a){
  safeAssignment(a);
