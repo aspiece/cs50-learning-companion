@@ -40,30 +40,74 @@ function html(webview,extensionUri){
  <h2>Get started</h2>
  <p>Read the problem. Make your files. Then write your own code.</p>
  <button class="button" type="button" id="create" data-action="create">Create starter files</button>
+ <button class="button secondary" type="button" id="openFiles" data-action="openFiles">Open README and Python file</button>
  <button class="button secondary" type="button" data-action="official">Read official instructions</button>
  <button class="button secondary" type="button" id="openGuide" data-action="guide">Open student guide</button>
  <p class="note">Your existing assignment folder will not be overwritten.</p>
 </section>
 <section id="panel-learn" class="panel" role="tabpanel" aria-labelledby="tab-learn" hidden>
- <h2>Plan before coding</h2>
- <div class="card"><p>Ask yourself: What goes in? What should change? What should come out?</p></div>
- <button class="button" type="button" data-action="hint" id="hintNumber">Show a hint</button>
+ <h2>Learn to solve the problem</h2>
+ <label class="eyebrow" for="support">How much guidance do you want?</label>
+ <select id="support" data-field="support">
+ <option value="guided">Getting started — more help</option>
+ <option value="standard">Some help</option>
+ <option value="independent">Independent — less help</option>
+ </select>
+ <div id="guidedQuestions" class="card">
+ <h2>1. Understand</h2>
+ <div id="questions"></div>
+ <label for="inputNotes">What goes into the program?</label>
+ <textarea id="inputNotes" data-field="inputNotes" rows="2" maxlength="3000" placeholder="My program receives..."></textarea>
+ <label for="outputNotes">What should come out?</label>
+ <textarea id="outputNotes" data-field="outputNotes" rows="2" maxlength="3000" placeholder="The result should..."></textarea>
+ </div>
+ <div class="card">
+ <h2>2. Make a plan</h2>
+ <div id="steps" class="note"></div>
+ <label for="plan">My steps or pseudocode</label>
+ <textarea id="plan" data-field="plan" rows="4" maxlength="3000" placeholder="First... Then... Finally..."></textarea>
+ </div>
+ <div class="card">
+ <h2>3. Get unstuck</h2>
+ <p>Think it through first. Use a hint only when you need one.</p>
+ <button class="button secondary" type="button" data-action="hint" id="hintNumber">Show a hint</button>
  <div class="tip" id="hint" aria-live="polite" hidden></div>
- <p class="note">Hints guide your thinking, not complete the problem for you.</p>
+ </div>
+ <p class="note">Your notes are saved in this Codespace's extension storage, not sent to CS50.</p>
 </section>
 <section id="panel-test" class="panel" role="tabpanel" aria-labelledby="tab-test" hidden>
  <h2>Try your program</h2>
  <p>Run <span class="folder" id="entry"></span> in your Codespace terminal.</p>
+ <div class="card">
+ <h2>Predict, then test</h2>
+ <p>Choose an input. What do you think your program will print?</p>
+ <label for="prediction">My prediction</label>
+ <textarea id="prediction" data-field="prediction" rows="2" maxlength="3000" placeholder="I expect..."></textarea>
+ </div>
  <button class="button" type="button" data-action="run">Run Python</button>
+ <div class="card">
+ <label for="observed">What really happened?</label>
+ <textarea id="observed" data-field="observed" rows="2" maxlength="3000" placeholder="The terminal showed..."></textarea>
+ <p>Compare your prediction with the actual result. What needs to change?</p>
+ </div>
  <div class="actions">
  <button class="button secondary" type="button" data-action="check">Run check50</button>
  <button class="button secondary" type="button" data-action="style">Run style50</button></div>
  <button class="button link" type="button" data-action="explain">Explain a Python error</button>
+ <div class="card">
+ <label for="debugNotes">My debugging notes</label>
+ <textarea id="debugNotes" data-field="debugNotes" rows="2" maxlength="3000" placeholder="The error means... I'll check..."></textarea>
+ </div>
  <p class="note">check50 and style50 show their results in the terminal.</p>
 </section>
 <section id="panel-submit" class="panel" role="tabpanel" aria-labelledby="tab-submit" hidden>
  <h2>Ready to submit?</h2>
  <div class="card"><p>Check your official problem page and required files. Run check50 first, then use submit50 with your own CS50 account.</p></div>
+ <div class="card">
+ <h2>Reflect</h2>
+ <label for="reflection">What did you learn, and how did you know the code worked?</label>
+ <textarea id="reflection" data-field="reflection" rows="3" maxlength="3000" placeholder="I learned... I tested..."></textarea>
+ </div>
  <button class="button" type="button" data-action="submit">Open submit50 in terminal</button>
  <p class="note">Only CS50 can confirm a submission. Your checklist does not send work to Harvard.</p>
 </section>
