@@ -6,11 +6,16 @@ const vm=require('node:vm');
 const path=require('node:path');
 
 const browserSource=fs.readFileSync(path.join(__dirname,'../media/sidebar.js'),'utf8');
+const uiSource=fs.readFileSync(path.join(__dirname,'../src/ui.js'),'utf8');
 
 function makeElement(id){
  const listeners={};
+ // The real webview parser supplies data-action attributes from the HTML.
+ // Mirror those attributes here rather than hardcoding a button behavior.
+ const markup=uiSource.match(new RegExp('<button\\b[^>]*\\bid="'+id+'"[^>]*>'))?.[0]||'';
+ const action=markup.match(/data-action="([^"]+)"/)?.[1];
  return {
-  id,listeners,dataset:{},style:{},attributes:{},
+  id,listeners,dataset:action?{action}:{},style:{},attributes:{},
   value:'',innerHTML:'',textContent:'',hidden:false,disabled:false,open:false,
   addEventListener(name,fn){listeners[name]=fn;},
   setAttribute(name,value){this.attributes[name]=value;},
