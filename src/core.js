@@ -100,7 +100,7 @@ function guideForCodespace(a){
   '## Start — Understand the assignment','',
   '### Your mission','',mission,'',
   '### Get ready','',
-  '1. In the Companion, select **Open official instructions in editor**. If the website does not appear, use **Open official CS50 page in browser**.',
+  '1. In the Companion, select **Open official CS50 instructions**. Keep the official page open in another browser tab or window while you code in Codespaces.',
   '2. Find your folder: '+code(a.slug+'/')+'.',
   '3. Keep this '+code('README.md')+' open for guidance, and use your Python editor to write code.',
   '4. Check the files below. Do not rename the required Python files.','',
