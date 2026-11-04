@@ -75,7 +75,10 @@ function html(webview,extensionUri){
  <button class="button secondary" type="button" data-action="hint" id="hintNumber">Show a hint</button>
  <div class="tip" id="hint" aria-live="polite" hidden></div>
  </div>
- <p class="note">Your notes are saved in this Codespace's extension storage, not sent to CS50.</p>
+ <button class="button secondary" type="button" id="openJournal" data-action="openJournal">Open learning journal file</button>
+ <button class="button link" type="button" id="reloadJournal" data-action="reloadJournal">Reload notes from journal</button>
+ <p id="journalStatus" class="note" aria-live="polite">Your notes are saved in LEARNING_JOURNAL.md inside this assignment folder.</p>
+ <p class="note">The journal is for your learning, not for CS50 submission.</p>
 </section>
 <section id="panel-test" class="panel" role="tabpanel" aria-labelledby="tab-test" hidden>
  <h2>Try your program</h2>
@@ -113,7 +116,7 @@ function html(webview,extensionUri){
  <textarea id="reflection" data-field="reflection" rows="3" maxlength="3000" placeholder="I learned... I tested..."></textarea>
  </div>
  <button class="button" type="button" data-action="submit">Open submit50 in terminal</button>
- <p class="note">Only CS50 can confirm a submission. Your checklist does not send work to Harvard.</p>
+ <p class="note">The companion submits from a temporary copy without your Learning Journal or generated README. Check CS50's file list before confirming. Only CS50 can confirm submission.</p>
 </section>
 <section class="progress" aria-label="Personal progress">
  <div class="eyebrow">My progress</div>
