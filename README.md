@@ -1,59 +1,68 @@
 # CS50 Learning Companion
 
-A **VS Code extension** for beginner-friendly CS50P support directly in the official [CS50 Codespace](https://cs50.dev). It contains all **41 unsolved problem starters** copied from [Python Lab](https://github.com/aspiece/python-lab/blob/main/cs50p-starters.js).
+A VS Code extension for guided, solution-free CS50P practice in [cs50.dev](https://cs50.dev). Includes **41 unsolved CS50P starter assignments** originally authored for [Python Lab](https://github.com/aspiece/python-lab). The two repositories are not automatically synchronized.
 
-## Install the tested GitHub Actions build
+## Install or update in CS50 Codespaces
 
-1. Open the **Actions** tab in this repository.
-2. Select **Build VS Code extension** and its latest successful run.
-3. Under **Artifacts**, download `cs50-learning-companion-vsix` (the ZIP contains a `.vsix`).
-4. Extract the ZIP on your computer.
-5. In cs50.dev, open Extensions → `...` → **Install from VSIX**, choose that `.vsix`, and reload the window.
-6. Open the **CS50 Companion** activity-bar icon. Choose an assignment and click **Create starter files**.
+**Recommended for the current classroom pilot: build from the GitHub source in the Codespace.** This avoids browser upload issues. Open the Codespaces terminal:
 
-**Important:** This repository's source is now managed on GitHub, but the extension is **not yet confirmed working inside a live CS50 Codespace**. Use a test account before classroom rollout.
+First-time setup:
 
-## What it does
+```bash
+git clone https://github.com/aspiece/cs50-learning-companion.git "$HOME/cs50-learning-companion"
+bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"
+```
 
-- Creates the official assignment folder, unsolved Python files, and a student guide.
-- Never overwrites an existing assignment folder.
-- Provides gentle learning hints and beginner error explanations.
-- Opens a real terminal for `python`, `check50`, `style50`, and student-confirmed `submit50`.
-- Saves a self-reported checklist in VS Code workspace state.
-- Links to the official CS50 problem page. CS50's own policies and submission instructions govern.
+For future updates, use **one command**:
 
-Do **not** put answer keys, private instructor reference files, passwords, or GitHub tokens in this public repository. The included README files were originally authored for Python Lab; the extension adjusts the Codespaces transfer section when it creates a local guide. Use official CS50 pages for exact requirements.
+```bash
+bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"
+```
 
-## Maintain and release
+The script performs a fast-forward Git pull, installs npm dependencies, runs tests, builds the VSIX with `@vscode/vsce`, and installs it using `code --install-extension ... --force`. It prints the installed version. Then open the Command Palette and select **Developer: Reload Window**. It does not modify student assignment files.
 
-The `content/cs50p-starters.js` file was copied from Python Lab, not live-synced. When updating, re-import the source and rerun the tests. The extension's adapter is `src/core.js`.
+**Alternative:** Download an attached `.vsix` from [Releases](https://github.com/aspiece/cs50-learning-companion/releases), then install via Extensions → `...` → **Install from VSIX**. A GitHub Actions **artifact** is a ZIP file containing the VSIX and checksum; extract it first.
 
-GitHub Actions installs dependencies, tests the library, packages using the official `@vscode/vsce` CLI, and uploads the generated VSIX as a workflow artifact. For local builds, run:
+## Versioning and publication
+
+- Versions follow `major.minor.patch` semantic versioning in `package.json`. Example: `0.3.0`.
+- Every push or pull request runs automated tests, builds a validated VSIX, and uploads a **temporary Actions artifact**. These are development builds, not releases.
+- A **tag matching the package version** (for example `v0.3.0`) triggers publication of a **GitHub prerelease**, attaching the validated VSIX and a SHA-256 checksum file. A mismatched tag fails the build rather than publishing the wrong version.
+- Release workflow: test on your own Codespace, update the version in `package.json`, commit the changes, create/push the matching `vX.Y.Z` tag in GitHub, and verify the new entry on Releases.
+- Version `0.x` is still a classroom pilot. GitHub Releases and self-built VSIX files **do not automatically update installed extensions**. The one-command Codespaces updater is the supported interim path; Marketplace publishing is a separate future step.
+
+The sidebar displays the installed extension version and includes **View new versions on GitHub**. Command Palette also includes **CS50 Companion: View Updates**.
+
+## Features
+
+- Choose from all 41 problems in CS50P problem sets 0–8.
+- Create official assignment-named folders and unsolved Python scaffolds.
+- Read README guidance and official assignment instructions.
+- Use progressive hints, starter checklists, and beginner error descriptions.
+- Run Python, check50, style50, and student-confirmed submit50 in the real Codespaces terminal.
+- Existing assignment folders are preserved. The checklist is self-reported; CS50 alone confirms submissions.
+
+## Development
 
 ```bash
 npm install
+npm run verify:release
 npm test
 npm run package
 ```
 
-You can use `workflow_dispatch` from Actions to rerun packaging. After successful testing, a Marketplace release can enable easier updates.
+The source content is in `content/cs50p-starters.js`, adapted by `src/core.js`. Never add completed solutions, private instructor reference files, student credentials, or GitHub tokens to this public repo. CS50's official assignments and academic honesty rules are authoritative.
 
-## Status
+## Troubleshooting
 
-Version 0.2.0 is an initial pilot and has not been validated in an actual authenticated CS50 Codespace.
-
-## Installation troubleshooting
-
-GitHub Actions **Artifacts are ZIP files**, not installable VSIX files. Download the artifact, **extract the ZIP**, and install the **.vsix inside**. Do not select the artifact ZIP or the source-code ZIP in the VS Code installer.
-
-For a Codespace, you can upload the extracted `.vsix` into your workspace and run the following from its directory:
+To check the installed extension:
 
 ```bash
-code --install-extension ./cs50-learning-companion-0.2.0.vsix --force
 code --list-extensions --show-versions | grep -i geneseelearninglab
 ```
 
-If the filename differs, replace it in the command. Reload the VS Code window after installation. If the CLI reports an error, **copy the entire error message**, or open **View → Output → Log (Remote Extension Host)** to investigate activation.
+If installation fails, read the terminal error message. A file-not-found error indicates the selected VSIX path is incorrect; it does not indicate a broken extension. The updater avoids guessing the VSIX location by building and installing from the known source checkout.
 
-Verify that the GitHub Actions run is **green** before downloading. The workflow now checks that the VSIX is a readable ZIP containing the required manifest, extension entry point, and assignment catalog. A successful build is not proof that cs50.dev permits the installation; that requires a real Codespace test.
+## Status
 
+v0.3.0 adds versioning, release automation, and a simpler updater. It has not yet been validated in a live authenticated CS50 Codespace. Test before offering it to students.
