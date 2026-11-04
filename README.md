@@ -67,7 +67,7 @@ If installation fails, read the terminal error message. A file-not-found error i
 
 ## Status
 
-v0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
+v0.5.0 adds guided learning, prediction and reflection, and side-by-side opening of README and the entry Python file. This is a pilot and needs a live Codespaces check.\n\nv0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
 
 ## Interface design (v0.4.0)
 
@@ -82,3 +82,13 @@ The sidebar now separates the most common student tasks instead of showing all b
 The sidebar retains a five-step *self-reported* progress checklist, displays the installed extension version, and links to GitHub releases. Colors use the VS Code theme, so the interface works with dark and light themes. It supports keyboard navigation, smaller Codespaces sidebars, and a content security policy.
 
 The interface is implemented in `src/ui.js`, `media/sidebar.js`, and `media/sidebar.css`, keeping the browser view separate from the Codespace filesystem and terminal actions in `src/extension.js`.
+
+## Guided learning (v0.5.0)
+
+Students continue using Start, Learn, Test, and Submit. The Learn tab contains **Understand → Plan → Get Unstuck**, with problem-specific planning steps pulled from each existing Python Lab README. Indoor Voice, Playback Speed, and Making Faces additionally have custom conceptual hints. For the other assignments, hints use the topic and the individual README plan; no completed solutions are included.
+
+Students may choose **Getting started**, **Some help**, or **Independent** to fade scaffolds. They can type an input/output explanation and pseudocode, predict test results, note terminal output, document debugging attempts, and reflect on learning. These notes are self-reported and stored with the VS Code workspace extension state, not sent to CS50 or Canvas; they are not automatically evaluated for correctness.
+
+Selecting **Create starter files** opens both `README.md` (left editor group) and the assignment entry `.py` file (right editor group). If the assignment folder already exists, its files are opened without overwriting any content. The **Open README and Python file** action is also available for returning students. For unit-testing assignments, the entry Python file is the student test file; the related implementation Python file remains in Explorer.
+
+After updating, verify the existing assignment folders are unchanged, both editor panes open, notes survive navigating between problems, and terminal commands still run from the assignment directory.
