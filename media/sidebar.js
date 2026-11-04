@@ -46,6 +46,8 @@
   if(state.hint>=state.hints.length)$('hintNumber').textContent='All hints shown';
   $('questions').innerHTML='<ul>'+state.learning.understand.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ul>';
   $('steps').innerHTML='<p>Use these ideas to make your own plan:</p><ol>'+state.learning.steps.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ol>';
+  $('testIdeas').innerHTML=state.learning.checks.length?'<ul>'+state.learning.checks.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ul>':'Test one ordinary case and one unusual case from the official problem instructions.';
+  $('practiceSummary').textContent='Practice so far: '+state.practice.testedCount+' problems marked tested'+(state.practice.subjects.length?' · Topics: '+state.practice.subjects.join(', '):'')+'. This is practice, not proof of mastery.';
   if(changed){
    for(const field of fields){const element=$(field);if(element)element.value=p[field]??(field==='support'?'standard':'');}
   }
