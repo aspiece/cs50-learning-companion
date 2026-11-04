@@ -77,8 +77,12 @@ function guideForCodespace(a){
  const guide=teachingGuide(a);
  const mission=section(base,'What will you make?')||a.description;
  const terms=section(base,'Words to know');
- const filesNeeded=section(base,'Files your program may need');
- const otherNotes=section(base,'Need another file or package?');
+ const filesNeeded=section(base,'Files your program may need')
+  .replace('Move any files your code reads, such as a CSV, photo, or another Python file.','Keep any files your code reads, such as a CSV, photo, or another Python file, in your assignment folder.')
+  .replace(/bring them to Codespaces too/gi,'add them to this assignment folder too')
+  .replace(/bring them to Codespaces/gi,'add them to this Codespace');
+ const otherNotes=section(base,'Need another file or package?')
+  .replace(/Python Lab/gi,'this Codespace');
  const codeFiles=Object.keys(a.files).filter(name=>name.endsWith('.py'));
  const code=text=>String.fromCharCode(96)+text+String.fromCharCode(96);
  const listItems=items=>items.map(item=>'- '+item).join('\n');
@@ -124,8 +128,8 @@ function guideForCodespace(a){
   '1. Open a terminal in the '+code(a.slug)+' folder.',
   '2. Run your program: '+code(runCmd)+'.',
   '3. Compare the output with your prediction and the official examples.',
-  '4. Try another input. Use these test ideas:','',
-  testIdeas,'',
+  '4. Try another input and compare the result.','',
+  '**Test ideas:**','',testIdeas,'',
   '5. Run '+code(checkCmd)+' and read the results.',
   '6. If useful, run '+code('style50 '+a.entryFile)+' and review the style feedback.','',
   '### Debug with a plan','',
