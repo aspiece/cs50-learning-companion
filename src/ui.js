@@ -75,6 +75,15 @@ function html(webview,extensionUri){
  <button class="button secondary" type="button" data-action="hint" id="hintNumber">Show a hint</button>
  <div class="tip" id="hint" aria-live="polite" hidden></div>
  </div>
+ <div class="card" id="conceptVideoCard" hidden>
+ <h2>Optional CS50 concept video</h2>
+ <p class="note">Need an example of the Python skill? This official CS50 lesson explains the idea, not the assignment solution.</p>
+ <p><strong id="conceptVideoTitle"></strong></p>
+ <p id="conceptVideoFocus" class="note"></p>
+ <button class="button secondary" type="button" id="openConceptVideo" data-action="openConceptVideo">Watch concept video in browser</button>
+ <p id="conceptVideoQuestion" class="note"></p>
+ <p class="note">After watching, add one idea to <strong>My steps or pseudocode</strong> above. Watching is optional.</p>
+ </div>
  <button class="button secondary" type="button" id="openJournal" data-action="openJournal">Preview formatted learning journal</button>
  <button class="button secondary" type="button" id="editJournal" data-action="editJournal">Edit journal as Markdown</button>
  <button class="button link" type="button" id="reloadJournal" data-action="reloadJournal">Reload notes from journal</button>
