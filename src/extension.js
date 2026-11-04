@@ -3,7 +3,7 @@ const vscode=require('vscode');
 const {html:renderSidebar}=require('./ui');
 const {version}=require('../package.json');
 const RELEASES_URL='https://github.com/aspiece/cs50-learning-companion/releases';
-const {list,get,submissionPath,safeAssignment,guideForCodespace,explain}=require('./core');
+const {list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide}=require('./core');
 const utf=s=>Buffer.from(s,'utf8');
 function root(){return vscode.workspace.workspaceFolders?.[0]?.uri;}
 const join=(...u)=>vscode.Uri.joinPath(...u);
@@ -11,19 +11,35 @@ async function exists(uri){
  try{await vscode.workspace.fs.stat(uri);return true;}
  catch(e){if(e.code==='FileNotFound')return false;throw e;}
 }
+async function openStarterFiles(a){
+ const directory=root()?join(root(),a.slug):null;
+ if(!directory||!await exists(directory))return false;
+ const guide=join(directory,'README.md');
+ const script=join(directory,a.entryFile);
+ // Place the instructions on the left, and the student's Python file on the right.
+ // In tests assignments, entryFile is the student test file; the source file is also accessible in Explorer.
+ if(await exists(guide))await vscode.window.showTextDocument(guide,{viewColumn:vscode.ViewColumn.One,preview:false,preserveFocus:true});
+ if(await exists(script))await vscode.window.showTextDocument(script,{viewColumn:vscode.ViewColumn.Two,preview:false});
+ return true;
+}
 async function createStarter(a){
  safeAssignment(a);
  if(!root()){vscode.window.showWarningMessage('Open a folder in your CS50 Codespace first.');return false;}
  const dir=join(root(),a.slug);
- if(await exists(dir)){vscode.window.showInformationMessage('The '+a.slug+' folder already exists. Your work was not changed.');return false;}
+ if(await exists(dir)){
+  vscode.window.showInformationMessage('Folder already exists. Opening your work without changing it.');
+  await openStarterFiles(a);
+  return false;
+ }
  await vscode.workspace.fs.createDirectory(dir);
  for(const [name,content] of Object.entries(a.files)){
    await vscode.workspace.fs.writeFile(join(dir,name),utf(name==='README.md'?guideForCodespace(a):content));
  }
- await vscode.window.showTextDocument(join(dir,'README.md'),{preview:false});
- vscode.window.showInformationMessage('Starter created. Read the guide and write your own code.');
+ await openStarterFiles(a);
+ vscode.window.showInformationMessage('Starter ready. Read the guide, then write your own code.');
  return true;
 }
+
 class Companion {
  constructor(ctx){this.ctx=ctx;const saved=ctx.workspaceState.get('selectedAssignment');this.id=list().some(a=>a.id===saved)?saved:list()[0].id;this.hint=0;}
  resolveWebviewView(view){
@@ -37,15 +53,12 @@ class Companion {
  async refresh(){
   if(!this.view)return;
   const a=get(this.id);
-  const hints=[
-   'What does the program need to read or receive?',
-   'Which Python concept could help? Try a small, different example.',
-   'Check your plan against the official instructions before writing more code.'
-  ];
+  const learning=teachingGuide(a);
+  const hints=learning.hints;
   const directory=root()?join(root(),a.slug):null;
   const folderExists=directory?await exists(directory):false;
   const guideExists=folderExists?await exists(join(directory,'README.md')):false;
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,hint:this.hint,hints,progress:this.ctx.workspaceState.get(this.key(),{})});
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,hint:this.hint,hints,learning,progress:this.ctx.workspaceState.get(this.key(),{})});
  }
  async term(a,kind){
   if(!root()){vscode.window.showWarningMessage('Open a CS50 Codespace folder first.');return;}
@@ -68,6 +81,7 @@ class Companion {
    const a=get(this.id);
    switch(m.type){
     case 'create':if(await createStarter(a)){await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),starter:true});}await this.refresh();break;
+    case 'openFiles':await openStarterFiles(a);break;
     case 'updates':await vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL));break;
     case 'official':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
     case 'guide':{
@@ -77,7 +91,7 @@ class Companion {
       else vscode.window.showWarningMessage('Create the starter folder first.');
       break;
     }
-    case 'hint':this.hint=this.hint%3+1;await this.refresh();break;
+    case 'hint':this.hint=Math.min(hintsCount(a),this.hint+1);await this.refresh();break;
     case 'run':case 'check':case 'style':await this.term(a,m.type);break;
     case 'submit':{
       const ok=await vscode.window.showWarningMessage('Submit your own work to CS50? Check the current official instructions first.',{modal:true},'Run submit50');
@@ -87,6 +101,14 @@ class Companion {
     case 'explain':{
       const err=await vscode.window.showInputBox({prompt:'Paste the last line of the Python error (no personal information).'});
       if(err!==undefined)await vscode.window.showInformationMessage(explain(err),{modal:true});
+      break;
+    }
+    case 'learning':{
+      const allowed=['support','inputNotes','outputNotes','plan','prediction','observed','reflection','debugNotes'];
+      if(!allowed.includes(m.field)||typeof m.value!=='string'||m.value.length>3000)break;
+      const value=m.field==='support'&& !['guided','standard','independent'].includes(m.value)?'standard':m.value;
+      await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),[m.field]:value});
+      // Do not redraw the webview while a student is typing; its local input stays active.
       break;
     }
     case 'progress':{
@@ -99,6 +121,7 @@ class Companion {
   }catch(e){vscode.window.showErrorMessage('CS50 Companion: '+(e.message||String(e)));}
  }
 }
+function hintsCount(a){return teachingGuide(a).hints.length;}
 function activate(ctx){
  const provider=new Companion(ctx);
  ctx.subscriptions.push(vscode.window.registerWebviewViewProvider('cs50Companion.sidebar',provider));
@@ -108,4 +131,4 @@ function activate(ctx){
   if(choice)await createStarter(get(choice.id));
  }));
 }
-module.exports={activate,createStarter};
+module.exports={activate,createStarter,openStarterFiles};
