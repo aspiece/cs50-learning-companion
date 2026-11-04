@@ -2,6 +2,8 @@
 
 A VS Code extension for guided, solution-free CS50P practice in [cs50.dev](https://cs50.dev). Includes **41 unsolved CS50P starter assignments** originally authored for [Python Lab](https://github.com/aspiece/python-lab). The two repositories are not automatically synchronized.
 
+**Live classroom check:** After updating to v0.7.5 or newer, follow the [Start screen Codespaces test checklist](LIVE_CODESPACES_CHECK.md) to verify the new/returning assignment workflow without deleting or changing student code.
+
 ## Install or update in CS50 Codespaces
 
 **Classroom installation:** Open the terminal inside [cs50.dev](https://cs50.dev) and paste **one command**. It works for first-time setup and for updates, from any starting directory:
