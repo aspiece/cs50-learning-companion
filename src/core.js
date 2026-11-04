@@ -41,7 +41,7 @@ function teachingGuide(a){
  safeAssignment(a);
  const readme=a.files['README.md']||'';
  const tasks=bulletItems(section(readme,'Step-by-step plan')).slice(0,6);
- const checks=bulletItems(section(readme,'Check your work')).filter(s=>s.startsWith('Try ')||s.startsWith('Check ')||s.startsWith('Test ')).slice(0,4);
+ const checks=bulletItems(section(readme,'Check your work')).filter(s=>!/^Run your code and compare/i.test(s)).slice(0,4);
  const subject=a.subject||'Python';
  const custom={
   'cs50p-0-indoor':{
