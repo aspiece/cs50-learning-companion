@@ -1173,12 +1173,7 @@
  const indentedHint=(text,level=1)=>'    '.repeat(level)+'# TODO: '+text+'\n';
  const safeGuide=problem=>learnerGuide[problem.set+'/'+problem.slug]||{steps:[problem.goal],checks:['Compare your output with the official examples.']};
  function header(problem){
-  return [
-   '# CS50P | Set '+problem.set+' | '+problem.title,
-   '# Read README.md for steps, tips, and ways to check your work.',
-   '# Full problem: '+problem.url,
-   ''
-  ].join('\n')+'\n';
+  return '# '+problem.title+'\n# Read README.md for the assignment steps.\n\n';
  }
  function functionBlock(signature,problem){
   const funcName=signature.split('(')[0];
@@ -1196,6 +1191,17 @@
   ].join('\n');
  }
  function buildPython(problem){
+  // Approved light scaffolds: keep the programming decisions with students.
+  // The README provides the detailed steps, hints and testing advice.
+  if(problem.set===0&&problem.slug==='indoor')return header(problem)+
+   'message = input("Say something: ")\n\n'+
+   '# TODO: Change the message to lowercase.\n\n'+
+   '# TODO: Display the result.\n';
+  if(problem.set===2&&problem.slug==='coke')return header(problem)+
+   'amount_due = 50\n\n'+
+   '# TODO: Repeat until enough money is inserted.\n\n'+
+   '# TODO: Accept valid coins and update the amount due.\n\n'+
+   '# TODO: Display the change owed.\n';
   const outline=shape(problem),signatures=outline.functions||problem.functions;
   const guide=safeGuide(problem);
   let body=(outline.imports||[]).join('\n');
@@ -1228,8 +1234,11 @@
   }
   if(wantMain)body+='\nif __name__ == "__main__":\n    main()\n';
   if(!wantMain&&signatures.filter(x=>x!=='PDF.header(self)').length===0){
-   if(guide.setup)body+=guide.setup+'\n\n';
-   body+='# TODO: '+guide.steps[Math.min(1,guide.steps.length-1)]+'\n';
+   // Use any existing input/import setup, but move the teaching steps out of Python.
+   const setup=(guide.setup||'').split('\n').filter(line=>!/^\s*# TODO:/i.test(line)).join('\n').trim();
+   if(setup)body+=setup+'\n\n';
+   const tasks=guide.steps.slice(/\binput\s*\(/.test(setup)?1:0).slice(-3);
+   body+=tasks.map(step=>'# TODO: '+step).join('\n\n')+'\n';
   }
   return header(problem)+body;
  }
