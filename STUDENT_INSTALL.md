@@ -68,6 +68,16 @@ If you don't see the icon, open the Extensions panel and search for **CS50 Learn
 
 **Harvard's official problem page is the source of truth.** The companion is a study tool, not a replacement for the official instructions. It cannot confirm that your assignment was submitted.
 
+## Where your planning notes are saved
+
+When you write a plan, prediction, debugging note, or reflection in the companion, it saves to **LEARNING_JOURNAL.md** in that assignment's folder.
+
+- Choose **Open learning journal file** in the Learn tab to read or edit your notes.
+- Choose **Reload notes from journal** if you changed the file yourself and want to see those changes in the sidebar.
+- Your journal is separate from your Python code. The companion's **check50** and **submit50** buttons use a temporary copy that leaves the journal out.
+- If you type `submit50` yourself in the terminal, **check the files CS50 lists before you confirm**. Your journal should not be part of the submission.
+- Keep a backup of your important notes if you plan to delete or move to another Codespace.
+
 ## When your teacher announces an update
 
 Open a new terminal in **cs50.dev** and run:
