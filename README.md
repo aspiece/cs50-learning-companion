@@ -81,9 +81,17 @@ The original Python Lab content remains the source for assignment goals, plan st
 ### Open both files
 The Create starter files action opens the README in the left editor group and the selected assignment Python entry file in the right group. Existing folders can also use **Open README and Python file**.
 
+## Official CS50 problem pages in the workspace (v0.5.2)
+
+The **Start** tab now has **Open official instructions in editor**. The extension asks VS Code's bundled Simple Browser to show the live, original CS50 problem page in editor group 1, while the Python file can remain in group 2. This is a link to the official page, not a copied assignment or a static snapshot. It does not require a server or new student accounts.
+
+**Important:** Some websites block the iframe used by Simple Browser. If the page appears blank or displays a blocked-content message, select **Open official CS50 page in browser**, which uses the normal external browser. The extension cannot override Harvard's website security rules. Internet access is needed to view the live official page.
+
+The generated README now uses clear stop-and-check questions at each stage, distinguishes official requirements from our learning tips, and avoids treating a checked progress box as proof of mastery or submission.
+
 ## Status
 
-v0.5.1 aligns generated READMEs with Start → Learn → Test → Submit and adds an opt-in, backed-up guide update for existing folders. The GitHub build and live Codespaces behavior still need verification.\n\nv0.5.0 adds guided learning, prediction and reflection, and side-by-side opening of README and the entry Python file. This is a pilot and needs a live Codespaces check.\n\nv0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
+v0.5.2 audits the instructional wording across all 41 generated READMEs and adds live official CS50 pages in the VS Code editor, with an external browser fallback. In-editor display depends on CS50's iframe policy and still requires a Codespaces check.\n\nv0.5.1 aligns generated READMEs with Start → Learn → Test → Submit and adds an opt-in, backed-up guide update for existing folders. The GitHub build and live Codespaces behavior still need verification.\n\nv0.5.0 adds guided learning, prediction and reflection, and side-by-side opening of README and the entry Python file. This is a pilot and needs a live Codespaces check.\n\nv0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
 
 ## Interface design (v0.4.0)
 
