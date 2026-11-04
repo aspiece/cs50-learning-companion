@@ -1,6 +1,8 @@
 'use strict';
 const vscode=require('vscode');
 const crypto=require('node:crypto');
+const {version}=require('../package.json');
+const RELEASES_URL='https://github.com/aspiece/cs50-learning-companion/releases';
 const {list,get,submissionPath,safeAssignment,guideForCodespace,explain}=require('./core');
 const utf=s=>Buffer.from(s,'utf8');
 function root(){return vscode.workspace.workspaceFolders?.[0]?.uri;}
@@ -43,7 +45,7 @@ class Companion {
   p,li{line-height:1.5}h2{font-size:1.08em}.muted{opacity:.8}
   .hint{background:var(--vscode-editor-inactiveSelectionBackground);padding:10px}
   .check{display:flex;align-items:start;gap:7px;margin:7px 0}.check input{margin-top:3px}
-  </style></head><body><h2>CS50 Learning Companion</h2><p class="muted">Plan • Code • Test • Submit</p>
+  </style></head><body><h2>CS50 Learning Companion</h2><p class="muted">Plan • Code • Test • Submit</p><p class="muted">Installed version: ${version}</p><button data-action="updates">View new versions on GitHub</button>
   <label for="problem">Choose an assignment</label><select id="problem"></select><div id="details" aria-live="polite"></div>
   <script nonce="${nonce}">
   const api=acquireVsCodeApi(),picker=document.getElementById('problem'),el=document.getElementById('details');
@@ -98,6 +100,7 @@ class Companion {
    const a=get(this.id);
    switch(m.type){
     case 'create':if(await createStarter(a)){await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),starter:true});}await this.refresh();break;
+    case 'updates':await vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL));break;
     case 'official':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
     case 'guide':{
       if(!root())break;
@@ -131,6 +134,7 @@ class Companion {
 function activate(ctx){
  const provider=new Companion(ctx);
  ctx.subscriptions.push(vscode.window.registerWebviewViewProvider('cs50Companion.sidebar',provider));
+ ctx.subscriptions.push(vscode.commands.registerCommand('cs50Companion.openReleases',()=>vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL))));
  ctx.subscriptions.push(vscode.commands.registerCommand('cs50Companion.createStarter',async()=>{
   const choice=await vscode.window.showQuickPick(list().map(a=>({label:a.title,description:'Set '+a.set,id:a.id})),{placeHolder:'Choose an assignment'});
   if(choice)await createStarter(get(choice.id));
