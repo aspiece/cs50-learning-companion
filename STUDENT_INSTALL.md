@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.2** or a newer version.
+You should see version **0.7.3** or a newer version.
 
 ## Check that it works
 
@@ -52,6 +52,21 @@ Harvard's official instructions open in another browser tab or window. Keep them
 Every **new** assignment now starts with light Python code (a few TODOs) and a short README with five sections: **Your Goal, Build It, Test It, Check It, Submit**. Use its steps to plan your own solution.
 
 If you already made an assignment folder, your existing Python files stay exactly as they are. To replace an **older README only**, select that problem and choose **Update my README guide**. The companion asks before replacing it and saves a backup copy. Your code and Learning Journal are not changed.
+
+## Python String Methods Toolkit
+
+You can look up Python string methods from the **Learn** tab. This resource works at every guidance level.
+
+1. Open **Learn** and expand **Python String Methods Toolkit**.
+2. Search for a topic, such as *lowercase*, *spaces*, or *check*.
+3. Expand a method to see a short example and result.
+4. Select **Try this method** to practice with your own short text.
+5. If the method needs more information, add the search word, replacement, prefix, suffix, or separator. Select **Run in Python**.
+6. The result appears in the companion. You can also select **Copy practice code** to copy a separate example for testing.
+
+Look for the **For this problem, explore** note when working on text-related assignments. It's a suggestion for which kind of tool to study, not the answer.
+
+Remember: Most Python string methods return a new value. They do not change the original string. The practice tool does not edit your files or submit anything to CS50.
 
 ## Optional CS50 concept videos
 
