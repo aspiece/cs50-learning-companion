@@ -41,6 +41,16 @@ GitHub Actions now publishes **versioned classroom prereleases automatically aft
 
 The sidebar displays the installed version, an available update when detected, and **Check for updates**. The Command Palette supports **CS50 Companion: Check for Updates** and **CS50 Companion: View Updates**.
 
+## Short READMEs and lighter starters (v0.7.1)
+
+All 41 CS50P problems now generate **short assignment guides** using the approved five sections: **Your Goal → Build It → Test It → Check It → Submit**. Each guide is about 130–220 words, links to Harvard's official problem page, gives clear assignment-specific coding steps and test ideas, and includes the right check50/submit50 commands.
+
+Python starter files use light scaffolding: essential initial inputs and variable values, up to three TODOs on straightforward problems, and no completed solutions. Assignments requiring specific functions, classes, or pytest test files retain those structures even when that needs more placeholders. Indoor Voice and Coke Machine match the approved examples. Set 5 assignments launch pytest through the Test tab.
+
+For problems involving CSVs, images, or multiple Python files, the README includes needed file names and Harvard resource links. Generated READMEs never ask students to move code from Python Lab. The formatted README still opens automatically beside their Python file.
+
+**Student work is protected:** New scaffolds are used only when a new assignment folder is created. The extension never replaces existing Python files. Students with an older README can opt to **Update my README guide**, with a confirmation and backup; their Python code and Learning Journal are left unchanged. The old detailed README data remains embedded as an internal source for instructional prompts.
+
 ## Features
 
 - Choose from all 41 problems in CS50P problem sets 0–8.
@@ -138,6 +148,8 @@ The companion uses VS Code's built-in **Markdown preview** to display student gu
 Students can also preview any open Markdown file manually with **Ctrl+Shift+V** (Windows/Linux) or **Cmd+Shift+V** (Mac), and open a preview beside the source with **Ctrl+K, V** (Windows/Linux) or **Cmd+K, V** (Mac).
 
 ## Status
+
+v0.7.1 updates all 41 classroom starter generators to approved light Python scaffolds and short five-section READMEs. Existing student Python files remain untouched.
 
 v0.7.0 introduces built-in confirmed update installs, verified GitHub release downloads, and automatically published classroom packages.
 
