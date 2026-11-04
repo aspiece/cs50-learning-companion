@@ -20,13 +20,25 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install packaging dependencies
+      - name: Install dependencies
         run: npm install --no-audit --no-fund
-      - name: Run automated tests
+      - name: Run tests
         run: npm test
-      - name: Build standard VSIX
+      - name: Build VSIX using the official VS Code packager
         run: npm run package
-      - name: Upload VSIX for download
+      - name: Verify the installable package structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          VSIX=$(find . -maxdepth 1 -name '*.vsix' -print -quit)
+          test -n "$VSIX" || { echo "::error::No VSIX produced"; exit 1; }
+          unzip -t "$VSIX" > /dev/null
+          unzip -Z1 "$VSIX" | grep -qx 'extension/package.json'
+          unzip -Z1 "$VSIX" | grep -qx 'extension/src/extension.js'
+          unzip -Z1 "$VSIX" | grep -qx 'extension/content/cs50p-starters.js'
+          echo "Validated installable file: $VSIX"
+          ls -lh "$VSIX"
+      - name: Upload VSIX artifact
         uses: actions/upload-artifact@v4
         with:
           name: cs50-learning-companion-vsix
