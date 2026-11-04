@@ -25,6 +25,8 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Check version and release tag
         run: npm run verify:release
+      - name: Validate classroom installation scripts
+        run: bash -n scripts/install-in-codespaces.sh scripts/update-in-codespaces.sh
       - name: Run automated tests
         run: npm test
       - name: Build VSIX using the official VS Code packager
