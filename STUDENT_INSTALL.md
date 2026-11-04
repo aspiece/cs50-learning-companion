@@ -2,111 +2,78 @@
 
 **For students using Harvard's CS50 Codespaces**
 
-The GCI CS50 Learning Companion helps you start CS50P assignments, plan your code, test your work, and understand errors. **It does not write the answers for you.**
+This companion helps you plan, code, test, and reflect on CS50P problems. It gives hints, but it does **not** provide completed solutions.
 
-## Before you begin
+## Install in three steps
 
-You need:
-- Your own CS50 Codespace at **https://cs50.dev/**.
-- A working internet connection.
-- Your teacher's permission to install the extension.
+### 1. Open your CS50 Codespace
 
-**Important:** Install this **inside cs50.dev**, not in regular VS Code on your computer.
+1. Visit [cs50.dev](https://cs50.dev/) and sign in.
+2. Wait for the VS Code editor to load.
+3. From the top menu, choose **Terminal → New Terminal**.
 
-## Step 1 — Open your Codespace
+**Run these commands in the Codespace terminal, not Windows Command Prompt or your computer's terminal.**
 
-1. Go to **https://cs50.dev/**.
-2. Sign in using the account you use for CS50.
-3. Wait for the VS Code editor to open.
-4. Open the **Terminal** menu and select **New Terminal**.
+### 2. Copy and paste ONE command
 
-You should see a line where you can type commands. It may end with a `$`.
-
-## Step 2 — Install the companion
-
-Copy and paste **both lines** below into the Codespaces terminal. Press **Enter** if they do not run on their own.
+Copy the complete line below, paste it into the Codespace terminal, and press **Enter**.
 
 ```bash
-git clone https://github.com/aspiece/cs50-learning-companion.git "$HOME/cs50-learning-companion"
-bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"
+curl -fsSL https://raw.githubusercontent.com/aspiece/cs50-learning-companion/main/scripts/install-in-codespaces.sh -o /tmp/gci-cs50-install.sh && bash /tmp/gci-cs50-install.sh
 ```
 
-You will see text appear as the extension installs. Look for the message that says to reload Codespaces. **Do not close the browser or interrupt the command while it is running.**
+You only need **one command**. It works for first-time setup and future updates. It also works no matter which folder your terminal starts in.
 
-**If the terminal says `destination path ... already exists`:** You probably installed it before. Skip the first command. Run just this line:
+The installer downloads the companion to a separate folder in your home directory. **It will not remove your Python assignments.** It then builds the extension and installs it. If a step cannot finish, the terminal explains what stopped.
 
-```bash
-bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"
-```
+### 3. Reload VS Code
 
-## Step 3 — Reload Codespaces
+After the installer says **Installation complete**:
 
 1. Press **Ctrl + Shift + P** (Windows or Chromebook) or **Cmd + Shift + P** (Mac).
 2. Type **Developer: Reload Window**.
-3. Select that command.
+3. Choose that command.
+4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-## Step 4 — Find the extension
+You should see version **0.6.2** or a newer version.
 
-1. Look at the icon bar on the **left side** of VS Code.
-2. Find **CS50 Companion** (the GCI letters).
-3. Select the icon to open the learning sidebar.
-4. Look at the top of the sidebar to check the installed version. The class pilot started at **v0.5.3**; a newer version is also fine.
+## Check that it works
 
-If you don't see the icon, open the Extensions panel and search for **CS50 Learning Companion** under your installed extensions. Ask your teacher if it is missing.
-
-## Step 5 — Try your first assignment
-
-1. In **CS50 Companion**, find **Problem Set 0 → Indoor Voice**.
+1. In the companion, select **Problem Set 0 — Indoor Voice**.
 2. Select **Create starter files**.
-3. The `indoor/` folder will be created with `README.md` and `indoor.py`.
-4. The **formatted README preview opens automatically** on the left, and your Python code opens on the right. You do not need to turn on Markdown Preview yourself.
-5. Use the tabs in the companion:
-   - **Start:** Read the assignment and official CS50 page.
-   - **Learn:** Make a plan and request a hint if you need one.
-   - **Test:** Predict the results, run your code, and review `check50`.
-   - **Submit:** Check your required files, reflect, and submit **your own** work.
+3. The `indoor/` folder should contain `indoor.py`, `README.md`, and `LEARNING_JOURNAL.md`.
+4. The **formatted README** should open on the left and `indoor.py` on the right.
+5. Type a short plan in the **Learn** tab. Then select **Preview formatted learning journal** to check that your notes were saved.
 
-**Harvard's official problem page is the source of truth.** The companion is a study tool, not a replacement for the official instructions. It cannot confirm that your assignment was submitted.
+Harvard's official instructions open in another browser tab or window. Keep them available while coding.
 
-## Where your planning notes are saved
+## If the installation stops
 
-When you write a plan, prediction, debugging note, or reflection in the companion, it saves to **LEARNING_JOURNAL.md** in that assignment's folder.
+**Don't delete your Codespace or your Python files.** Read the last few lines in the terminal.
 
-- Choose **Preview formatted learning journal** in the Learn tab to read your notes with headings and formatting. This opens the preview directly.
-- Choose **Edit journal as Markdown** if you want to change the journal file directly.
-- Choose **Reload notes from journal** if you changed the file yourself and want to see those changes in the sidebar.
-- You can also preview any `.md` file with **Ctrl+Shift+V** (or **Cmd+Shift+V** on a Mac).
-- Your journal is separate from your Python code. The companion's **check50** and **submit50** buttons use a temporary copy that leaves the journal out.
-- If you type `submit50` yourself in the terminal, **check the files CS50 lists before you confirm**. Your journal should not be part of the submission.
-- Keep a backup of your important notes if you plan to delete or move to another Codespace.
-
-## When your teacher announces an update
-
-Open a new terminal in **cs50.dev** and run:
-
-```bash
-bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"
-```
-
-Then use **Developer: Reload Window** again. Updating the extension does not erase your Python assignment files.
-
-## If something doesn't work
-
-| Problem | What to try |
+| Terminal message | What to do |
 | --- | --- |
-| `git: command not found` or `npm: command not found` | Check that you are in the official CS50 Codespace. Show your teacher the message. |
-| The folder already exists | Use the **update command**, not the `git clone` command. |
-| `No such file or directory` for the update script | Check the command was copied exactly. If you cloned it in a different folder, ask your teacher for help. |
-| You can't find the GCI icon | Reload the window, then check the Extensions panel. |
-| Official CS50 directions are blank inside the editor | Select **Open official CS50 page in browser** instead. |
-| The installation fails | Copy the **full terminal error** and share it with your teacher. |
+| `curl: command not found` | Ask your teacher to help with the Codespace setup. |
+| `Could not clone` or `repository not found` | Check that GitHub loads in your browser, then try again. |
+| `Node.js 20 or newer is required` | Your Codespace needs a newer Node.js version; show your teacher the error. |
+| `npm could not install` | Check the internet connection and share the error with your teacher. |
+| `Git could not update` | Your companion source may have local edits; ask your teacher before changing them. |
+| The extension built, but `code` could not install it | In the **Extensions** panel, choose **… → Install from VSIX** and select the file path printed by the installer. Then reload. |
+| GCI icon is missing | Reload the window, then search for **CS50 Learning Companion** under installed extensions. |
 
-## Installation check
+If you're not sure what happened, copy the **last 10–20 lines** from the terminal and send them to your teacher. Do not share passwords or access tokens.
 
-- [ ] I can open my own Codespace at cs50.dev.
-- [ ] I can see the **CS50 Companion** icon on the left.
-- [ ] I can select an assignment.
-- [ ] I can open both the `README.md` and the Python starter file.
-- [ ] I know where to find **Start, Learn, Test, and Submit**.
+## Updating later
 
-**Reminder:** Use your own words and your own code. Follow your teacher's directions and CS50's academic honesty rules.
+Use the **same one-line installation command** from Step 2. It checks for a copy already installed, updates the companion, and leaves your assignment work alone.
+
+## Your Learning Journal
+
+Your planning, predictions, test notes, and reflections are stored in `LEARNING_JOURNAL.md` inside each assignment folder.
+
+- Select **Preview formatted learning journal** to read your notes.
+- Select **Edit journal as Markdown** to edit the file.
+- Select **Reload notes from journal** to copy file edits into the sidebar.
+- Do not include the Learning Journal in CS50 submissions. The companion's check50 and submit50 buttons use a temporary copy that leaves it out. Still review the file list before confirming any submission.
+
+**Remember:** Follow CS50's official instructions and academic honesty rules. Write your own code.
