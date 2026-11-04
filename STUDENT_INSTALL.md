@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.4** or a newer version.
+You should see version **0.7.5** or a newer version.
 
 ## Check that it works
 
@@ -47,11 +47,23 @@ You should see version **0.7.4** or a newer version.
 
 Harvard's official instructions open in another browser tab or window. Keep them available while coding.
 
+## A simpler Start tab
+
+Choose a problem. The Start tab shows the **next action**:
+
+- **Create starter files:** This appears for a new problem. The companion creates your folder and opens the README and Python file.
+- **Continue coding:** This appears when your Python file is already there. It opens your existing work without replacing it.
+- **Inspect assignment folder:** If the folder exists but the main Python file is missing, look inside the folder before making changes. The companion won't overwrite your work.
+
+Use **Read README** to view the instructions, **Learning help** to open the Learn tab, or **Open official CS50 instructions** to read Harvard's assignment page. Additional actions are in **More options**.
+
+If you need to refresh the README for an older problem, expand **More options** and choose **Update my README guide**. The companion asks first and saves a backup when replacing an older README. It does not change your Python code.
+
 ## Your new assignment guide
 
 Every **new** assignment now starts with light Python code (a few TODOs) and a short README with five sections: **Your Goal, Build It, Test It, Check It, Submit**. Use its steps to plan your own solution.
 
-If you already made an assignment folder, your existing Python files stay exactly as they are. To replace an **older README only**, select that problem and choose **Update my README guide**. The companion asks before replacing it and saves a backup copy. Your code and Learning Journal are not changed.
+If you already made an assignment folder, your existing Python files stay exactly as they are. To replace an **older README only**, select that problem, open **More options**, and choose **Update my README guide**. The companion asks before replacing it and saves a backup copy. Your code and Learning Journal are not changed.
 
 ## Python String Methods Toolkit
 
