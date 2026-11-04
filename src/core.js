@@ -127,17 +127,17 @@ function guideForCodespace(a){
   '### Run and check','',
   '1. Open a terminal in the '+code(a.slug)+' folder.',
   '2. Run your program: '+code(runCmd)+'.',
-  '3. Compare what happened with your prediction. Check the official examples and requirements.'
+  '3. Compare what happened with your prediction. Check the official examples and requirements.',
   '4. Try another input and compare the result.','',
   '**Test ideas:**','',testIdeas,'',
   '5. Run '+code(checkCmd)+' and read the results.',
   '6. If useful, run '+code('style50 '+a.entryFile)+' and review the style feedback.','',
   '### Debug with a plan','',
-  'If something fails: **Read** the last error line → **Locate** the related code → **Change** one thing → **Test again**.'
+  'If something fails: **Read** the last error line → **Locate** the related code → **Change** one thing → **Test again**.',
   '**Stop and check:** Can you describe what failed and your next test? Record it in the Test tab.','',
   '## Submit — Check, Reflect, Send','',
   '### Before you submit','',
-  '- Re-read the [official assignment page]('+a.url+') and check the exact submission requirements.'
+  '- Re-read the [official assignment page]('+a.url+') and check the exact submission requirements.',
   '- Keep needed CSV, image, or Python files in the correct folder while you run and test.',
   '- Do not include this README in your submission unless CS50 explicitly asks for it.',
   '- In the Submit tab, answer: **What did you learn? Which test gave you confidence?**','',
