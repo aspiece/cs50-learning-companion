@@ -61,6 +61,13 @@ function html(webview,extensionUri){
   <p id="stringSuggestion" class="toolkit-suggestion" hidden></p>
   <label for="stringSearch">Find a string method</label>
   <input id="stringSearch" type="search" placeholder="Try: lowercase, spaces, check..." aria-label="Search string methods">
+  <label for="stringCategory">Show methods for</label>
+  <select id="stringCategory" aria-label="Filter string methods by category">
+   <option value="all">All 16 methods</option>
+   <option value="change">Changing text</option>
+   <option value="check">Checking text</option>
+   <option value="parts">Splitting text</option>
+  </select>
   <div id="stringMethodList" class="string-method-list" aria-live="polite"></div>
   <p id="stringNoResults" class="note" hidden>No methods found. Try a different word.</p>
   <div class="practice-box" id="stringPracticeBox" hidden>
