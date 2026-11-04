@@ -91,7 +91,7 @@ function html(webview,extensionUri){
  <textarea id="prediction" data-field="prediction" rows="2" maxlength="3000" placeholder="I expect..."></textarea>
  </div>
  <div class="card" id="testIdeasCard"><h2>Try these test ideas</h2><div id="testIdeas" class="note"></div></div>
- <button class="button" type="button" data-action="run">Run Python</button>
+ <button class="button" id="runPython" type="button" data-action="run">Run Python</button>
  <div class="card">
  <label for="observed">What really happened?</label>
  <textarea id="observed" data-field="observed" rows="2" maxlength="3000" placeholder="The terminal showed..."></textarea>
