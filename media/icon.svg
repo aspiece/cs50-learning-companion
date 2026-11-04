@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="7" y="7" width="86" height="86" rx="18" fill="#274b83"/><path d="M44 30 24 50l20 20M56 30l20 20-20 20" fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="CS50 Learning Companion: open book with code symbols">
+  <title>CS50 Learning Companion</title>
+  <!-- Single-color, transparent icon for VS Code's narrow activity bar. -->
+  <g fill="none" stroke="#C5C5C5" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="7" d="M50 24c-9-8-20-11-36-10v57c17-1 28 3 36 11 8-8 19-12 36-11V14c-16-1-27 2-36 10Z"/>
+    <path stroke-width="5" d="M50 24v58"/>
+    <path stroke-width="6" d="m34 39-8 9 8 9M66 39l8 9-8 9"/>
+  </g>
+</svg>
