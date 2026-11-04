@@ -65,9 +65,25 @@ code --list-extensions --show-versions | grep -i geneseelearninglab
 
 If installation fails, read the terminal error message. A file-not-found error indicates the selected VSIX path is incorrect; it does not indicate a broken extension. The updater avoids guessing the VSIX location by building and installing from the known source checkout.
 
+## Assignment README workflow (v0.5.1)
+
+Each new assignment folder receives a personalized README with the same four stages as the sidebar:
+
+1. **Start:** mission, official CS50 instructions, assignment folder, and required Python filenames.
+2. **Learn:** input/output questions, problem-specific planning steps, and the Understand → Plan → Get Unstuck sequence.
+3. **Test:** predict output, run the actual Python script, try assignment-specific test ideas, use check50/style50, and debug one change at a time.
+4. **Submit:** review required dependencies, reflect on learning, and perform the official submit50 workflow.
+
+The original Python Lab content remains the source for assignment goals, plan steps, test ideas, glossary terms, and special supporting-file links. Generated README instructions use short, beginner-friendly language and are learning guides, not finished solutions.
+
+**Existing student folders are never automatically rewritten.** In Start, choose **Update my README guide** to review the replacement prompt. If accepted, the previous README is backed up as README.backup-N.md before the updated guide is written. Existing Python and support files are left untouched. The backup is a local record, not an official CS50 submission file.
+
+### Open both files
+The Create starter files action opens the README in the left editor group and the selected assignment Python entry file in the right group. Existing folders can also use **Open README and Python file**.
+
 ## Status
 
-v0.5.0 adds guided learning, prediction and reflection, and side-by-side opening of README and the entry Python file. This is a pilot and needs a live Codespaces check.\n\nv0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
+v0.5.1 aligns generated READMEs with Start → Learn → Test → Submit and adds an opt-in, backed-up guide update for existing folders. The GitHub build and live Codespaces behavior still need verification.\n\nv0.5.0 adds guided learning, prediction and reflection, and side-by-side opening of README and the entry Python file. This is a pilot and needs a live Codespaces check.\n\nv0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
 
 ## Interface design (v0.4.0)
 
