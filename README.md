@@ -111,6 +111,14 @@ Every CS50P assignment now has a separate **LEARNING_JOURNAL.md** beside its REA
 
 **Keeping the journal out of CS50 submission:** The extension's **Run check50** and **Open submit50 in terminal** actions run the official commands against a temporary copy of the assignment. LEARNING_JOURNAL.md, the generated README.md, and README backups are removed from the temporary copy; the original assignment and journal are untouched. All other support files stay in the copy, so students should still inspect CS50's proposed file list before confirming. Running check50 or submit50 manually in the original folder does **not** use this protection.
 
+## Automatic Markdown previews (v0.6.2)
+
+**The formatted README opens automatically** when a student creates an assignment, reopens an existing assignment, selects an assignment whose folder already exists, or opens the GCI companion sidebar for the first time in a session with an existing selected assignment.
+
+The extension directly opens VS Code's native `vscode.markdown.preview.editor` in the **left editor group** and the editable Python file in the **right editor group**. Students do not need to select Markdown: Open Preview. Preview actions for the Learning Journal also open a formatted preview directly. An **Edit journal as Markdown** action still offers source editing. When the native preview editor type is unavailable, the extension tries VS Code's classic Markdown preview, then falls back to the raw Markdown file without blocking coding.
+
+This changes only how these files are displayed; the original Markdown and student Python files are not rewritten by preview opening.
+
 ## Formatted Markdown previews (v0.6.1)
 
 The companion uses VS Code's built-in **Markdown preview** to display student guides and journals with formatted headings, lists, links, and text.
@@ -124,6 +132,8 @@ The companion uses VS Code's built-in **Markdown preview** to display student gu
 Students can also preview any open Markdown file manually with **Ctrl+Shift+V** (Windows/Linux) or **Cmd+Shift+V** (Mac), and open a preview beside the source with **Ctrl+K, V** (Windows/Linux) or **Cmd+K, V** (Mac).
 
 ## Status
+
+v0.6.2 reliably opens native Markdown previews on student assignment selection and startup, with a fallback for older Codespaces editors.
 
 v0.6.1 adds formatted, built-in Markdown previews for the assignment README and Learning Journal, while preserving source-editing controls and Python code.
 
