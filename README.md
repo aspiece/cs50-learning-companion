@@ -68,6 +68,18 @@ After watching, students see one brief planning question and are invited to writ
 
 **Some Help** and **Independent** do not display the video card. Choosing a different assignment swaps the recommended topic immediately. The original student README, Python starter, submitted files, and saved notes are not changed by the new feature.
 
+## Python String Methods Toolkit (v0.7.3)
+
+A searchable, expandable **Python String Methods Toolkit** now appears in the **Learn** tab for **all three support levels** (Getting Started, Some Help, and Independent). Students can explore eight beginner-friendly methods: `.lower()`, `.upper()`, `.strip()`, `.replace()`, `.split()`, `.startswith()`, `.endswith()`, and `.isdigit()`.
+
+Each method has a short explanation, a sample Python expression, and its expected result. For relevant assignments, the toolkit suggests a **category** (changing text, checking text, or breaking text into pieces) without giving the assignment solution. The toolkit is collapsed until opened, preserving a short Learn panel.
+
+**Try it yourself:** Students pick a method, type sample text, and—where needed—enter a search term, replacement, prefix, suffix, or separator. Select **Run in Python** to see the result produced by the **real Python interpreter inside Codespaces**. The practice uses a fixed set of allowed operations and limits input size. It does **not** run arbitrary student Python, open assignment files, upload data, or modify the workspace. A **Copy practice code** option places only the selected standalone sample expression on the clipboard.
+
+The toolkit includes links to [Harvard's CS50P String Methods lesson](https://cs50.harvard.edu/python/shorts/string_methods/) and [Python's official string-method documentation](https://docs.python.org/3/library/stdtypes.html#string-methods), plus the reminder that Python strings are immutable. These are general concept resources, not assignment solutions.
+
+**No extra software, sign-in, or student tracking is required.** Existing README, Python starter, check50/submit50, and Learning Journal behavior are unchanged.
+
 ## Features
 
 - Choose from all 41 problems in CS50P problem sets 0–8.
