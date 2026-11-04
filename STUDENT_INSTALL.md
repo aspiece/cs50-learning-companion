@@ -59,7 +59,7 @@ If you don't see the icon, open the Extensions panel and search for **CS50 Learn
 1. In **CS50 Companion**, find **Problem Set 0 → Indoor Voice**.
 2. Select **Create starter files**.
 3. The `indoor/` folder will be created with `README.md` and `indoor.py`.
-4. The **formatted README** should open on the left, and your Python code should open on the right.
+4. The **formatted README preview opens automatically** on the left, and your Python code opens on the right. You do not need to turn on Markdown Preview yourself.
 5. Use the tabs in the companion:
    - **Start:** Read the assignment and official CS50 page.
    - **Learn:** Make a plan and request a hint if you need one.
@@ -72,7 +72,7 @@ If you don't see the icon, open the Extensions panel and search for **CS50 Learn
 
 When you write a plan, prediction, debugging note, or reflection in the companion, it saves to **LEARNING_JOURNAL.md** in that assignment's folder.
 
-- Choose **Preview formatted learning journal** in the Learn tab to read your notes with headings and formatting.
+- Choose **Preview formatted learning journal** in the Learn tab to read your notes with headings and formatting. This opens the preview directly.
 - Choose **Edit journal as Markdown** if you want to change the journal file directly.
 - Choose **Reload notes from journal** if you changed the file yourself and want to see those changes in the sidebar.
 - You can also preview any `.md` file with **Ctrl+Shift+V** (or **Cmd+Shift+V** on a Mac).
