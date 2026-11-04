@@ -33,7 +33,7 @@ test('selected problem and progress remain workspace scoped',()=>{
  assert.match(source,/folderExists/);
  assert.match(source,/guideExists/);
 });
-test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.6.1'));
+test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.6.2'));
 
 test('starter opens the README and entry Python file in separate editor columns',()=>{
  assert.match(source,/async function openStarterFiles/);
@@ -85,6 +85,7 @@ test('check50 and submit50 run from isolated copies without the journal',()=>{
 
 test('Markdown previews render student guides and journal without changing files',()=>{
  assert.match(source,/async function openFormattedMarkdown/);
+ assert.match(source,/executeCommand\(\s*'vscode\.openWith',uri,'vscode\.markdown\.preview\.editor'/);
  assert.match(source,/executeCommand\('markdown\.showPreview',uri/);
  assert.match(source,/case 'openJournal'/);
  assert.match(source,/case 'editJournal'/);
@@ -93,4 +94,36 @@ test('Markdown previews render student guides and journal without changing files
  assert.match(ui,/Preview formatted learning journal/);
  assert.match(ui,/Preview student guide/);
  assert.match(browser,/editJournal/);
+});
+
+test('assignment selection and first sidebar opening automatically show the formatted preview',()=>{
+ assert.match(source,/if\(m\.type==='ready'\)/);
+ assert.match(source,/this\.initialPreviewOpened=true/);
+ assert.match(source,/if\(root\(\)&&await exists\(join\(root\(\),selected\.slug\)\)\)await openStarterFiles\(selected\)/);
+ assert.match(source,/if\(root\(\)&&await exists\(join\(root\(\),get\(this\.id\)\.slug\)\)\)await openStarterFiles\(get\(this\.id\)\)/);
+ assert.match(source,/await openFormattedMarkdown\(guide,vscode\.ViewColumn\.One\)/);
+ assert.match(source,/await vscode\.window\.showTextDocument\(script,\{viewColumn:vscode\.ViewColumn\.Two/);
+});
+test('direct Markdown preview chooses the requested editor group and falls back safely',async()=>{
+ const start=source.indexOf('async function openFormattedMarkdown');
+ const end=source.indexOf('async function openStarterFiles',start);
+ assert.ok(start>=0&&end>start);
+ const calls=[];
+ const mock={
+  ViewColumn:{One:1},
+  commands:{executeCommand:async(...args)=>calls.push(args)},
+  window:{showTextDocument:async()=>calls.push(['showTextDocument']),showWarningMessage:()=>{}}
+ };
+ const openPreview=Function('vscode',source.slice(start,end)+';return openFormattedMarkdown;')(mock);
+ assert.equal(await openPreview('readme-uri',1),true);
+ assert.deepEqual(calls[0].slice(0,3),['vscode.openWith','readme-uri','vscode.markdown.preview.editor']);
+ assert.equal(calls[0][3].viewColumn,1);
+ assert.equal(calls.length,1,'should not open raw Markdown when preview succeeds');
+ const fallback=[];
+ mock.commands.executeCommand=async(...args)=>{fallback.push(args);if(args[0]==='vscode.openWith')throw Error('Unsupported');};
+ mock.window.showTextDocument=async(...args)=>fallback.push(['showTextDocument',...args]);
+ assert.equal(await openPreview('journal-uri',1),true);
+ assert.equal(fallback[0][0],'vscode.openWith');
+ assert.equal(fallback[1][0],'showTextDocument');
+ assert.equal(fallback[2][0],'markdown.showPreview');
 });
