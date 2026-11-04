@@ -67,4 +67,18 @@ If installation fails, read the terminal error message. A file-not-found error i
 
 ## Status
 
-v0.3.0 adds versioning, release automation, and a simpler updater. It has not yet been validated in a live authenticated CS50 Codespace. Test before offering it to students.
+v0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
+
+## Interface design (v0.4.0)
+
+The sidebar now separates the most common student tasks instead of showing all buttons at once:
+
+- **Find an assignment:** Search the 41-problem catalog or filter by problem set. The selected problem is remembered in workspace state.
+- **Start:** See the assignment goal, folder status, and create/open its starter files and student guide.
+- **Learn:** Use planning questions and three guided hints without exposing solutions.
+- **Test:** Launch Python, check50, style50, and a beginner-friendly error explanation.
+- **Submit:** Student-confirmed submit50 with a clear reminder to follow Harvard's official rules.
+
+The sidebar retains a five-step *self-reported* progress checklist, displays the installed extension version, and links to GitHub releases. Colors use the VS Code theme, so the interface works with dark and light themes. It supports keyboard navigation, smaller Codespaces sidebars, and a content security policy.
+
+The interface is implemented in `src/ui.js`, `media/sidebar.js`, and `media/sidebar.css`, keeping the browser view separate from the Codespace filesystem and terminal actions in `src/extension.js`.
