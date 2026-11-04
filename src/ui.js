@@ -84,6 +84,7 @@ function html(webview,extensionUri){
  <label for="prediction">My prediction</label>
  <textarea id="prediction" data-field="prediction" rows="2" maxlength="3000" placeholder="I expect..."></textarea>
  </div>
+ <div class="card" id="testIdeasCard"><h2>Try these test ideas</h2><div id="testIdeas" class="note"></div></div>
  <button class="button" type="button" data-action="run">Run Python</button>
  <div class="card">
  <label for="observed">What really happened?</label>
@@ -94,6 +95,7 @@ function html(webview,extensionUri){
  <button class="button secondary" type="button" data-action="check">Run check50</button>
  <button class="button secondary" type="button" data-action="style">Run style50</button></div>
  <button class="button link" type="button" data-action="explain">Explain a Python error</button>
+ <p class="note">Debugging routine: read the error, locate the line, then change and test one thing.</p>
  <div class="card">
  <label for="debugNotes">My debugging notes</label>
  <textarea id="debugNotes" data-field="debugNotes" rows="2" maxlength="3000" placeholder="The error means... I'll check..."></textarea>
@@ -117,6 +119,7 @@ function html(webview,extensionUri){
  <div class="meter" role="presentation"><div id="meter" class="meter-fill" style="width:0%"></div></div>
  <div id="checks"></div>
  <p class="note">These checkmarks are saved in this workspace and are self-reported.</p>
+ <p id="practiceSummary" class="note" aria-live="polite"></p>
 </section>
 <footer><button type="button" data-action="updates">View releases and updates</button></footer>
 <script nonce="${nonce}" src="${js}"></script>
