@@ -118,6 +118,7 @@
   $('reloadJournal').disabled=!state.folderExists;
   $('journalStatus').textContent=journalStatusMessage(state.journalStatus);
   $('entry').textContent=a.entryFile;
+  $('runPython').textContent=a.set===5?'Run pytest':'Run Python';
   applyFilters();
   tabs.forEach(id=>{
    const btn=$('tab-'+id),panel=$('panel-'+id),active=id===tab;
