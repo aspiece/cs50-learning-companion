@@ -89,7 +89,7 @@ async function updateStudentGuide(a){
    await openStarterFiles(a);
    return false;
   }
-  const choice=await vscode.window.showWarningMessage('Replace this assignment README with the new Start → Learn → Test → Submit guide? A backup copy will be saved. Python code will not change.',{modal:true},'Update README');
+  const choice=await vscode.window.showWarningMessage('Replace this README with the shorter Your Goal → Build It → Test It → Check It → Submit guide? A backup will be saved. Your Python code and Learning Journal will not change.',{modal:true},'Update README');
   if(choice!=='Update README')return false;
   // Preserve the previous version in the same folder before writing a new guide.
   let n=1,backup;
@@ -205,7 +205,7 @@ class Companion {
   if(!await exists(dir)){vscode.window.showWarningMessage('Create the assignment folder first.');return;}
   const entry=a.entryFile;
   const path=submissionPath(a);
-  const cmd=kind==='run'?'python '+entry:
+  const cmd=kind==='run'?(a.set===5?'pytest '+entry:'python '+entry):
    kind==='style'?'style50 '+entry:
    'bash '+shellQuote(join(this.ctx.extensionUri,'src','clean-cs50-command.sh').fsPath)+' '+
    shellQuote(kind==='check'?'check50':'submit50')+' '+shellQuote(path);
