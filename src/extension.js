@@ -22,33 +22,6 @@ async function openStarterFiles(a){
  if(await exists(script))await vscode.window.showTextDocument(script,{viewColumn:vscode.ViewColumn.Two,preview:false});
  return true;
 }
-async function openOfficialInWorkspace(a){
- // The browser commands differ between desktop VS Code and web Codespaces.
- // Try both built-in browser implementations without assuming they are installed.
- const url=a.url;
- const available=new Set(await vscode.commands.getCommands(true));
- const commands=[
-  ['workbench.action.browser.open',()=>vscode.commands.executeCommand('workbench.action.browser.open',url)],
-  ['simpleBrowser.api.open',()=>vscode.commands.executeCommand('simpleBrowser.api.open',vscode.Uri.parse(url),{viewColumn:vscode.ViewColumn.One,preserveFocus:true})],
-  ['simpleBrowser.show',()=>vscode.commands.executeCommand('simpleBrowser.show',url)]
- ];
- for(const [name,run] of commands){
-  if(!available.has(name))continue;
-  try{
-   await run();
-   return true;
-  }catch(e){
-   // A command can be listed but fail in a remote web Codespace.
-  }
- }
- // Don't claim an embedded browser is available when it is not.
- const choice=await vscode.window.showInformationMessage(
-  'This Codespace does not provide an in-editor web browser. Open Harvard\'s official problem in a regular browser tab.',
-  'Open official CS50 page'
- );
- if(choice==='Open official CS50 page')await vscode.env.openExternal(vscode.Uri.parse(url));
- return false;
-}
 async function updateStudentGuide(a){
  safeAssignment(a);
  if(!root()){vscode.window.showWarningMessage('Open your CS50 Codespace workspace first.');return false;}
@@ -139,8 +112,7 @@ class Companion {
     case 'openFiles':await openStarterFiles(a);break;
     case 'updateGuide':await updateStudentGuide(a);await this.refresh();break;
     case 'updates':await vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL));break;
-    case 'official':await openOfficialInWorkspace(a);break;
-    case 'officialExternal':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
+    case 'official':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
     case 'guide':{
       if(!root())break;
       const uri=join(root(),a.slug,'README.md');
@@ -188,4 +160,4 @@ function activate(ctx){
   if(choice)await createStarter(get(choice.id));
  }));
 }
-module.exports={activate,createStarter,openStarterFiles,updateStudentGuide,openOfficialInWorkspace};
+module.exports={activate,createStarter,openStarterFiles,updateStudentGuide};
