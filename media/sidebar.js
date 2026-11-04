@@ -80,7 +80,11 @@
   $('testIdeas').innerHTML=state.learning.checks.length?'<ul>'+state.learning.checks.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ul>':'Test one ordinary case and one unusual case from the official problem instructions.';
   $('practiceSummary').textContent='Practice so far: '+state.practice.testedCount+' problems marked tested'+(state.practice.subjects.length?' · Topics: '+state.practice.subjects.join(', '):'')+'. This is practice, not proof of mastery.';
   if(changed){
-   for(const field of fields){const element=$(field);if(element)element.value=p[field]??(field==='support'?'standard':'');}
+   for(const field of fields){
+    const element=$(field);
+    lastSent.delete(a.id+':'+field);
+    if(element)element.value=p[field]??(field==='support'?'standard':'');
+   }
   }
   const level=$('support').value;
   $('guidedQuestions').hidden=level==='independent';
