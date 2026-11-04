@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.6.2** or a newer version.
+You should see version **0.7.0** or a newer version.
 
 ## Check that it works
 
@@ -63,9 +63,20 @@ Harvard's official instructions open in another browser tab or window. Keep them
 
 If you're not sure what happened, copy the **last 10–20 lines** from the terminal and send them to your teacher. Do not share passwords or access tokens.
 
-## Updating later
+## Updating later (v0.7.0 and newer)
 
-Use the **same one-line installation command** from Step 2. It checks for a copy already installed, updates the companion, and leaves your assignment work alone.
+After your first installation, you do **not** need to copy terminal commands for normal updates.
+
+1. Open your CS50 Codespace and select the **GCI** icon.
+2. At the bottom of the companion sidebar, look for **Check for updates**.
+3. If a newer version is available, select **Install update** when prompted.
+4. When the extension finishes installing, choose **Reload now**.
+
+The companion checks for newer versions when its sidebar opens, but **never installs without asking**. The update comes from the official GCI companion GitHub release and is checked for download errors. Your Python assignments and Learning Journal files are not replaced.
+
+If you are still using **v0.6.2 or earlier**, the built-in update button is not available yet. Run the one-line installation command from Step 2 one more time to upgrade to v0.7.0. After that, use the sidebar for future updates.
+
+If the built-in installation cannot run on your Codespace, the companion will show where it saved the verified VSIX file and explain how to install it using **Extensions → … → Install from VSIX**.
 
 ## Your Learning Journal
 
