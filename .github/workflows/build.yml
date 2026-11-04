@@ -55,25 +55,54 @@ jobs:
           retention-days: 30
 
   publish:
-    if: startsWith(github.ref, 'refs/tags/v')
+    # A new validated build becomes available to students automatically.
+    # Version-tag pushes remain supported as an optional release path.
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-24.04
+    concurrency:
+      group: cs50-classroom-release
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:
-      - name: Download validated build
+      - name: Download tested extension package
         uses: actions/download-artifact@v5
         with:
           name: cs50-learning-companion-vsix
-      - name: Verify release checksum
-        run: sha256sum -c SHA256SUMS.txt
-      - name: Publish versioned GitHub pre-release
+      - name: Publish verified versioned classroom release
         env:
           GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
-          gh release create "$GITHUB_REF_NAME" ./*.vsix SHA256SUMS.txt \
-            --repo "$GITHUB_REPOSITORY" \
-            --verify-tag \
-            --title "CS50 Learning Companion $GITHUB_REF_NAME" \
-            --generate-notes \
-            --prerelease
+          set -euo pipefail
+          sha256sum -c SHA256SUMS.txt
+          VSIX="$(find . -maxdepth 1 -type f -name 'cs50-learning-companion-*.vsix' -print -quit)"
+          test -n "$VSIX"
+          VERSION="${VSIX#./cs50-learning-companion-}"
+          VERSION="${VERSION%.vsix}"
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          TAG="v$VERSION"
+          if [[ "$GITHUB_REF_TYPE" == "tag" && "$GITHUB_REF_NAME" != "$TAG" ]]; then
+            echo "Release tag $GITHUB_REF_NAME does not match $TAG" >&2
+            exit 1
+          fi
+          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+            MAIN_SHA="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq '.sha')"
+            if [[ "$MAIN_SHA" != "$GITHUB_SHA" ]]; then
+              echo "This build is no longer the latest main commit; a newer build will publish instead."
+              exit 0
+            fi
+          fi
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$VSIX" SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
+            gh release edit "$TAG" --title "GCI CS50 Learning Companion $TAG" --prerelease --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" "$VSIX" SHA256SUMS.txt \
+              --target "$GITHUB_SHA" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "GCI CS50 Learning Companion $TAG" \
+              --notes "Verified classroom pilot package. Check for updates using the GCI sidebar. Keep your CS50 assignment files and Learning Journals." \
+              --prerelease
+          fi
+          echo "Published classroom update $TAG"
