@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('node:fs');
+const path=require('node:path');
+const assert=require('node:assert/strict');
+const p=require('../package.json');
+assert.match(p.version,/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/,'Use semantic versioning.');
+assert.equal(p.repository.url,'https://github.com/aspiece/cs50-learning-companion.git');
+const tag=process.env.GITHUB_REF_TYPE==='tag'?process.env.GITHUB_REF_NAME:process.env.RELEASE_TAG;
+if(tag)assert.equal(tag,'v'+p.version,'Release tag must match package.json version.');
+const expected=`cs50-learning-companion-${p.version}.vsix`;
+if(process.env.CHECK_VSIX==='1')assert.ok(fs.existsSync(path.join(__dirname,'..',expected)),`Missing expected package: ${expected}`);
+console.log(`Release metadata is valid: v${p.version}${tag?' ('+tag+')':''}`);
