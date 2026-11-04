@@ -41,6 +41,16 @@ async function writeJournalField(a,field,value,oldNotes){
  }
  return 'saved';
 }
+async function openFormattedMarkdown(uri,viewColumn=vscode.ViewColumn.One){
+ // Use VS Code's built-in Markdown renderer. No HTML copies or extra dependencies.
+ await vscode.window.showTextDocument(uri,{viewColumn,preview:false});
+ try{
+  await vscode.commands.executeCommand('markdown.showPreview',uri,undefined,{locked:true});
+ }catch(error){
+  // If the built-in Markdown extension is disabled, leave the editable file open.
+  vscode.window.showWarningMessage('Markdown preview is unavailable. Showing the text file instead. You can enable Markdown Language Features in VS Code.');
+ }
+}
 async function openStarterFiles(a){
  const directory=root()?join(root(),a.slug):null;
  if(!directory||!await exists(directory))return false;
@@ -48,7 +58,7 @@ async function openStarterFiles(a){
  const script=join(directory,a.entryFile);
  // Place the instructions on the left, and the student's Python file on the right.
  // In tests assignments, entryFile is the student test file; the source file is also accessible in Explorer.
- if(await exists(guide))await vscode.window.showTextDocument(guide,{viewColumn:vscode.ViewColumn.One,preview:false,preserveFocus:true});
+ if(await exists(guide))await openFormattedMarkdown(guide,vscode.ViewColumn.One);
  if(await exists(script))await vscode.window.showTextDocument(script,{viewColumn:vscode.ViewColumn.Two,preview:false});
  return true;
 }
@@ -153,7 +163,13 @@ class Companion {
     case 'openJournal':{
      const info=await ensureJournal(a,this.ctx.workspaceState.get(this.key(),{}));
      if(info.status==='pending'){vscode.window.showWarningMessage('Create the assignment folder first.');break;}
-     await vscode.window.showTextDocument(join(root(),a.slug,FILENAME),{preview:false});
+     await openFormattedMarkdown(join(root(),a.slug,FILENAME),vscode.ViewColumn.One);
+     break;
+    }
+    case 'editJournal':{
+     const info=await ensureJournal(a,this.ctx.workspaceState.get(this.key(),{}));
+     if(info.status==='pending'){vscode.window.showWarningMessage('Create the assignment folder first.');break;}
+     await vscode.window.showTextDocument(join(root(),a.slug,FILENAME),{viewColumn:vscode.ViewColumn.One,preview:false});
      break;
     }
     case 'reloadJournal':await this.refresh(true);break;
@@ -163,7 +179,7 @@ class Companion {
     case 'guide':{
       if(!root())break;
       const uri=join(root(),a.slug,'README.md');
-      if(await exists(uri))await vscode.window.showTextDocument(uri);
+      if(await exists(uri))await openFormattedMarkdown(uri,vscode.ViewColumn.One);
       else vscode.window.showWarningMessage('Create the starter folder first.');
       break;
     }
@@ -216,4 +232,4 @@ function activate(ctx){
   if(choice)await createStarter(get(choice.id),ctx.workspaceState.get('progress:'+choice.id,{}));
  }));
 }
-module.exports={activate,createStarter,openStarterFiles,updateStudentGuide,ensureJournal,writeJournalField};
+module.exports={activate,createStarter,openStarterFiles,updateStudentGuide,ensureJournal,writeJournalField,openFormattedMarkdown};
