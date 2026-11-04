@@ -37,15 +37,29 @@ function html(webview,extensionUri){
  <button id="tab-submit" type="button" class="tab" role="tab" aria-controls="panel-submit" aria-selected="false" data-tab="submit">Submit</button>
 </nav>
 <section id="panel-start" class="panel" role="tabpanel" aria-labelledby="tab-start">
- <h2>Get started</h2>
- <p>Read the problem. Make your files. Then write your own code.</p>
- <button class="button" type="button" id="create" data-action="create">Create starter files</button>
- <button class="button secondary" type="button" id="openFiles" data-action="openFiles">Open formatted README and Python file</button>
- <button class="button secondary" type="button" id="updateGuide" data-action="updateGuide">Update my README guide</button>
- <button class="button secondary" type="button" data-action="official">Open official CS50 instructions</button>
- <p class="note">Harvard's instructions open in your browser. Keep Codespaces open to write and test your code.</p>
- <button class="button secondary" type="button" id="openGuide" data-action="guide">Preview student guide</button>
- <p class="note">Your existing assignment folder will not be overwritten.</p>
+ <h2>Start your assignment</h2>
+ <div id="startStatus" class="start-status" role="status" aria-live="polite">
+  <span id="startStatusIcon" class="start-status-icon" aria-hidden="true">○</span>
+  <div>
+   <p id="startStatusTitle" class="start-status-title">Ready to begin</p>
+   <p id="startStatusDescription" class="note">Create your starter files to begin.</p>
+  </div>
+ </div>
+ <button class="button start-primary" id="startPrimary" type="button" data-action="create">Create starter files</button>
+ <p id="startNextStep" class="note start-next-step">Opens your README and Python file side by side.</p>
+ <div class="start-quick-actions" aria-label="Learning resources">
+  <button class="button secondary" id="openGuide" type="button" data-action="guide">Read README</button>
+  <button class="button secondary" id="startLearningHelp" type="button" data-action="goLearn">Learning help</button>
+ </div>
+ <button class="button link" type="button" data-action="official">Open official CS50 instructions</button>
+ <details id="startMore" class="start-more">
+  <summary>More options</summary>
+  <div class="start-more-actions">
+   <button class="button secondary" id="openFiles" type="button" data-action="openFiles">Open README and Python side by side</button>
+   <button class="button secondary" id="updateGuide" type="button" data-action="updateGuide">Update my README guide</button>
+  </div>
+  <p class="note">Updating the README asks for permission and saves a backup. Your Python work stays unchanged.</p>
+ </details>
 </section>
 <section id="panel-learn" class="panel" role="tabpanel" aria-labelledby="tab-learn" hidden>
  <h2>Learn to solve the problem</h2>
