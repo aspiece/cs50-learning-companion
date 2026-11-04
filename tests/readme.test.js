@@ -28,7 +28,7 @@ test('all 41 generated READMEs match Start Learn Test Submit instructional proce
   for(const file of Object.keys(a.files).filter(x=>x.endsWith('.py'))){
    assert.ok(readme.includes(file),problem.id+' missing dependency '+file);
   }
-  assert.doesNotMatch(readme,/## Move your code to CS50 Codespaces|right-click each code file|In Python Lab, right-click/i,problem.id+' contains obsolete handoff steps');
+  assert.doesNotMatch(readme,/## Move your code to CS50 Codespaces|right-click each code file|Python Lab|Move any files your code reads|bring them to Codespaces/i,problem.id+' contains obsolete handoff steps');
   assert.ok(readme.includes('The companion checklist cannot verify your submission.'),problem.id+' missing integrity notice');
   assert.ok(readme.length>800,problem.id+' incomplete student guidance');
  }
