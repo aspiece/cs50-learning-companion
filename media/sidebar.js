@@ -107,6 +107,12 @@
   $('guidedQuestions').hidden=level==='independent';
   $('questions').hidden=level!=='guided';
   $('steps').hidden=level==='independent';
+  const video=state.learning.conceptVideo;
+  $('conceptVideoCard').hidden=level!=='guided'||!video;
+  $('openConceptVideo').disabled=!video;
+  $('conceptVideoTitle').textContent=video?.title||'';
+  $('conceptVideoFocus').textContent=video?.focus||'';
+  $('conceptVideoQuestion').textContent=video?('After watching: '+video.question):'';
   $('create').textContent=state.folderExists?'Starter folder already exists':'Create starter files';
   $('create').disabled=!!state.folderExists;
   $('openGuide').disabled=!state.guideExists;
