@@ -59,3 +59,39 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .panel .card h2{margin-bottom:8px}
 .panel .card p{margin-bottom:10px}
 .panel textarea:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:1px}
+
+
+/* Accessible, optional Python String Methods Toolkit */
+.toolkit > summary{cursor:pointer;list-style-position:inside;line-height:1.6}
+.toolkit > summary:focus-visible,.method-entry > summary:focus-visible{
+ outline:2px solid var(--vscode-focusBorder);outline-offset:2px;border-radius:4px
+}
+.toolkit > summary .note{display:block;margin:3px 0 0 12px}
+.toolkit > p{margin-top:10px}
+.toolkit input[type="text"],.toolkit input[type="search"]{
+ display:block;width:100%;min-width:0;
+ padding:8px;margin:4px 0 11px;
+ border:1px solid var(--vscode-input-border,var(--vscode-widget-border));
+ border-radius:5px;color:var(--vscode-input-foreground);background:var(--vscode-input-background);
+ font:inherit
+}
+.toolkit input:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:1px}
+.toolkit-suggestion{padding:8px 10px;border-left:3px solid var(--vscode-focusBorder);background:var(--vscode-editor-inactiveSelectionBackground)}
+.string-method-list{display:grid;gap:7px;margin:8px 0 13px}
+.method-entry{border:1px solid var(--vscode-panel-border);border-radius:6px;padding:8px;overflow-wrap:anywhere}
+.method-entry[open]{background:var(--vscode-editor-inactiveSelectionBackground)}
+.method-entry > summary{cursor:pointer}
+.method-entry > summary .method-purpose{display:block;margin:3px 0 0 14px;color:var(--vscode-descriptionForeground);font-size:11px}
+.method-entry .method-recommended{font-size:10px;color:var(--vscode-textLink-foreground);display:inline-block;margin-left:6px}
+.method-entry pre,.practice-result{
+ padding:9px;background:var(--vscode-textCodeBlock-background,var(--vscode-editor-background));
+ color:var(--vscode-foreground);
+ border:1px solid var(--vscode-panel-border);border-radius:5px;
+ white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--vscode-editor-font-family,monospace);font-size:11px
+}
+.method-entry pre{margin:5px 0 10px}
+.method-entry .button{margin:8px 0 0}
+.practice-box{border-top:1px solid var(--vscode-panel-border);padding-top:12px;margin-top:12px}
+.practice-box h3{font-size:13px;margin:0 0 6px}
+.practice-result{margin:9px 0}
+.practice-result[data-error="true"]{border-left:3px solid var(--vscode-errorForeground)}
