@@ -49,3 +49,13 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .note{font-size:11px;color:var(--vscode-descriptionForeground)}
 .empty{padding:9px;color:var(--vscode-descriptionForeground);font-size:12px}
 @media(max-width:240px){.searchrow{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(2,1fr)}}
+
+/* Guided learning controls */
+[hidden]{display:none!important}
+.panel textarea{display:block;width:100%;resize:vertical;min-height:58px;padding:8px;margin:5px 0 12px;border:1px solid var(--vscode-input-border,var(--vscode-widget-border));border-radius:5px;background:var(--vscode-input-background);color:var(--vscode-input-foreground);font:inherit;line-height:1.45}
+.panel label:not(.check){font-weight:550;font-size:12px;margin-top:8px}
+.panel ol,.panel ul{padding-left:20px;margin:8px 0 12px}
+.panel li{margin-bottom:7px}
+.panel .card h2{margin-bottom:8px}
+.panel .card p{margin-bottom:10px}
+.panel textarea:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:1px}
