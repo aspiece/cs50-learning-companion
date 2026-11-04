@@ -51,6 +51,23 @@ For problems involving CSVs, images, or multiple Python files, the README includ
 
 **Student work is protected:** New scaffolds are used only when a new assignment folder is created. The extension never replaces existing Python files. Students with an older README can opt to **Update my README guide**, with a confirmation and backup; their Python code and Learning Journal are left unchanged. The old detailed README data remains embedded as an internal source for instructional prompts.
 
+## Optional Harvard concept videos (v0.7.2)
+
+Students who choose **Getting Started — more help** in the Companion's **Learn** tab now see an optional **CS50 concept video** card. Each of the 41 CS50P assignments is linked to one carefully matched topic from Harvard's official [CS50P Shorts library](https://cs50.harvard.edu/python/shorts/). Examples:
+
+- Indoor Voice → **String Methods**
+- Coke Machine → **While Loops**
+- Fuel Gauge → **Handling Exceptions**
+- Refueling (unit tests) → **pytest**
+- Pizza Py → **Reading and Writing CSVs**
+- Cookie Jar → **Classes**
+
+The card identifies the topic, explains what skill the short video covers, and includes **Watch concept video in browser**. It opens Harvard's official page outside the Codespace editor so students can keep their Python work visible. Videos **do not autoplay**, require **no account, embedded player, or extra plugin**, and **do not include problem-specific solution walkthroughs**.
+
+After watching, students see one brief planning question and are invited to write an idea in **My steps or pseudocode**. This uses the existing Learning Journal—no extra tracking of video views or student activity.
+
+**Some Help** and **Independent** do not display the video card. Choosing a different assignment swaps the recommended topic immediately. The original student README, Python starter, submitted files, and saved notes are not changed by the new feature.
+
 ## Features
 
 - Choose from all 41 problems in CS50P problem sets 0–8.
@@ -148,6 +165,8 @@ The companion uses VS Code's built-in **Markdown preview** to display student gu
 Students can also preview any open Markdown file manually with **Ctrl+Shift+V** (Windows/Linux) or **Cmd+Shift+V** (Mac), and open a preview beside the source with **Ctrl+K, V** (Windows/Linux) or **Cmd+K, V** (Mac).
 
 ## Status
+
+v0.7.2 adds optional assignment-matched Harvard CS50P Shorts in the guided learning mode; no solution playlist or mandatory video tracking.
 
 v0.7.1 updates all 41 classroom starter generators to approved light Python scaffolds and short five-section READMEs. Existing student Python files remain untouched.
 
