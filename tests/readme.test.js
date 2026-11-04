@@ -47,3 +47,13 @@ test('special file instructions survive the new format',()=>{
   assert.ok(/csv|png|zip/i.test(guide),id+' needs file notes');
  }
 });
+
+test('the revised learning guide gives clear checkpoints and in-editor official instructions',()=>{
+ for(const item of list()){
+  const guide=guideForCodespace(get(item.id));
+  assert.match(guide,/Open official instructions in editor/);
+  assert.match(guide,/Open official CS50 page in browser/);
+  assert.ok((guide.match(/\*\*Stop and check:\*\*/g)||[]).length>=4,item.id);
+  assert.match(guide,/Harvard.*official instructions/);
+ }
+});
