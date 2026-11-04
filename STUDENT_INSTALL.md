@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.0** or a newer version.
+You should see version **0.7.1** or a newer version.
 
 ## Check that it works
 
@@ -46,6 +46,12 @@ You should see version **0.7.0** or a newer version.
 5. Type a short plan in the **Learn** tab. Then select **Preview formatted learning journal** to check that your notes were saved.
 
 Harvard's official instructions open in another browser tab or window. Keep them available while coding.
+
+## Your new assignment guide
+
+Every **new** assignment now starts with light Python code (a few TODOs) and a short README with five sections: **Your Goal, Build It, Test It, Check It, Submit**. Use its steps to plan your own solution.
+
+If you already made an assignment folder, your existing Python files stay exactly as they are. To replace an **older README only**, select that problem and choose **Update my README guide**. The companion asks before replacing it and saves a backup copy. Your code and Learning Journal are not changed.
 
 ## If the installation stops
 
