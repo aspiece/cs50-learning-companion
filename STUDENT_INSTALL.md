@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.1** or a newer version.
+You should see version **0.7.2** or a newer version.
 
 ## Check that it works
 
@@ -52,6 +52,18 @@ Harvard's official instructions open in another browser tab or window. Keep them
 Every **new** assignment now starts with light Python code (a few TODOs) and a short README with five sections: **Your Goal, Build It, Test It, Check It, Submit**. Use its steps to plan your own solution.
 
 If you already made an assignment folder, your existing Python files stay exactly as they are. To replace an **older README only**, select that problem and choose **Update my README guide**. The companion asks before replacing it and saves a backup copy. Your code and Learning Journal are not changed.
+
+## Optional CS50 concept videos
+
+If you want extra help with an assignment:
+
+1. Open the Companion's **Learn** tab.
+2. Choose **Getting Started — more help** from the guidance menu.
+3. Find **Optional CS50 concept video** and select **Watch concept video in browser**.
+4. The official Harvard CS50 page opens in a separate browser tab. Learn the Python idea there, then return to your code.
+5. Answer the short **After watching** question in **My steps or pseudocode**. Your notes are saved in the Learning Journal.
+
+The video is optional. It teaches a Python skill, **not the answer to your assignment**. If you select **Some Help** or **Independent**, the video card is hidden. You can change the guidance level whenever you want.
 
 ## If the installation stops
 
