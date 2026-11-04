@@ -1,0 +1,56 @@
+{
+  "name": "cs50-learning-companion",
+  "displayName": "CS50 Learning Companion",
+  "description": "Guided, solution-free CS50P support inside GitHub Codespaces",
+  "version": "0.2.0",
+  "publisher": "geneseelearninglab",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Education",
+    "Other"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onView:cs50Companion.sidebar",
+    "onCommand:cs50Companion.createStarter"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cs50Companion",
+          "title": "CS50 Companion",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "cs50Companion": [
+        {
+          "id": "cs50Companion.sidebar",
+          "name": "Guided Learning",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "cs50Companion.createStarter",
+        "title": "CS50 Companion: Create Starter Files"
+      }
+    ]
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.5.0"
+  }
+}
