@@ -12,10 +12,10 @@ const {runStringPractice}=require('../src/string-practice');
 
 const example=(method,text,args=[])=>({method,text,args});
 
-test('string reference covers eight documented methods with correct short examples',()=>{
+test('string reference covers sixteen documented methods with correct short examples',()=>{
  assert.deepEqual(METHODS.map(x=>x.id),
-  ['lower','upper','strip','replace','split','startswith','endswith','isdigit']);
- assert.equal(new Set(METHODS.map(x=>x.id)).size,8);
+  ['lower','upper','capitalize','title','strip','lstrip','rstrip','replace','split','startswith','endswith','isupper','isalpha','isalnum','isdigit','isdecimal']);
+ assert.equal(new Set(METHODS.map(x=>x.id)).size,16);
  for(const item of METHODS){
   assert.ok(item.label.startsWith('.'),item.id+' must look like a Python method');
   assert.ok(item.purpose.length>8);
@@ -30,7 +30,7 @@ test('string reference covers eight documented methods with correct short exampl
 test('toolkit is available to all 41 assignments and suggests a method family, not an answer',()=>{
  for(const item of list()){
   const toolkit=toolkitForAssignment(get(item.id));
-  assert.equal(toolkit.methods.length,8);
+  assert.equal(toolkit.methods.length,16);
   if(toolkit.suggestion){
    assert.ok(CATEGORIES[toolkit.suggestion.category]);
    assert.match(toolkit.suggestion.description,/Explore methods/);
@@ -46,7 +46,7 @@ test('toolkit is available to all 41 assignments and suggests a method family, n
 
 test('practice input validation blocks unlisted methods, missing arguments and excess text',()=>{
  assert.deepEqual(validatePracticeRequest(example('lower','ABC')),example('lower','ABC'));
- assert.throws(()=>validatePracticeRequest(example('eval','print(1)')), /eight string methods/);
+ assert.throws(()=>validatePracticeRequest(example('eval','print(1)')), /sixteen string methods/);
  assert.throws(()=>validatePracticeRequest(example('lower','A'.repeat(201))), /at most 200/);
  assert.throws(()=>validatePracticeRequest(example('startswith','hello',[''])), /required method option/);
  assert.throws(()=>validatePracticeRequest(example('replace','hello',['hi'])), /Check the practice/);
@@ -60,6 +60,10 @@ test('copied snippets are fixed Python string calls and cannot become Python ins
   'print("red bike".replace("red", "blue"))');
  assert.equal(practiceSnippet(example('split','one two',[''])),
   'print("one two".split())');
+ assert.equal(practiceSnippet(example('lstrip','  line  ',[''])),
+  'print("  line  ".lstrip())');
+ assert.equal(practiceSnippet(example('rstrip','cost%', ['%'])),
+  'print("cost%".rstrip("%"))');
  const attack='hello");__import__("os").system("exit 1");print("';
  const snippet=practiceSnippet(example('upper',attack));
  assert.ok(snippet.startsWith('print("'));
@@ -67,16 +71,24 @@ test('copied snippets are fixed Python string calls and cannot become Python ins
  assert.equal(snippet.endsWith('.upper())'),true);
 });
 
-test('real Python runs all eight examples without changing student code',async()=>{
+test('real Python runs all sixteen examples without changing student code',async()=>{
  const requests=[
   [example('lower','Good Morning'),"'good morning'"],
   [example('upper','good night'),"'GOOD NIGHT'"],
   [example('strip','  garden  '),"'garden'"],
+  [example('lstrip','$$balance',['$']),"'balance'"],
+  [example('rstrip','discount%%%',['%']),"'discount'"],
+  [example('capitalize','hELLO WORLD'),"'Hello world'"],
+  [example('title','blue sky'),"'Blue Sky'"],
   [example('replace','red bike',['red','blue']),"'blue bike'"],
   [example('split','red blue',['']),"['red', 'blue']"],
   [example('startswith','Python',['Py']),'True'],
   [example('endswith','picture.png',['.png']),'True'],
-  [example('isdigit','2048'),'True']
+  [example('isdigit','2048'),'True'],
+  [example('isdecimal','123'),'True'],
+  [example('isupper','NASA'),'True'],
+  [example('isalpha','Robotics'),'True'],
+  [example('isalnum','Team2137'),'True']
  ];
  for(const [request,expected] of requests){
   const result=await runStringPractice(request);
@@ -85,6 +97,13 @@ test('real Python runs all eight examples without changing student code',async()
  }
  assert.equal((await runStringPractice(example('split','a,b,c',[',']))).value,"['a', 'b', 'c']");
  assert.equal((await runStringPractice(example('isdigit','12a'))).value,'False');
+ assert.equal((await runStringPractice(example('lstrip','  left  ',['']))).value,"'left  '");
+ assert.equal((await runStringPractice(example('rstrip','  right  ',['']))).value,"'  right'");
+ assert.equal((await runStringPractice(example('isdigit','²'))).value,'True');
+ assert.equal((await runStringPractice(example('isdecimal','²'))).value,'False');
+ assert.equal((await runStringPractice(example('isupper','123'))).value,'False');
+ assert.equal((await runStringPractice(example('isalpha','two words'))).value,'False');
+ assert.equal((await runStringPractice(example('isalnum','ABC 123'))).value,'False');
 });
 
 test('Learn tab shows searchable methods, optional practice and resources at all support levels',()=>{
@@ -94,6 +113,9 @@ test('Learn tab shows searchable methods, optional practice and resources at all
  const ext=fs.readFileSync(path.join(__dirname,'../src/extension.js'),'utf8');
  assert.match(ui,/id="stringToolkit"/);
  assert.match(ui,/id="stringSearch"/);
+ assert.match(ui,/id="stringCategory"/);
+ assert.match(js,/stringCategory==='all'/);
+ assert.match(js,/method\.tip/);
  assert.match(ui,/id="stringMethodList"/);
  assert.match(ui,/data-action="practiceString"/);
  assert.match(ui,/data-action="copyStringPractice"/);
