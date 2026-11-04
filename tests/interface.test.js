@@ -92,7 +92,7 @@ test('Markdown previews render student guides and journal without changing files
  assert.match(source,/case 'guide'/);
  assert.match(ui,/data-action="editJournal"/);
  assert.match(ui,/Preview formatted learning journal/);
- assert.match(ui,/Preview student guide/);
+ assert.match(ui,/Read README/);
  assert.match(browser,/editJournal/);
 });
 
