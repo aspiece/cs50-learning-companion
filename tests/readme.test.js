@@ -48,11 +48,12 @@ test('special file instructions survive the new format',()=>{
  }
 });
 
-test('the revised learning guide gives clear checkpoints and in-editor official instructions',()=>{
+test('the revised learning guide gives clear checkpoints and external official instructions',()=>{
  for(const item of list()){
   const guide=guideForCodespace(get(item.id));
-  assert.match(guide,/Open official instructions in editor/);
-  assert.match(guide,/Open official CS50 page in browser/);
+  assert.match(guide,/Open official CS50 instructions/);
+  assert.match(guide,/another browser tab or window/);
+  assert.doesNotMatch(guide,/Open official instructions in editor/);
   assert.ok((guide.match(/\*\*Stop and check:\*\*/g)||[]).length>=4,item.id);
   assert.match(guide,/Harvard.*official instructions/);
  }
