@@ -68,6 +68,14 @@ After watching, students see one brief planning question and are invited to writ
 
 **Some Help** and **Independent** do not display the video card. Choosing a different assignment swaps the recommended topic immediately. The original student README, Python starter, submitted files, and saved notes are not changed by the new feature.
 
+## String Methods Toolkit expansion (v0.7.4)
+
+A review of the private instructor CS50P assignment solutions identified eight additional Python string methods worth teaching: `.lstrip()`, `.rstrip()`, `.isupper()`, `.isalpha()`, `.isalnum()`, `.isdecimal()`, `.title()`, and `.capitalize()`. The built-in reference now includes **16 methods**, all with short, unrelated examples and safe live Python practice.
+
+To keep the Codespaces sidebar usable, students can filter by **All methods**, **Changing text**, **Checking text**, or **Splitting text**, then search within that group. Entries highlight easily confused methods, including `.strip()` / `.lstrip()` / `.rstrip()` and `.isdigit()` / `.isdecimal()`. Empty optional arguments on `.lstrip()` and `.rstrip()` correctly mean the whitespace-stripping default.
+
+**Privacy:** This expansion uses the private solutions only to identify method names and relevant topics. No private source code or assignment solutions are included in the extension, and no student files are changed.
+
 ## Python String Methods Toolkit (v0.7.3)
 
 A searchable, expandable **Python String Methods Toolkit** now appears in the **Learn** tab for **all three support levels** (Getting Started, Some Help, and Independent). Students can explore eight beginner-friendly methods: `.lower()`, `.upper()`, `.strip()`, `.replace()`, `.split()`, `.startswith()`, `.endswith()`, and `.isdigit()`.
