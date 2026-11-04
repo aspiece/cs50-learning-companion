@@ -42,7 +42,9 @@ function html(webview,extensionUri){
  <button class="button" type="button" id="create" data-action="create">Create starter files</button>
  <button class="button secondary" type="button" id="openFiles" data-action="openFiles">Open README and Python file</button>
  <button class="button secondary" type="button" id="updateGuide" data-action="updateGuide">Update my README guide</button>
- <button class="button secondary" type="button" data-action="official">Read official instructions</button>
+ <button class="button secondary" type="button" data-action="official">Open official instructions in editor</button>
+ <button class="button link" type="button" data-action="officialExternal">Open official CS50 page in browser</button>
+ <p class="note">If the editor browser is blank, use the external browser link. Harvard's page has the full requirements.</p>
  <button class="button secondary" type="button" id="openGuide" data-action="guide">Open student guide</button>
  <p class="note">Your existing assignment folder will not be overwritten.</p>
 </section>
