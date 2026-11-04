@@ -40,11 +40,11 @@ function html(webview,extensionUri){
  <h2>Get started</h2>
  <p>Read the problem. Make your files. Then write your own code.</p>
  <button class="button" type="button" id="create" data-action="create">Create starter files</button>
- <button class="button secondary" type="button" id="openFiles" data-action="openFiles">Open README and Python file</button>
+ <button class="button secondary" type="button" id="openFiles" data-action="openFiles">Open formatted README and Python file</button>
  <button class="button secondary" type="button" id="updateGuide" data-action="updateGuide">Update my README guide</button>
  <button class="button secondary" type="button" data-action="official">Open official CS50 instructions</button>
  <p class="note">Harvard's instructions open in your browser. Keep Codespaces open to write and test your code.</p>
- <button class="button secondary" type="button" id="openGuide" data-action="guide">Open student guide</button>
+ <button class="button secondary" type="button" id="openGuide" data-action="guide">Preview student guide</button>
  <p class="note">Your existing assignment folder will not be overwritten.</p>
 </section>
 <section id="panel-learn" class="panel" role="tabpanel" aria-labelledby="tab-learn" hidden>
@@ -75,10 +75,11 @@ function html(webview,extensionUri){
  <button class="button secondary" type="button" data-action="hint" id="hintNumber">Show a hint</button>
  <div class="tip" id="hint" aria-live="polite" hidden></div>
  </div>
- <button class="button secondary" type="button" id="openJournal" data-action="openJournal">Open learning journal file</button>
+ <button class="button secondary" type="button" id="openJournal" data-action="openJournal">Preview formatted learning journal</button>
+ <button class="button secondary" type="button" id="editJournal" data-action="editJournal">Edit journal as Markdown</button>
  <button class="button link" type="button" id="reloadJournal" data-action="reloadJournal">Reload notes from journal</button>
  <p id="journalStatus" class="note" aria-live="polite">Your notes are saved in LEARNING_JOURNAL.md inside this assignment folder.</p>
- <p class="note">The journal is for your learning, not for CS50 submission.</p>
+ <p class="note">Markdown preview updates as your notes are saved. To edit the file directly, choose Edit journal as Markdown. Do not submit your journal to CS50.</p>
 </section>
 <section id="panel-test" class="panel" role="tabpanel" aria-labelledby="tab-test" hidden>
  <h2>Try your program</h2>
