@@ -4,26 +4,17 @@ A VS Code extension for guided, solution-free CS50P practice in [cs50.dev](https
 
 ## Install or update in CS50 Codespaces
 
-**Recommended for the current classroom pilot: build from the GitHub source in the Codespace.** This avoids browser upload issues. Open the Codespaces terminal:
-
-First-time setup:
+**Classroom installation:** Open the terminal inside [cs50.dev](https://cs50.dev) and paste **one command**. It works for first-time setup and for updates, from any starting directory:
 
 ```bash
-git clone https://github.com/aspiece/cs50-learning-companion.git "$HOME/cs50-learning-companion"
-bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"
+curl -fsSL https://raw.githubusercontent.com/aspiece/cs50-learning-companion/main/scripts/install-in-codespaces.sh -o /tmp/gci-cs50-install.sh && bash /tmp/gci-cs50-install.sh
 ```
 
-If you already cloned the repository in `/workspaces/cs50-learning-companion`, there is no need for a second clone. Instead, open that folder and run `bash scripts/update-in-codespaces.sh`.
+The installer places extension source in `$HOME/cs50-learning-companion` (not in an assignment folder), pulls new code when already installed, checks for Node.js 20+, uses npm to build a VSIX, and installs it through the VS Code `code` CLI. **Student installation no longer runs the development test suite**; GitHub Actions runs tests and packaging on each push. To deliberately run tests while updating, use `GCI_RUN_TESTS=1 bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"`.
 
-For future updates from a clone in your home directory, use **one command**:
+If the CLI is unavailable, the script prints the generated VSIX location and instructions for installing it from the Extensions menu. Complete setup with **Developer: Reload Window**.
 
-```bash
-bash "$HOME/cs50-learning-companion/scripts/update-in-codespaces.sh"
-```
-
-The script updates its own Git checkout with a fast-forward pull, installs npm dependencies, runs tests, builds the VSIX with `@vscode/vsce`, and installs it using `code --install-extension ... --force`. It prints the installed version. Then open the Command Palette and select **Developer: Reload Window**. It does not modify student assignment files.
-
-**Alternative:** Download an attached `.vsix` from [Releases](https://github.com/aspiece/cs50-learning-companion/releases), then install via Extensions → `...` → **Install from VSIX**. A GitHub Actions **artifact** is a ZIP file containing the VSIX and checksum; extract it first.
+The source repository remains at <https://github.com/aspiece/cs50-learning-companion>. Follow the [student installation guide](STUDENT_INSTALL.md) for classroom steps and error help. **Do not delete a Codespace to retry installation.** The script does not modify Python assignment files.
 
 ## Versioning and publication
 
@@ -132,6 +123,8 @@ The companion uses VS Code's built-in **Markdown preview** to display student gu
 Students can also preview any open Markdown file manually with **Ctrl+Shift+V** (Windows/Linux) or **Cmd+Shift+V** (Mac), and open a preview beside the source with **Ctrl+K, V** (Windows/Linux) or **Cmd+K, V** (Mac).
 
 ## Status
+
+Installation guide refreshed for CS50 Codespaces: one-command, folder-independent installer, fewer student prerequisites, and clearer VSIX fallback.
 
 v0.6.2 reliably opens native Markdown previews on student assignment selection and startup, with a fallback for older Codespaces editors.
 
