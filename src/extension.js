@@ -6,6 +6,8 @@ const RELEASES_URL='https://github.com/aspiece/cs50-learning-companion/releases'
 const {list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide}=require('./core');
 const {FILENAME,createJournal,parseJournal,updateJournal}=require('./journal');
 const {conceptVideoForAssignment}=require('./concept-videos');
+const {toolkitForAssignment,validatePracticeRequest,practiceSnippet,LESSON_URL,DOCS_URL}=require('./string-methods');
+const {runStringPractice}=require('./string-practice');
 const updater=require('./updater');
 const utf=s=>Buffer.from(s,'utf8');
 const shellQuote=s=>"'"+String(s).replace(/'/g,"'\\''")+"'";
@@ -199,7 +201,7 @@ class Companion {
   const progress=journal.status==='saved'?{...stored,...journal.notes}:stored;
   const tested=list().filter(item=>this.ctx.workspaceState.get('progress:'+item.id,{})?.tested===true);
   const practicedSubjects=[...new Set(tested.map(item=>item.subject))];
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo},practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo,stringToolkit:toolkitForAssignment(a)},practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
  }
  async term(a,kind){
   if(!root()){vscode.window.showWarningMessage('Open a CS50 Codespace folder first.');return;}
@@ -256,6 +258,30 @@ class Companion {
     case 'checkUpdate':await this.checkUpdates(false);break;
     case 'updates':await vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL));break;
     case 'official':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
+    case 'stringMethodsDocs':await vscode.env.openExternal(vscode.Uri.parse(DOCS_URL));break;
+    case 'stringMethodsVideo':await vscode.env.openExternal(vscode.Uri.parse(LESSON_URL));break;
+    case 'practiceString':{
+     const requestId=Number.isSafeInteger(m.requestId)?m.requestId:0;
+     try{
+      const request=validatePracticeRequest(m);
+      const result=await runStringPractice(request);
+      if(this.view)await this.view.webview.postMessage({type:'stringPracticeResult',requestId,ok:true,...result});
+     }catch(error){
+      if(this.view)await this.view.webview.postMessage({
+       type:'stringPracticeResult',requestId,ok:false,
+       error:(error.message||String(error)).slice(0,300)
+      });
+     }
+     break;
+    }
+    case 'copyStringPractice':{
+     try{
+      const sample=practiceSnippet(m);
+      await vscode.env.clipboard.writeText(sample);
+      vscode.window.showInformationMessage('Practice example copied. This is not your assignment solution.');
+     }catch(error){vscode.window.showWarningMessage('Choose a method and fill in its options first.');}
+     break;
+    }
     case 'openConceptVideo':{
      const resource=conceptVideoForAssignment(a);
      if(resource)await vscode.env.openExternal(vscode.Uri.parse(resource.url));
