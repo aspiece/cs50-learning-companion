@@ -33,4 +33,21 @@ test('selected problem and progress remain workspace scoped',()=>{
  assert.match(source,/folderExists/);
  assert.match(source,/guideExists/);
 });
-test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.4.0'));
+test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.5.0'));
+
+test('starter opens the README and entry Python file in separate editor columns',()=>{
+ assert.match(source,/async function openStarterFiles/);
+ assert.match(source,/showTextDocument\(guide,\{viewColumn:vscode\.ViewColumn\.One/);
+ assert.match(source,/showTextDocument\(script,\{viewColumn:vscode\.ViewColumn\.Two/);
+ assert.match(source,/if\(await exists\(dir\)\)/);
+ assert.match(source,/await openStarterFiles\(a\)/);
+});
+test('guided learning prompts and notes are present',()=>{
+ for(const id of ['support','inputNotes','outputNotes','plan','prediction','observed','reflection','debugNotes','openFiles']){
+  assert.match(ui,new RegExp('id="'+id+'"'));
+ }
+ assert.match(browser,/data-field/);
+ assert.match(browser,/state\.learning\.understand/);
+ assert.match(browser,/state\.learning\.steps/);
+ assert.match(source,/workspaceState\.update\(this\.key\(\)/);
+});
