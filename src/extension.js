@@ -22,6 +22,32 @@ async function openStarterFiles(a){
  if(await exists(script))await vscode.window.showTextDocument(script,{viewColumn:vscode.ViewColumn.Two,preview:false});
  return true;
 }
+async function updateStudentGuide(a){
+ safeAssignment(a);
+ if(!root()){vscode.window.showWarningMessage('Open your CS50 Codespace workspace first.');return false;}
+ const dir=join(root(),a.slug);
+ if(!await exists(dir)){vscode.window.showWarningMessage('Create the assignment folder first.');return false;}
+ const readme=join(dir,'README.md');
+ const next=utf(guideForCodespace(a));
+ if(await exists(readme)){
+  const current=await vscode.workspace.fs.readFile(readme);
+  if(Buffer.compare(Buffer.from(current),next)===0){
+   vscode.window.showInformationMessage('Your README already uses the latest learning guide.');
+   await openStarterFiles(a);
+   return false;
+  }
+  const choice=await vscode.window.showWarningMessage('Replace this assignment README with the new Start → Learn → Test → Submit guide? A backup copy will be saved. Python code will not change.',{modal:true},'Update README');
+  if(choice!=='Update README')return false;
+  // Preserve the previous version in the same folder before writing a new guide.
+  let n=1,backup;
+  do{backup=join(dir,'README.backup-'+n+'.md');n++;}while(await exists(backup));
+  await vscode.workspace.fs.writeFile(backup,current);
+ }
+ await vscode.workspace.fs.writeFile(readme,next);
+ await openStarterFiles(a);
+ vscode.window.showInformationMessage('Student README updated. Your Python files were not changed.');
+ return true;
+}
 async function createStarter(a){
  safeAssignment(a);
  if(!root()){vscode.window.showWarningMessage('Open a folder in your CS50 Codespace first.');return false;}
@@ -84,6 +110,7 @@ class Companion {
    switch(m.type){
     case 'create':if(await createStarter(a)){await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),starter:true});}await this.refresh();break;
     case 'openFiles':await openStarterFiles(a);break;
+    case 'updateGuide':await updateStudentGuide(a);await this.refresh();break;
     case 'updates':await vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL));break;
     case 'official':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
     case 'guide':{
@@ -133,4 +160,4 @@ function activate(ctx){
   if(choice)await createStarter(get(choice.id));
  }));
 }
-module.exports={activate,createStarter,openStarterFiles};
+module.exports={activate,createStarter,openStarterFiles,updateStudentGuide};
