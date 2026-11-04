@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Practice eight built-in Python string methods using only fixed operations.
+"""Practice sixteen built-in Python string methods using only fixed operations.
 
 This does not evaluate user-provided Python source or access student files.
 Input is one small JSON object on stdin. Output is JSON on stdout.
@@ -18,6 +18,14 @@ def evaluate(data):
         result = text.upper()
     elif method == "strip":
         result = text.strip()
+    elif method == "lstrip":
+        result = text.lstrip(args[0]) if args[0] else text.lstrip()
+    elif method == "rstrip":
+        result = text.rstrip(args[0]) if args[0] else text.rstrip()
+    elif method == "capitalize":
+        result = text.capitalize()
+    elif method == "title":
+        result = text.title()
     elif method == "replace":
         result = text.replace(args[0], args[1])
     elif method == "split":
@@ -28,6 +36,14 @@ def evaluate(data):
         result = text.endswith(args[0])
     elif method == "isdigit":
         result = text.isdigit()
+    elif method == "isdecimal":
+        result = text.isdecimal()
+    elif method == "isupper":
+        result = text.isupper()
+    elif method == "isalpha":
+        result = text.isalpha()
+    elif method == "isalnum":
+        result = text.isalnum()
     else:
         raise ValueError("Choose a listed method.")
     return {"value": repr(result), "kind": type(result).__name__}
