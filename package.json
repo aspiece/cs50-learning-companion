@@ -52,5 +52,12 @@
   },
   "devDependencies": {
     "@vscode/vsce": "^3.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aspiece/cs50-learning-companion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aspiece/cs50-learning-companion/issues"
   }
 }
