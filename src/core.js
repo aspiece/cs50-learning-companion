@@ -75,85 +75,85 @@ function guideForCodespace(a){
  safeAssignment(a);
  const base=a.files['README.md']||'';
  const guide=teachingGuide(a);
+ const code=value=>String.fromCharCode(96)+value+String.fromCharCode(96);
+ const numbered=items=>items.map((item,i)=>(i+1)+'. '+item);
+ const bullet=items=>items.map(item=>'- '+item);
  const mission=section(base,'What will you make?')||a.description;
- const terms=section(base,'Words to know');
- const filesNeeded=section(base,'Files your program may need')
-  .replace('Move any files your code reads, such as a CSV, photo, or another Python file.','Keep any files your code reads, such as a CSV, photo, or another Python file, in your assignment folder.')
-  .replace(/bring them to Codespaces too/gi,'add them to this assignment folder too')
-  .replace(/bring them to Codespaces/gi,'add them to this Codespace');
- const otherNotes=section(base,'Need another file or package?')
-  .replace(/Python Lab/gi,'this Codespace');
- const codeFiles=Object.keys(a.files).filter(name=>name.endsWith('.py'));
- const code=text=>String.fromCharCode(96)+text+String.fromCharCode(96);
- const listItems=items=>items.map(item=>'- '+item).join('\n');
- const numbering=items=>items.map((item,i)=>(i+1)+'. '+item).join('\n');
- const runCmd='python '+a.entryFile;
- const checkCmd='check50 '+submissionPath(a);
- const submitCmd='submit50 '+submissionPath(a);
- const expectedFiles=codeFiles.map(name=>'- '+code(name)).join('\n');
- const testIdeas=guide.checks.length?listItems(guide.checks):'- Try a common input from the official instructions.\n- Try an edge case listed in the problem.';
+ const fileNames=Object.keys(a.files).filter(name=>name.endsWith('.py'));
+ const special={
+  'cs50p-0-indoor':{
+   goal:"Create a program that changes a user's message to lowercase while keeping spaces, numbers, and punctuation.",
+   steps:[
+    '**Get the input.** The starter code already asks the user to type a message.',
+    '**Change the text.** Find a Python string method that changes uppercase letters to lowercase.',
+    '**Show the result.** Display the updated message.'
+   ],
+   checks:[code('HELLO'),code('Hello, WORLD!'),code('Python 123')],
+   thought:'Do you need a new variable, or can you change the value you already have?'
+  },
+  'cs50p-2-coke':{
+   goal:'Create a vending machine that accepts coins, tracks money owed, and returns the correct change.',
+   steps:[
+    '**Start with the cost.** The starter code sets the amount due to 50 cents.',
+    '**Show the amount due.** Let the user know how much they still owe.',
+    '**Ask for coins.** Use a loop to keep accepting input until enough money has been added.',
+    '**Check each coin.** Accept only the coin values listed in the official problem.',
+    '**Update the total.** Subtract accepted coins from the amount due.',
+    '**Show the change.** When payment is complete, display any change owed.'
+   ],
+   checks:['Paying the exact amount','Entering a coin the machine does not accept','Paying more than the cost'],
+   thought:'What should happen if someone enters an invalid coin?'
+  }
+ };
+ const details=special[a.id]||{};
+ const steps=details.steps||guide.steps.slice(0,6);
+ const tests=details.checks||guide.checks.slice(0,3);
+ const runExamples={
+  'cs50p-4-bitcoin':'python bitcoin.py 2',
+  'cs50p-6-lines':'python lines.py example.py',
+  'cs50p-6-pizza':'python pizza.py regular.csv',
+  'cs50p-6-scourgify':'python scourgify.py before.csv after.csv',
+  'cs50p-6-shirt':'python shirt.py input.jpg output.jpg'
+ };
+ const run=a.set===5?'pytest '+a.entryFile:(runExamples[a.id]||'python '+a.entryFile);
+ const check='check50 '+submissionPath(a);
+ const submit='submit50 '+submissionPath(a);
+ const extra=a.extraFiles||[];
+ const filesBlock=extra.map(file=>'- ['+code(file.name)+']('+file.url+') — '+file.kind);
+ const neededFiles=extra.length?[
+  '**Needed files:** Download the required sample files from Harvard and keep them in this assignment folder.',
+  ...filesBlock
+ ]:a.slug==='lines'?[
+  '**For testing:** Put a sample Python file beside '+code(a.entryFile)+' so your program has a file to read.'
+ ]:[];
+ const testFiles=fileNames.filter(name=>/^test_.*\.py$/.test(name));
+ const testCommand=a.set!==5&&testFiles.length?'pytest '+testFiles[0]:null;
+ const thought=details.thought?['**Think about it:** '+details.thought,'']:[];
  return [
   '# '+a.title,'',
-  '**CS50P · Problem Set '+a.set+' · Student learning guide**','',
-  '> **Important:** This guide helps you learn. [Harvard’s official instructions]('+a.url+') decide what your code must do and what to submit. If they differ, follow Harvard.','',
-  '**Your path:** Start → Learn → Test → Submit. Use the matching tabs in the CS50 Companion sidebar.','',
-  '## Start — Understand the assignment','',
-  '### Your mission','',mission,'',
-  '### Get ready','',
-  '1. In the Companion, select **Open official CS50 instructions**. Keep the official page open in another browser tab or window while you code in Codespaces.',
-  '2. Find your folder: '+code(a.slug+'/')+'.',
-  '3. Keep this '+code('README.md')+' open for guidance, and use your Python editor to write code.',
-  '4. Check the files below. Do not rename the required Python files.',
-  '5. Your answers in the Companion are saved to '+code('LEARNING_JOURNAL.md')+' in this folder.','',
-  '**Code files in your folder:**','',expectedFiles,'',
-  '**Important:** A file needed for testing is not always a file you must submit. Follow the official page for the submission list.','',
-  '## Learn — Understand, Plan, Get Unstuck','',
-  '### 1. Understand','',
-  'Think about these questions before you type code:','',
-  listItems(guide.understand),'',
-  '**Stop and check:** Can you describe the required input and output without looking at code? Write your answer in the Learn tab.','',
-  '### 2. Plan','',
-  'Turn the task into smaller steps. Use these ideas from the assignment:','',
-  numbering(guide.steps),'',
-  '**Stop and check:** Can you explain your first coding step? Write a short plan or pseudocode in the Learn tab. It saves to your Learning Journal.','',
-  '### 3. Get unstuck','',
-  'Try your plan first. If you are stuck, use the companion hints one at a time.','',
-  '- Getting Started: use extra questions and reminders.',
-  '- Some Help: use the plan and hints as needed.',
-  '- Independent: try the task with fewer prompts.','',
-  '**Try first:** Work on one small step. If you need help, try the next hint or review a different example. Do not copy a finished solution.','',
-  '## Test — Predict, Run, Debug','',
-  '### Predict before running','',
-  'Choose a test input from the official page. In the Test tab, predict the result **before** you run your program. For testing assignments, predict which cases should pass or fail.','',
-  '### Run and check','',
-  '1. Open a terminal in the '+code(a.slug)+' folder.',
-  '2. Run your program: '+code(runCmd)+'.',
-  '3. Compare what happened with your prediction. Check the official examples and requirements.',
-  '4. Try another input and compare the result.','',
-  '**Test ideas:**','',testIdeas,'',
-  '5. Run '+code(checkCmd)+' and read the results.',
-  '6. If useful, run '+code('style50 '+a.entryFile)+' and review the style feedback.','',
-  '### Debug with a plan','',
-  'If something fails: **Read** the last error line → **Locate** the related code → **Change** one thing → **Test again**.',
-  '**Stop and check:** Can you describe what failed and your next test? Record it in the Test tab.','',
-  '## Submit — Check, Reflect, Send','',
-  '### Before you submit','',
-  '- Re-read the [official assignment page]('+a.url+') and check the exact submission requirements.',
-  '- Keep needed CSV, image, or Python files in the correct folder while you run and test.',
-  '- Your '+code('LEARNING_JOURNAL.md')+' is for learning, not for CS50 submission.',
-  '- The Companion runs '+code('check50')+' and '+code('submit50')+' on a temporary copy without this journal or the generated README.',
-  '- Check the file list shown by '+code('submit50')+' before confirming.',
-  '- Do not include the generated README in your submission unless CS50 explicitly asks for it.',
-  '- In the Submit tab, answer: **What did you learn? Which test gave you confidence?**','',
-  '### Submit with CS50','',
-  'In the '+code(a.slug)+' folder, run '+code(submitCmd)+' when your work is ready.',
-  '**Stop and check:** Look for confirmation from CS50. Your Companion checklist is only your personal record. The companion checklist cannot verify your submission.','',
-  '## Extra files and useful terms','',
-  filesNeeded||'Check the official problem for any required data files or images.','',
-  ...(otherNotes?['### Package or file notes','',otherNotes,'']:[]),
-  ...(terms?['### Words to know','',terms,'']:[]),
-  '## Remember','',
-  'This is your learning guide, not an answer key. Use the companion for planning, hints, testing, and reflection. Follow CS50 academic honesty rules.',''
+  '**CS50P · Problem Set '+a.set+'**  ',
+  '**File'+(fileNames.length===1?'':'s')+':** '+fileNames.map(code).join(', '),'',
+  '[Read Harvard’s Official Instructions]('+a.url+')','',
+  '## Your Goal','',
+  details.goal||mission,'',
+  '## Build It','',
+  ...numbered(steps),'',
+  ...thought,
+  ...neededFiles,
+  ...(neededFiles.length?['']:[]),
+  '## Test It','',
+  ...bullet(tests),
+  '',
+  'Compare your results with the examples and rules on Harvard’s problem page.','',
+  '## Check It','',
+  'Run your program'+(a.set===5?' tests':'')+': '+code(run)+'.',
+  ...(testCommand?['Run your tests: '+code(testCommand)+'.']:[]),
+  'Check your work: '+code(check)+'.',
+  'Read any errors, make a change, and test again.','',
+  '## Submit','',
+  'When your work is ready, use the Companion’s **Submit** tab (or '+code(submit)+').',
+  'Only send the files Harvard requests. Your README and Learning Journal are for learning, not submission.',
+  ''
  ].join('\n');
 }
 
