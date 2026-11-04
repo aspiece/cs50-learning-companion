@@ -4,6 +4,8 @@
  const $=id=>document.getElementById(id);
  const steps=[['starter','Files ready'],['planned','Plan written'],['tested','Program tested'],['checked','check50 reviewed'],['submitted','Submission verified by me']];
  const tabs=['start','learn','test','submit'];
+ const fields=['support','inputNotes','outputNotes','plan','prediction','observed','reflection','debugNotes'];
+ let currentAssignmentId=null;
  let state=null;
  const saved=api.getState()||{};
  let tab=tabs.includes(saved.tab)?saved.tab:'start';
@@ -26,6 +28,8 @@
  function render(){
   if(!state)return;
   const a=state.assignment,p=state.progress||{};
+  const changed=a.id!==currentAssignmentId;
+  currentAssignmentId=a.id;
   $('heading').textContent=a.title;
   $('setTag').textContent='Problem Set '+a.set;
   $('description').textContent=a.description;
@@ -38,9 +42,21 @@
   $('hint').hidden=!state.hint;
   $('hint').textContent=state.hint?state.hints[state.hint-1]:'';
   $('hintNumber').textContent=state.hint?('Hint '+state.hint+' of '+state.hints.length):'Show a hint';
+  $('hintNumber').disabled=state.hint>=state.hints.length;
+  if(state.hint>=state.hints.length)$('hintNumber').textContent='All hints shown';
+  $('questions').innerHTML='<ul>'+state.learning.understand.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ul>';
+  $('steps').innerHTML='<p>Use these ideas to make your own plan:</p><ol>'+state.learning.steps.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ol>';
+  if(changed){
+   for(const field of fields){const element=$(field);if(element)element.value=p[field]??(field==='support'?'standard':'');}
+  }
+  const level=$('support').value;
+  $('guidedQuestions').hidden=level==='independent';
+  $('questions').hidden=level!=='guided';
+  $('steps').hidden=level==='independent';
   $('create').textContent=state.folderExists?'Starter folder already exists':'Create starter files';
   $('create').disabled=!!state.folderExists;
   $('openGuide').disabled=!state.guideExists;
+  $('openFiles').disabled=!state.folderExists;
   $('folderStatus').textContent=state.folderExists?'Folder found':'Not set up yet';
   $('entry').textContent=a.entryFile;
   applyFilters();
@@ -62,6 +78,14 @@
  });
  document.addEventListener('change',e=>{
   if(e.target.matches('input[data-step]'))post('progress',{step:e.target.dataset.step,value:e.target.checked});
+  if(e.target.matches('[data-field]')){
+   post('learning',{field:e.target.dataset.field,value:e.target.value});
+   if(e.target.id==='support')render();
+  }
+ });
+ // Only transmit completed edits (change/blur), not individual keystrokes.
+ document.addEventListener('focusout',e=>{
+  if(e.target.matches('textarea[data-field]'))post('learning',{field:e.target.dataset.field,value:e.target.value});
  });
  $('tabs').addEventListener('keydown',e=>{
   if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
