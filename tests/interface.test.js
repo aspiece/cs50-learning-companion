@@ -33,7 +33,7 @@ test('selected problem and progress remain workspace scoped',()=>{
  assert.match(source,/folderExists/);
  assert.match(source,/guideExists/);
 });
-test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.5.5'));
+test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.6.0'));
 
 test('starter opens the README and entry Python file in separate editor columns',()=>{
  assert.match(source,/async function openStarterFiles/);
@@ -66,4 +66,19 @@ test('official CS50 instructions open directly in the regular browser',()=>{
  assert.doesNotMatch(source,/simpleBrowser\.|workbench\.action\.browser\.open|officialExternal/);
  assert.match(ui,/data-action="official">Open official CS50 instructions/);
  assert.doesNotMatch(ui,/data-action="officialExternal"|instructions in editor/);
+});
+
+test('learning notes sync to the Markdown journal with a separate editor action',()=>{
+ assert.match(source,/async function ensureJournal/);
+ assert.match(source,/async function writeJournalField/);
+ assert.match(source,/createJournal\(a,oldNotes\)/);
+ assert.match(source,/this\.journalWrites/);
+ assert.match(ui,/data-action="openJournal"/);
+ assert.match(ui,/data-action="reloadJournal"/);
+ assert.match(browser,/journalSaved/);
+ assert.match(browser,/scheduleLearning/);
+});
+test('check50 and submit50 run from isolated copies without the journal',()=>{
+ assert.match(source,/clean-cs50-command\.sh/);
+ assert.match(source,/case 'submit'/);
 });
