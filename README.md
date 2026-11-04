@@ -89,9 +89,13 @@ The **Start** tab now has **Open official instructions in editor**. The extensio
 
 The generated README now uses clear stop-and-check questions at each stage, distinguishes official requirements from our learning tips, and avoids treating a checked progress box as proof of mastery or submission.
 
+## GCI icon (v0.5.3)
+
+The VS Code activity-bar icon uses the approved GCI lettermark: orange G, blue C, green I, on a transparent background. The SVG is stored at `media/icon.svg`. Rebuild and reload the window to apply it. Some VS Code themes may render activity-bar icons using a theme tint rather than their source colors.
+
 ## Status
 
-v0.5.2 audits the instructional wording across all 41 generated READMEs and adds live official CS50 pages in the VS Code editor, with an external browser fallback. In-editor display depends on CS50's iframe policy and still requires a Codespaces check.\n\nv0.5.1 aligns generated READMEs with Start → Learn → Test → Submit and adds an opt-in, backed-up guide update for existing folders. The GitHub build and live Codespaces behavior still need verification.\n\nv0.5.0 adds guided learning, prediction and reflection, and side-by-side opening of README and the entry Python file. This is a pilot and needs a live Codespaces check.\n\nv0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
+v0.5.3 updates the VS Code activity-bar icon to the approved GCI lettermark.\n\nv0.5.2 audits the instructional wording across all 41 generated READMEs and adds live official CS50 pages in the VS Code editor, with an external browser fallback. In-editor display depends on CS50's iframe policy and still requires a Codespaces check.\n\nv0.5.1 aligns generated READMEs with Start → Learn → Test → Submit and adds an opt-in, backed-up guide update for existing folders. The GitHub build and live Codespaces behavior still need verification.\n\nv0.5.0 adds guided learning, prediction and reflection, and side-by-side opening of README and the entry Python file. This is a pilot and needs a live Codespaces check.\n\nv0.4.0 introduces a redesigned sidebar with assignment search, problem-set filters, Start/Learn/Test/Submit tabs, a compact progress meter, and accessible keyboard navigation. The original Codespaces actions and safe folder creation remain available. The redesign is committed but has not yet been confirmed in a live authenticated CS50 Codespace.
 
 ## Interface design (v0.4.0)
 
