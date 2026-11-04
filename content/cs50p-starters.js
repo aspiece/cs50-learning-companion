@@ -1258,9 +1258,8 @@
    ''
   ].join('\n')).join('\n');
   return [
-   '# CS50P | '+problem.title+' | Student tests',
-   '# Read README.md for steps and ideas for tests.',
-   '# Full problem: '+problem.url,
+   '# '+problem.title+' — Student tests',
+   '# Read README.md for the testing steps.',
    '',
    ...imports,
    '',
