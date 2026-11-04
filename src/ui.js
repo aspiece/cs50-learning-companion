@@ -41,6 +41,7 @@ function html(webview,extensionUri){
  <p>Read the problem. Make your files. Then write your own code.</p>
  <button class="button" type="button" id="create" data-action="create">Create starter files</button>
  <button class="button secondary" type="button" id="openFiles" data-action="openFiles">Open README and Python file</button>
+ <button class="button secondary" type="button" id="updateGuide" data-action="updateGuide">Update my README guide</button>
  <button class="button secondary" type="button" data-action="official">Read official instructions</button>
  <button class="button secondary" type="button" id="openGuide" data-action="guide">Open student guide</button>
  <p class="note">Your existing assignment folder will not be overwritten.</p>
