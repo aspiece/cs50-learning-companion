@@ -1,0 +1,51 @@
+:root{color-scheme:light dark}
+*{box-sizing:border-box}
+body{margin:0;padding:14px 12px 24px;color:var(--vscode-foreground);font:var(--vscode-font-size) var(--vscode-font-family);line-height:1.45}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,.tab:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:2px}
+h1,h2,p{margin:0}
+h1{font-size:15px;line-height:1.3;font-weight:650}
+h2{font-size:13px;font-weight:650}
+small,.muted{color:var(--vscode-descriptionForeground)}
+header{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.version{color:var(--vscode-descriptionForeground);font-size:11px;white-space:nowrap}
+.eyebrow{font-size:11px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;color:var(--vscode-descriptionForeground);margin-bottom:5px}
+.stack{display:grid;gap:9px}
+label{display:block}
+input[type="search"],select{width:100%;border:1px solid var(--vscode-input-border,var(--vscode-widget-border));border-radius:5px;color:var(--vscode-input-foreground);background:var(--vscode-input-background);padding:8px}
+input[type="search"]::placeholder{color:var(--vscode-input-placeholderForeground)}
+.searchrow{display:grid;grid-template-columns:1fr 112px;gap:6px}
+.assignment{margin-top:13px;padding:12px;border:1px solid var(--vscode-panel-border);border-radius:8px;background:var(--vscode-sideBar-background)}
+.assignment h2{font-size:15px;margin-bottom:3px}
+.assignment p{color:var(--vscode-descriptionForeground);font-size:12px;margin-top:6px}
+.folder{font-family:var(--vscode-editor-font-family,monospace);font-size:11px;overflow-wrap:anywhere}
+.status{display:inline-flex;gap:5px;align-items:center;font-size:11px;background:var(--vscode-badge-background);color:var(--vscode-badge-foreground);padding:3px 8px;border-radius:15px}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;margin-top:16px;border-bottom:1px solid var(--vscode-panel-border)}
+.tab{background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:9px 2px;color:var(--vscode-descriptionForeground);font-size:12px}
+.tab[aria-selected="true"]{border-bottom-color:var(--vscode-focusBorder);color:var(--vscode-foreground);font-weight:650}
+.panel{padding-top:15px}
+.panel[hidden]{display:none}
+.panel h2{margin-bottom:8px}
+.panel p{margin-bottom:12px}
+.button{display:block;width:100%;border:1px solid transparent;background:var(--vscode-button-background);color:var(--vscode-button-foreground);border-radius:6px;padding:9px 11px;text-align:center;margin:8px 0}
+.button:hover{background:var(--vscode-button-hoverBackground)}
+.button.secondary{background:var(--vscode-button-secondaryBackground);color:var(--vscode-button-secondaryForeground)}
+.button.secondary:hover{background:var(--vscode-button-secondaryHoverBackground)}
+.button.link{border-color:var(--vscode-panel-border);background:transparent;color:var(--vscode-textLink-foreground)}
+.button:disabled{cursor:not-allowed;opacity:.5}
+.tip{border-left:3px solid var(--vscode-focusBorder);padding:9px 11px;background:var(--vscode-editor-inactiveSelectionBackground);margin:12px 0;overflow-wrap:anywhere}
+.card{border:1px solid var(--vscode-panel-border);border-radius:8px;padding:12px;margin:10px 0}
+.card p{color:var(--vscode-descriptionForeground);font-size:12px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.actions .button{margin:0}
+.progress{margin-top:18px;border-top:1px solid var(--vscode-panel-border);padding-top:14px}
+.meter{background:var(--vscode-progressBar-background);height:6px;border-radius:6px;overflow:hidden;margin:8px 0 12px}
+.meter-fill{height:100%;background:var(--vscode-charts-green,var(--vscode-focusBorder))}
+.check{display:flex;align-items:start;gap:8px;margin:9px 0;font-size:12px}
+.check input{margin:2px 0 0;accent-color:var(--vscode-focusBorder);flex-shrink:0}
+footer{margin-top:22px;padding-top:11px;border-top:1px solid var(--vscode-panel-border)}
+footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-textLink-foreground);text-align:left}
+.note{font-size:11px;color:var(--vscode-descriptionForeground)}
+.empty{padding:9px;color:var(--vscode-descriptionForeground);font-size:12px}
+@media(max-width:240px){.searchrow{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(2,1fr)}}
