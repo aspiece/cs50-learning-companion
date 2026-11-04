@@ -196,12 +196,13 @@ class Companion {
   const directory=root()?join(root(),a.slug):null;
   const folderExists=directory?await exists(directory):false;
   const guideExists=folderExists?await exists(join(directory,'README.md')):false;
+  const entryExists=folderExists?await exists(join(directory,a.entryFile)):false;
   const stored=this.ctx.workspaceState.get(this.key(),{});
   const journal=await ensureJournal(a,stored);
   const progress=journal.status==='saved'?{...stored,...journal.notes}:stored;
   const tested=list().filter(item=>this.ctx.workspaceState.get('progress:'+item.id,{})?.tested===true);
   const practicedSubjects=[...new Set(tested.map(item=>item.subject))];
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo,stringToolkit:toolkitForAssignment(a)},practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo,stringToolkit:toolkitForAssignment(a)},practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
  }
  async term(a,kind){
   if(!root()){vscode.window.showWarningMessage('Open a CS50 Codespace folder first.');return;}
@@ -241,6 +242,15 @@ class Companion {
    switch(m.type){
     case 'create':if(await createStarter(a,this.ctx.workspaceState.get(this.key(),{}))){await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),starter:true});}await this.refresh();break;
     case 'openFiles':await openStarterFiles(a);break;
+    case 'openFolder':{
+     if(!root()){vscode.window.showWarningMessage('Open a Codespace folder first.');break;}
+     const dir=join(root(),a.slug);
+     if(!await exists(dir)){vscode.window.showWarningMessage('This assignment folder does not exist yet.');break;}
+     // Reveal the existing directory; do not create or replace any files.
+     try{await vscode.commands.executeCommand('revealInExplorer',dir);}
+     catch(error){vscode.window.showWarningMessage('Find '+a.slug+'/ in Explorer. Your files have not been changed.');}
+     break;
+    }
     case 'openJournal':{
      const info=await ensureJournal(a,this.ctx.workspaceState.get(this.key(),{}));
      if(info.status==='pending'){vscode.window.showWarningMessage('Create the assignment folder first.');break;}
