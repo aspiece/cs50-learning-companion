@@ -5,6 +5,7 @@ const {version}=require('../package.json');
 const RELEASES_URL='https://github.com/aspiece/cs50-learning-companion/releases';
 const {list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide}=require('./core');
 const {FILENAME,createJournal,parseJournal,updateJournal}=require('./journal');
+const {conceptVideoForAssignment}=require('./concept-videos');
 const updater=require('./updater');
 const utf=s=>Buffer.from(s,'utf8');
 const shellQuote=s=>"'"+String(s).replace(/'/g,"'\\''")+"'";
@@ -188,6 +189,7 @@ class Companion {
   await this.journalWrites.catch(()=>{});
   const a=get(this.id);
   const learning=teachingGuide(a);
+  const conceptVideo=conceptVideoForAssignment(a);
   const hints=learning.hints;
   const directory=root()?join(root(),a.slug):null;
   const folderExists=directory?await exists(directory):false;
@@ -197,7 +199,7 @@ class Companion {
   const progress=journal.status==='saved'?{...stored,...journal.notes}:stored;
   const tested=list().filter(item=>this.ctx.workspaceState.get('progress:'+item.id,{})?.tested===true);
   const practicedSubjects=[...new Set(tested.map(item=>item.subject))];
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning,practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo},practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
  }
  async term(a,kind){
   if(!root()){vscode.window.showWarningMessage('Open a CS50 Codespace folder first.');return;}
@@ -254,6 +256,11 @@ class Companion {
     case 'checkUpdate':await this.checkUpdates(false);break;
     case 'updates':await vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL));break;
     case 'official':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
+    case 'openConceptVideo':{
+     const resource=conceptVideoForAssignment(a);
+     if(resource)await vscode.env.openExternal(vscode.Uri.parse(resource.url));
+     break;
+    }
     case 'guide':{
       if(!root())break;
       const uri=join(root(),a.slug,'README.md');
