@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.3** or a newer version.
+You should see version **0.7.4** or a newer version.
 
 ## Check that it works
 
@@ -58,13 +58,15 @@ If you already made an assignment folder, your existing Python files stay exactl
 You can look up Python string methods from the **Learn** tab. This resource works at every guidance level.
 
 1. Open **Learn** and expand **Python String Methods Toolkit**.
-2. Search for a topic, such as *lowercase*, *spaces*, or *check*.
+2. Choose a group (**Changing text**, **Checking text**, or **Splitting text**) or choose **All 16 methods**. Search for a topic, such as *lowercase*, *spaces*, or *check*.
 3. Expand a method to see a short example and result.
 4. Select **Try this method** to practice with your own short text.
 5. If the method needs more information, add the search word, replacement, prefix, suffix, or separator. Select **Run in Python**.
 6. The result appears in the companion. You can also select **Copy practice code** to copy a separate example for testing.
 
 Look for the **For this problem, explore** note when working on text-related assignments. It's a suggestion for which kind of tool to study, not the answer.
+
+Tip: `.strip()` cleans both ends, `.lstrip()` cleans the start, and `.rstrip()` cleans the end. `.isdigit()` and `.isdecimal()` also have slightly different rules.
 
 Remember: Most Python string methods return a new value. They do not change the original string. The practice tool does not edit your files or submit anything to CS50.
 
