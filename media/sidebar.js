@@ -314,7 +314,6 @@
   $('editJournal').disabled=!state.folderExists;
   $('reloadJournal').disabled=!state.folderExists;
   $('journalStatus').textContent=journalStatusMessage(state.journalStatus);
-  $('entry').textContent=a.entryFile;
   $('runPython').textContent=a.set===5?'Run pytest':'Run Python';
   applyFilters();
   tabs.forEach(id=>{
