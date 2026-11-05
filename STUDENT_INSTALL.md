@@ -35,7 +35,17 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.7** or a newer version.
+You should see version **0.7.8** or a newer version.
+
+## If the Companion is stuck on Start
+
+If **Learning help** or the **Learn, Test, Submit** tabs will not open, your Codespace may have the older v0.7.7 sidebar.
+
+1. Scroll to the bottom of the Companion and select **Check for updates**.
+2. Install **v0.7.8** (or later) and reload Codespaces.
+3. If the update button does not work, open a **Codespaces terminal** and use the one-line installation command in Step 2 above. Then reload VS Code.
+
+This fix does not delete or replace your Python files, README, or Learning Journal.
 
 ## Check that it works
 
