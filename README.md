@@ -91,6 +91,18 @@ To keep the Codespaces sidebar usable, students can filter by **All methods**, *
 
 **Privacy:** This expansion uses the private solutions only to identify method names and relevant topics. No private source code or assignment solutions are included in the extension, and no student files are changed.
 
+## Clearly different learning support levels (v0.7.9)
+
+The **Learn** tab now visibly changes immediately when a student chooses a level in **How much guidance do you want?**
+
+- **Getting Started — step-by-step help:** Shows assignment-specific understanding questions and input/output prompts, detailed planning steps, an expanded section of optional hints, and the official CS50 concept video where available.
+- **Some Help — light guidance:** Hides the detailed questions and steps. Students write their own plan with one brief planning prompt; optional hints stay collapsed until requested.
+- **Independent — challenge myself:** Shows a short self-directed challenge and optional plan space, without prompting detailed steps or showing hints unless students open them.
+
+Each level has a clear summary saying what it includes. The Python String Methods Toolkit and other reference tools remain available at all three levels, but appear **after** the main learning activities so they no longer hide the differences.
+
+Changing levels never rewrites student Python code or clears typed planning or input/output notes. The selected mode remains saved for that assignment in the workspace Learning Journal. Students may change levels at any point without penalty; no level provides a finished CS50P solution.
+
 ## Start tab navigation hotfix (v0.7.8)
 
 A missing HTML element from the v0.7.7 Test-tab redesign caused a JavaScript error while rendering the sidebar. Because tab visibility was updated at the end of rendering, this could leave students stuck on the **Start** tab, including when they selected **Learning help**.
