@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.6** or a newer version.
+You should see version **0.7.7** or a newer version.
 
 ## Check that it works
 
@@ -64,6 +64,17 @@ If you need to refresh the README for an older problem, expand **More options** 
 Every **new** assignment now starts with light Python code (a few TODOs) and a short README with five sections: **Your Goal, Build It, Test It, Check It, Submit**. Use its steps to plan your own solution.
 
 If you already made an assignment folder, your existing Python files stay exactly as they are. To replace an **older README only**, select that problem, open **More options**, and choose **Update my README guide**. The companion asks before replacing it and saves a backup copy. Your code and Learning Journal are not changed.
+
+## Test your program in four steps
+
+Open the **Test** tab when you have written some code.
+
+1. **Predict and run:** Write what you think will happen. Select **Run Python** (or **Run pytest** in Problem Set 5). Check the results in your Codespace terminal.
+2. **Review the result:** Tell the Companion if your result matched, looked different, or showed an error. This is **your report**, not a grade.
+3. **Debug one thing:** If something went wrong, open **Debug one thing**. You can paste the last line of a Python error and select **Explain this error**. Check one thing in your code, then run it again.
+4. **Check with CS50:** After testing different inputs, select **Run check50** to see Harvard's checks. **Run style50** helps with formatting. Read the results in the terminal.
+
+The Companion cannot automatically read or grade your terminal results. It will not change your code, mark a test as passed, or submit work for you. Your prediction, test notes, and debugging notes still save to your assignment Learning Journal. Pasted error text is used only to show a clue in the extension; it is not saved in the journal.
 
 ## Python String Methods Toolkit
 
