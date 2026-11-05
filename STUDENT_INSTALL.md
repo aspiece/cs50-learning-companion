@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.5** or a newer version.
+You should see version **0.7.6** or a newer version.
 
 ## Check that it works
 
@@ -67,14 +67,16 @@ If you already made an assignment folder, your existing Python files stay exactl
 
 ## Python String Methods Toolkit
 
-You can look up Python string methods from the **Learn** tab. This resource works at every guidance level.
+You can look up Python string methods from the **Learn** tab at every guidance level.
 
-1. Open **Learn** and expand **Python String Methods Toolkit**.
+1. Select **Learn → Open String Toolkit**. A larger editor panel opens on the left so you can keep your Python code visible on the right.
 2. Choose a group (**Changing text**, **Checking text**, or **Splitting text**) or choose **All 16 methods**. Search for a topic, such as *lowercase*, *spaces*, or *check*.
-3. Expand a method to see a short example and result.
-4. Select **Try this method** to practice with your own short text.
-5. If the method needs more information, add the search word, replacement, prefix, suffix, or separator. Select **Run in Python**.
-6. The result appears in the companion. You can also select **Copy practice code** to copy a separate example for testing.
+3. Select a method to see an example and the result Python would return.
+4. Enter your own short text in **Try it yourself**. If needed, fill in an extra option such as a search word, replacement, or separator.
+5. Select **Run in Python** to see the real result or **Copy practice code** to copy a standalone example.
+6. You can close the toolkit tab when finished. To reopen it, return to **Learn → Open String Toolkit**.
+
+For a smaller reference inside the sidebar, expand **Quick reference in sidebar**. It has the same methods and practice tools.
 
 Look for the **For this problem, explore** note when working on text-related assignments. It's a suggestion for which kind of tool to study, not the answer.
 
