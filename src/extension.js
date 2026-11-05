@@ -1,6 +1,7 @@
 'use strict';
 const vscode=require('vscode');
 const {html:renderSidebar}=require('./ui');
+const {toolkitHtml}=require('./toolkit-panel');
 const {version}=require('../package.json');
 const RELEASES_URL='https://github.com/aspiece/cs50-learning-companion/releases';
 const {list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide}=require('./core');
@@ -125,7 +126,7 @@ async function createStarter(a,previousNotes={}){
 }
 
 class Companion {
- constructor(ctx){this.ctx=ctx;const saved=ctx.workspaceState.get('selectedAssignment');this.id=list().some(a=>a.id===saved)?saved:list()[0].id;this.hint=0;this.journalWrites=Promise.resolve();this.updateStatus={state:'idle'};this.updateReady=null;this.updateBusy=false;this.updateChecked=false;}
+ constructor(ctx){this.ctx=ctx;const saved=ctx.workspaceState.get('selectedAssignment');this.id=list().some(a=>a.id===saved)?saved:list()[0].id;this.hint=0;this.journalWrites=Promise.resolve();this.updateStatus={state:'idle'};this.updateReady=null;this.updateBusy=false;this.updateChecked=false;this.toolkitPanel=null;}
  resolveWebviewView(view){
   this.view=view;
   view.webview.options={enableScripts:true,localResourceRoots:[vscode.Uri.joinPath(this.ctx.extensionUri,'media')]};
@@ -203,6 +204,75 @@ class Companion {
   const tested=list().filter(item=>this.ctx.workspaceState.get('progress:'+item.id,{})?.tested===true);
   const practicedSubjects=[...new Set(tested.map(item=>item.subject))];
   await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo,stringToolkit:toolkitForAssignment(a)},practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
+  if(this.toolkitPanel)await this.sendToolkitState();
+ }
+ async sendToolkitState(){
+  if(!this.toolkitPanel)return;
+  const assignment=get(this.id);
+  await this.toolkitPanel.webview.postMessage({
+   type:'toolkitState',
+   assignment:{id:assignment.id,title:assignment.title,set:assignment.set},
+   toolkit:toolkitForAssignment(assignment)
+  });
+ }
+ async openStringToolkit(){
+  if(this.toolkitPanel){
+   this.toolkitPanel.reveal(vscode.ViewColumn.One);
+   await this.sendToolkitState();
+   return;
+  }
+  // The left editor group replaces the README preview while the student's
+  // Python file can remain visible on the right. No workspace file is opened.
+  const panel=vscode.window.createWebviewPanel(
+   'cs50Companion.stringToolkit',
+   'Python String Methods',
+   vscode.ViewColumn.One,
+   {enableScripts:true,retainContextWhenHidden:true,
+    localResourceRoots:[vscode.Uri.joinPath(this.ctx.extensionUri,'media')]}
+  );
+  this.toolkitPanel=panel;
+  panel.webview.onDidReceiveMessage(message=>{void this.handleToolkitMessage(message,panel);},
+   null,this.ctx.subscriptions);
+  panel.onDidDispose(()=>{if(this.toolkitPanel===panel)this.toolkitPanel=null;},
+   null,this.ctx.subscriptions);
+  panel.webview.html=toolkitHtml(panel.webview,this.ctx.extensionUri);
+ }
+ async handleToolkitMessage(message,panel){
+  if(this.toolkitPanel!==panel||!message||typeof message.type!=='string')return;
+  try{
+   if(message.type==='ready'){await this.sendToolkitState();return;}
+   if(message.type==='openVideo'){
+    await vscode.env.openExternal(vscode.Uri.parse(LESSON_URL));return;
+   }
+   if(message.type==='openDocs'){
+    await vscode.env.openExternal(vscode.Uri.parse(DOCS_URL));return;
+   }
+   if(message.type==='practiceString'){
+    const requestId=Number.isSafeInteger(message.requestId)?message.requestId:0;
+    try{
+     const request=validatePracticeRequest(message);
+     const result=await runStringPractice(request);
+     if(this.toolkitPanel===panel)
+      await panel.webview.postMessage({type:'stringPracticeResult',requestId,ok:true,...result});
+    }catch(error){
+     if(this.toolkitPanel===panel)
+      await panel.webview.postMessage({type:'stringPracticeResult',requestId,ok:false,
+       error:(error.message||String(error)).slice(0,300)});
+    }
+    return;
+   }
+   if(message.type==='copyStringPractice'){
+    try{
+     const sample=practiceSnippet(message);
+     await vscode.env.clipboard.writeText(sample);
+     await panel.webview.postMessage({type:'copyStatus',ok:true});
+    }catch(error){
+     await panel.webview.postMessage({type:'copyStatus',ok:false,
+      error:(error.message||String(error)).slice(0,300)});
+    }
+   }
+  }catch(error){vscode.window.showWarningMessage(
+   'CS50 String Toolkit: '+(error.message||String(error)).slice(0,200));}
  }
  async term(a,kind){
   if(!root()){vscode.window.showWarningMessage('Open a CS50 Codespace folder first.');return;}
@@ -242,6 +312,7 @@ class Companion {
    switch(m.type){
     case 'create':if(await createStarter(a,this.ctx.workspaceState.get(this.key(),{}))){await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),starter:true});}await this.refresh();break;
     case 'openFiles':await openStarterFiles(a);break;
+    case 'openStringToolkit':await this.openStringToolkit();break;
     case 'openFolder':{
      if(!root()){vscode.window.showWarningMessage('Open a Codespace folder first.');break;}
      const dir=join(root(),a.slug);
