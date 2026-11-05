@@ -7,6 +7,7 @@ const path=require('node:path');
 
 const browserSource=fs.readFileSync(path.join(__dirname,'../media/sidebar.js'),'utf8');
 const uiSource=fs.readFileSync(path.join(__dirname,'../src/ui.js'),'utf8');
+const markupIds=new Set([...uiSource.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
 
 function makeElement(id){
  const listeners={};
@@ -14,8 +15,9 @@ function makeElement(id){
  // Mirror those attributes here rather than hardcoding a button behavior.
  const markup=uiSource.match(new RegExp('<button\\b[^>]*\\bid="'+id+'"[^>]*>'))?.[0]||'';
  const action=markup.match(/data-action="([^"]+)"/)?.[1];
+ const tab=markup.match(/data-tab="([^"]+)"/)?.[1];
  return {
-  id,listeners,dataset:action?{action}:{},style:{},attributes:{},
+  id,listeners,dataset:{...(action?{action}:{}),...(tab?{tab}:{})},style:{},attributes:{},
   value:'',innerHTML:'',textContent:'',hidden:false,disabled:false,open:false,
   addEventListener(name,fn){listeners[name]=fn;},
   setAttribute(name,value){this.attributes[name]=value;},
@@ -33,6 +35,8 @@ function makeElement(id){
 function harness(){
  const elements=new Map();
  const get=id=>{
+  // Match actual document.getElementById: missing IDs must not be faked.
+  if(!markupIds.has(id))return null;
   if(!elements.has(id))elements.set(id,makeElement(id));
   return elements.get(id);
  };
@@ -81,7 +85,12 @@ function harness(){
   if(!e.dataset.action)throw Error('No clickable action on '+id);
   listeners.click({target:e});
  }
- return {get,messages,sendState,click,storage};
+ function clickTab(tab){
+  const e=get('tab-'+tab);
+  if(!e?.dataset.tab)throw Error('No clickable tab '+tab);
+  listeners.click({target:e});
+ }
+ return {get,messages,sendState,click,clickTab,storage};
 }
 
 test('webview boots, then new assignment action posts create',()=>{
@@ -153,4 +162,37 @@ test('switching assignments updates Start action and collapses More options',()=
  assert.equal(h.get('heading').textContent,'Coke Machine');
  assert.equal(h.get('startPrimary').dataset.action,'create');
  assert.equal(h.get('startMore').open,false);
+});
+
+
+test('every sidebar element referenced by a literal ID exists in the rendered HTML',()=>{
+ const referenced=[...browserSource.matchAll(/\$\('([^']+)'\)/g)].map(match=>match[1]);
+ const missing=[...new Set(referenced.filter(id=>!markupIds.has(id)))];
+ assert.deepEqual(missing,[],'Missing HTML element IDs can crash render() before tabs switch');
+ for(const tab of ['start','learn','test','submit']){
+  assert.ok(markupIds.has('tab-'+tab));
+  assert.ok(markupIds.has('panel-'+tab));
+ }
+ for(const index of [1,2]){
+  for(const suffix of ['Wrap','Label',''])assert.ok(markupIds.has('stringArg'+index+suffix));
+ }
+});
+
+test('students can leave Start through Learning help, Test and Submit buttons',()=>{
+ const h=harness();
+ h.sendState({folderExists:true,entryExists:true,guideExists:true});
+ assert.equal(h.get('panel-start').hidden,false);
+ h.click('startLearningHelp');
+ assert.equal(h.get('panel-learn').hidden,false);
+ assert.equal(h.get('panel-start').hidden,true);
+ h.clickTab('test');
+ assert.equal(h.get('panel-test').hidden,false);
+ assert.equal(h.get('panel-learn').hidden,true);
+ assert.equal(h.get('tab-test').attributes['aria-selected'],'true');
+ h.clickTab('submit');
+ assert.equal(h.get('panel-submit').hidden,false);
+ h.clickTab('start');
+ assert.equal(h.get('panel-start').hidden,false);
+ h.click('startLearningHelp');
+ assert.equal(h.get('panel-learn').hidden,false);
 });
