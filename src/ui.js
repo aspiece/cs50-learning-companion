@@ -152,31 +152,61 @@ function html(webview,extensionUri){
  <p class="note">Markdown preview updates as your notes are saved. To edit the file directly, choose Edit journal as Markdown. Do not submit your journal to CS50.</p>
 </section>
 <section id="panel-test" class="panel" role="tabpanel" aria-labelledby="tab-test" hidden>
- <h2>Try your program</h2>
- <p>Run <span class="folder" id="entry"></span> in your Codespace terminal.</p>
- <div class="card">
- <h2>Predict, then test</h2>
- <p>Choose an input. What do you think your program will print?</p>
- <label for="prediction">My prediction</label>
- <textarea id="prediction" data-field="prediction" rows="2" maxlength="3000" placeholder="I expect..."></textarea>
+ <h2>Test and debug your program</h2>
+ <p class="note test-intro">Run one test, look at what happened, then decide what to do next. Your results appear in the Codespaces terminal.</p>
+ <div class="card test-step">
+  <h2><span class="step-number">1</span> Predict and run</h2>
+  <p>Start with one input. What do you expect your program to do?</p>
+  <label for="prediction">My prediction</label>
+  <textarea id="prediction" data-field="prediction" rows="2" maxlength="3000" placeholder="I expect..."></textarea>
+  <details id="testIdeasCard" class="test-extra">
+   <summary>Show ideas for testing</summary>
+   <div id="testIdeas" class="note"></div>
+  </details>
+  <p class="test-command">Terminal command: <code id="testCommand"></code></p>
+  <button class="button" id="runPython" type="button" data-action="run">Run Python</button>
+  <p class="note" id="testTerminalStatus" aria-live="polite">Select Run to open a Codespaces terminal. Return here after checking the output.</p>
  </div>
- <div class="card" id="testIdeasCard"><h2>Try these test ideas</h2><div id="testIdeas" class="note"></div></div>
- <button class="button" id="runPython" type="button" data-action="run">Run Python</button>
- <div class="card">
- <label for="observed">What really happened?</label>
- <textarea id="observed" data-field="observed" rows="2" maxlength="3000" placeholder="The terminal showed..."></textarea>
- <p>Compare your prediction with the actual result. What needs to change?</p>
+ <div class="card test-step">
+  <h2><span class="step-number">2</span> Review the result</h2>
+  <label for="testOutcome">What happened in the terminal?</label>
+  <select id="testOutcome">
+   <option value="">Choose what you saw</option>
+   <option value="expected">It worked as expected</option>
+   <option value="different">The output was different</option>
+   <option value="error">Python showed an error</option>
+  </select>
+  <p id="testNext" class="test-next" aria-live="polite">After running, choose what happened above. This is your report, not an automatic grade.</p>
+  <label for="observed">What really happened?</label>
+  <textarea id="observed" data-field="observed" rows="2" maxlength="3000" placeholder="The terminal showed..."></textarea>
+  <p class="note">Compare the result with your prediction. Try another input if needed.</p>
  </div>
- <div class="actions">
- <button class="button secondary" type="button" data-action="check">Run check50</button>
- <button class="button secondary" type="button" data-action="style">Run style50</button></div>
- <button class="button link" type="button" data-action="explain">Explain a Python error</button>
- <p class="note">Debugging routine: read the error, locate the line, then change and test one thing.</p>
- <div class="card">
- <label for="debugNotes">My debugging notes</label>
- <textarea id="debugNotes" data-field="debugNotes" rows="2" maxlength="3000" placeholder="The error means... I'll check..."></textarea>
+ <details class="card test-step test-debug" id="debugHelp">
+  <summary><strong><span class="step-number">3</span> Debug one thing</strong> <span class="note">(if needed)</span></summary>
+  <p>Find the last error line in the terminal. Paste it here to get a clue, not an assignment solution.</p>
+  <label for="errorInput">Error message (optional)</label>
+  <textarea id="errorInput" rows="3" maxlength="2000" placeholder="Example: NameError: name 'value' is not defined"></textarea>
+  <button class="button secondary" id="analyzeError" type="button" data-action="analyzeError">Explain this error</button>
+  <div id="errorAdvice" class="test-advice" role="status" aria-live="polite" hidden>
+   <h3 id="debugTitle"></h3>
+   <p id="debugGuidance"></p>
+   <p id="debugLocation" class="note"></p>
+   <p id="debugNext" class="note"></p>
+  </div>
+  <p class="note">Your error text stays in this Codespace. It is not sent to an AI service or saved in your journal.</p>
+  <button class="button link" type="button" data-action="explain">Explain an error in a pop-up</button>
+  <label for="debugNotes">My debugging notes</label>
+  <textarea id="debugNotes" data-field="debugNotes" rows="2" maxlength="3000" placeholder="I'll check one thing, then run my code again..."></textarea>
+ </details>
+ <div class="card test-step">
+  <h2><span class="step-number">4</span> Check with CS50</h2>
+  <p>After trying your own tests, use check50 to see which checks need more work. style50 checks formatting.</p>
+  <div class="actions">
+   <button class="button secondary" type="button" data-action="check" id="runCheck50">Run check50</button>
+   <button class="button secondary" type="button" data-action="style" id="runStyle50">Run style50</button>
+  </div>
+  <p class="note" id="testCheckStatus" aria-live="polite">Read the results in the terminal. These buttons do not submit your work or mark it correct.</p>
  </div>
- <p class="note">check50 and style50 show their results in the terminal.</p>
 </section>
 <section id="panel-submit" class="panel" role="tabpanel" aria-labelledby="tab-submit" hidden>
  <h2>Ready to submit?</h2>
