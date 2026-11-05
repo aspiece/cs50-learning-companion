@@ -122,8 +122,9 @@ test('Learn tab shows searchable methods, optional practice and resources at all
  assert.match(ui,/data-action="stringMethodsVideo"/);
  assert.match(ui,/data-action="stringMethodsDocs"/);
  const openToolkit=ui.indexOf('id="stringToolkit"');
- const guided=ui.indexOf('id="guidedQuestions"');
- assert.ok(openToolkit>ui.indexOf('id="support"')&&openToolkit<guided,'resource must be outside help-level cards');
+ const journal=ui.indexOf('id="openJournal"');
+ const video=ui.indexOf('id="conceptVideoCard"');
+ assert.ok(openToolkit>video&&openToolkit<journal,'resource must remain outside help-level cards and above journal actions');
  assert.match(js,/renderStringToolkit\(\)/);
  assert.match(js,/filter\(method=>/);
  assert.match(js,/escapeHtml\(method\.example\)/);
