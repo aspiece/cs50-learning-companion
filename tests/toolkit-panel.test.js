@@ -191,5 +191,7 @@ test('toolkit panel keeps search and method but follows changed assignments',()=
  assert.equal(h.$('methodSearch').value,'lower()');
  assert.equal(h.$('methodTitle').textContent,'.lower()');
  assert.equal(h.$('methodList').children.length,1);
+ assert.equal(h.$('suggestion').hidden,true,'Coke Machine does not require a string method suggestion');
+ h.load('cs50p-1-extensions');
  assert.match(h.$('suggestion').textContent,/For this assignment, explore/);
 });
