@@ -148,3 +148,18 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .test-step #testTerminalStatus,.test-step #testCheckStatus{margin:8px 0 0}
 .test-step .actions .button{min-width:0}
 [hidden]{display:none!important}
+
+
+/* Guidance levels: make the chosen amount of help clear and immediate. */
+.support-summary{margin:10px 0 15px;padding:11px 12px;border:1px solid var(--vscode-panel-border);border-left:3px solid var(--vscode-focusBorder);border-radius:7px;background:var(--vscode-editor-inactiveSelectionBackground)}
+.support-summary strong{display:block;font-size:13px;line-height:1.4}
+.support-summary p{margin:6px 0 0!important;font-size:12px;line-height:1.5}
+.support-summary .note{color:var(--vscode-descriptionForeground);font-size:11px}
+.support-summary[data-level="independent"]{background:var(--vscode-sideBar-background)}
+.support-summary[data-level="guided"]{border-left-width:4px}
+.independent-challenge{margin:8px 0 13px}
+.independent-challenge p{margin:7px 0!important}
+.support-hints>summary{cursor:pointer;line-height:1.5;font-size:12px}
+.support-hints>summary:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:2px;border-radius:4px}
+.support-hints[open]>summary{margin-bottom:10px}
+#planGuidance{margin:6px 0 10px}
