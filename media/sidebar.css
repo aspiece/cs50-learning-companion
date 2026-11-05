@@ -115,3 +115,8 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .start-more-actions .button{margin:6px 0}
 .panel .start-more .note{margin:8px 0 0}
 @media(max-width:240px){.start-quick-actions{grid-template-columns:1fr}}
+
+/* Keep the Learn tab focused; the full toolkit lives in a workspace editor. */
+.toolkit-launch{background:var(--vscode-sideBar-background)}
+.toolkit-launch .button{margin:8px 0}
+.toolkit-launch .note{margin-bottom:6px}
