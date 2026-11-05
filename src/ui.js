@@ -64,13 +64,55 @@ function html(webview,extensionUri){
 <section id="panel-learn" class="panel" role="tabpanel" aria-labelledby="tab-learn" hidden>
  <h2>Learn to solve the problem</h2>
  <label class="eyebrow" for="support">How much guidance do you want?</label>
- <select id="support" data-field="support">
- <option value="guided">Getting started — more help</option>
- <option value="standard">Some help</option>
- <option value="independent">Independent — less help</option>
+ <select id="support" data-field="support" aria-describedby="supportDescription">
+ <option value="guided">Getting Started — step-by-step help</option>
+ <option value="standard">Some Help — light guidance</option>
+ <option value="independent">Independent — challenge myself</option>
  </select>
+ <div id="supportSummary" class="support-summary" role="status" aria-live="polite">
+  <strong id="supportTitle">Some Help</strong>
+  <p id="supportDescription">Plan in your own words, then ask for a hint if you need one.</p>
+  <p id="supportIncludes" class="note">Includes: short planning prompt · optional hints · reference tools</p>
+ </div>
+ <div id="independentChallenge" class="card independent-challenge" hidden>
+  <h2>Try it on your own</h2>
+  <p>1. Read the problem and decide what your program needs to do.</p>
+  <p>2. Build your own approach. Use your README if you need to check a requirement.</p>
+  <p>3. Run your code and compare the result with the instructions.</p>
+  <p class="note">Hints and reference tools are still here if you decide you need them.</p>
+ </div>
+ <div id="guidedQuestions" class="card">
+ <h2>1. Understand the problem</h2>
+ <div id="questions"></div>
+ <label for="inputNotes">What goes into the program?</label>
+ <textarea id="inputNotes" data-field="inputNotes" rows="2" maxlength="3000" placeholder="My program receives..."></textarea>
+ <label for="outputNotes">What should come out?</label>
+ <textarea id="outputNotes" data-field="outputNotes" rows="2" maxlength="3000" placeholder="The result should..."></textarea>
+ </div>
+ <div class="card" id="planCard">
+ <h2 id="planHeading">2. Make a plan</h2>
+ <div id="steps" class="note"></div>
+ <p id="planGuidance" class="note">Write your own plan before you start coding.</p>
+ <label for="plan">My steps or pseudocode</label>
+ <textarea id="plan" data-field="plan" rows="4" maxlength="3000" placeholder="First... Then... Finally..."></textarea>
+ </div>
+ <details class="card support-hints" id="hintCard">
+  <summary id="hintSummary"><strong>Get unstuck (optional hints)</strong></summary>
+  <p>Think it through first. Select a hint only when you need one.</p>
+  <button class="button secondary" type="button" data-action="hint" id="hintNumber">Show a hint</button>
+  <div class="tip" id="hint" aria-live="polite" hidden></div>
+ </details>
+ <div class="card" id="conceptVideoCard" hidden>
+ <h2>Optional CS50 concept video</h2>
+ <p class="note">Need an example of the Python skill? This official CS50 lesson explains the idea, not the assignment solution.</p>
+ <p><strong id="conceptVideoTitle"></strong></p>
+ <p id="conceptVideoFocus" class="note"></p>
+ <button class="button secondary" type="button" id="openConceptVideo" data-action="openConceptVideo">Watch concept video in browser</button>
+ <p id="conceptVideoQuestion" class="note"></p>
+ <p class="note">After watching, add one idea to <strong>My steps or pseudocode</strong> above. Watching is optional.</p>
+ </div>
  <div class="card toolkit-launch">
-  <h2>Python String Methods</h2>
+  <h2>Reference tools — available at every level</h2>
   <p class="note">Look up 16 methods and try them with real Python in a larger editor panel.</p>
   <button id="openStringToolkit" class="button" type="button" data-action="openStringToolkit">Open String Toolkit</button>
   <p class="note">Opens on the left so your Python code can stay visible on the right.</p>
@@ -116,35 +158,6 @@ function html(webview,extensionUri){
    <button class="button link" type="button" data-action="stringMethodsDocs">Python method docs</button>
   </div>
  </details>
- <div id="guidedQuestions" class="card">
- <h2>1. Understand</h2>
- <div id="questions"></div>
- <label for="inputNotes">What goes into the program?</label>
- <textarea id="inputNotes" data-field="inputNotes" rows="2" maxlength="3000" placeholder="My program receives..."></textarea>
- <label for="outputNotes">What should come out?</label>
- <textarea id="outputNotes" data-field="outputNotes" rows="2" maxlength="3000" placeholder="The result should..."></textarea>
- </div>
- <div class="card">
- <h2>2. Make a plan</h2>
- <div id="steps" class="note"></div>
- <label for="plan">My steps or pseudocode</label>
- <textarea id="plan" data-field="plan" rows="4" maxlength="3000" placeholder="First... Then... Finally..."></textarea>
- </div>
- <div class="card">
- <h2>3. Get unstuck</h2>
- <p>Think it through first. Use a hint only when you need one.</p>
- <button class="button secondary" type="button" data-action="hint" id="hintNumber">Show a hint</button>
- <div class="tip" id="hint" aria-live="polite" hidden></div>
- </div>
- <div class="card" id="conceptVideoCard" hidden>
- <h2>Optional CS50 concept video</h2>
- <p class="note">Need an example of the Python skill? This official CS50 lesson explains the idea, not the assignment solution.</p>
- <p><strong id="conceptVideoTitle"></strong></p>
- <p id="conceptVideoFocus" class="note"></p>
- <button class="button secondary" type="button" id="openConceptVideo" data-action="openConceptVideo">Watch concept video in browser</button>
- <p id="conceptVideoQuestion" class="note"></p>
- <p class="note">After watching, add one idea to <strong>My steps or pseudocode</strong> above. Watching is optional.</p>
- </div>
  <button class="button secondary" type="button" id="openJournal" data-action="openJournal">Preview formatted learning journal</button>
  <button class="button secondary" type="button" id="editJournal" data-action="editJournal">Edit journal as Markdown</button>
  <button class="button link" type="button" id="reloadJournal" data-action="reloadJournal">Reload notes from journal</button>
