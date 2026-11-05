@@ -263,6 +263,16 @@
   $('updateGuide').disabled=!state.folderExists;
   $('updateGuide').textContent=state.guideExists?'Update my README guide':'Create missing README guide';
  }
+ function showTab(){
+  // Keep basic navigation independent of assignment rendering. If another
+  // section fails to render, students can still move between tabs.
+  tabs.forEach(id=>{
+   const btn=$('tab-'+id),panel=$('panel-'+id),active=id===tab;
+   btn.setAttribute('aria-selected',String(active));
+   btn.tabIndex=active?0:-1;
+   panel.hidden=!active;
+  });
+ }
  function render(){
   if(!state)return;
   const a=state.assignment,p=state.progress||{};
@@ -316,10 +326,7 @@
   $('journalStatus').textContent=journalStatusMessage(state.journalStatus);
   $('runPython').textContent=a.set===5?'Run pytest':'Run Python';
   applyFilters();
-  tabs.forEach(id=>{
-   const btn=$('tab-'+id),panel=$('panel-'+id),active=id===tab;
-   btn.setAttribute('aria-selected',String(active));btn.tabIndex=active?0:-1;panel.hidden=!active;
-  });
+  showTab();
  }
  $('search').value=query;
  $('setFilter').value=String(setFilter);
@@ -334,14 +341,14 @@
  });
  document.addEventListener('click',e=>{
   const tabButton=e.target.closest('button[data-tab]');
-  if(tabButton){tab=tabButton.dataset.tab;persist();render();return;}
+  if(tabButton){tab=tabButton.dataset.tab;persist();showTab();render();return;}
   const choose=e.target.closest('button[data-select-string]');
   if(choose){chooseStringMethod(choose.dataset.selectString);return;}
   const b=e.target.closest('button[data-action]');
   if(b&&!b.disabled){
    if(b.dataset.action==='practiceString'){tryStringPractice();return;}
    if(b.dataset.action==='copyStringPractice'){copyStringPractice();return;}
-   if(b.dataset.action==='goLearn'){tab='learn';persist();render();$('tab-learn').focus();return;}
+   if(b.dataset.action==='goLearn'){tab='learn';persist();showTab();render();$('tab-learn').focus();return;}
    if(b.dataset.action==='analyzeError'){requestErrorAdvice();return;}
    if(b.dataset.action==='run'){
     $('testOutcome').value='';
@@ -372,7 +379,7 @@
   if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
   const i=tabs.indexOf(tab);
   tab=e.key==='Home'?tabs[0]:e.key==='End'?tabs.at(-1):tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];
-  persist();render();$('tab-'+tab).focus();e.preventDefault();
+  persist();showTab();render();$('tab-'+tab).focus();e.preventDefault();
  });
  window.addEventListener('message',e=>{
   if(e.data?.type==='updateStatus'){updateDisplay(e.data);return;}
