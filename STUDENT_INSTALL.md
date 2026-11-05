@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.8** or a newer version.
+You should see version **0.7.9** or a newer version.
 
 ## If the Companion is stuck on Start
 
@@ -85,6 +85,16 @@ Open the **Test** tab when you have written some code.
 4. **Check with CS50:** After testing different inputs, select **Run check50** to see Harvard's checks. **Run style50** helps with formatting. Read the results in the terminal.
 
 The Companion cannot automatically read or grade your terminal results. It will not change your code, mark a test as passed, or submit work for you. Your prediction, test notes, and debugging notes still save to your assignment Learning Journal. Pasted error text is used only to show a clue in the extension; it is not saved in the journal.
+
+## Choose how much learning help you need
+
+In the **Learn** tab, use **How much guidance do you want?** You can change levels any time.
+
+- **Getting Started:** See questions about the program's input and output, detailed steps to help you plan, optional hints, and a CS50 concept video when available.
+- **Some Help:** Make your own plan using one short prompt. Open hints only if you need them.
+- **Independent:** Try the challenge on your own without step-by-step questions. You can still write a plan or open hints if you get stuck.
+
+You should see the summary and learning sections change **right away** when you choose a different level. Your existing notes stay saved, and the String Methods Toolkit is available in every mode. These options do not change your Python code or reveal a solution.
 
 ## Python String Methods Toolkit
 
