@@ -91,6 +91,16 @@ To keep the Codespaces sidebar usable, students can filter by **All methods**, *
 
 **Privacy:** This expansion uses the private solutions only to identify method names and relevant topics. No private source code or assignment solutions are included in the extension, and no student files are changed.
 
+## Full-size String Methods editor (v0.7.6)
+
+Students can open a larger **Python String Methods Toolkit** workspace from **Learn → Open String Toolkit**. The editor panel opens in the **left editor group**, allowing students to keep their Python assignment code open on the right. It is not a workspace file; it never modifies source files or journals.
+
+The redesigned workspace has a **two-column layout** with searchable methods and group filters on the left, and a dedicated explanation/practice area on the right. It supports all **16 string methods** identified in the instructor's CS50P work, including Python-generated output, optional method arguments, copyable practice code, the official Harvard concept video, and Python reference documentation. A compact **Quick reference in sidebar** remains available but is collapsed by default.
+
+The toolkit uses a single reusable webview panel, so repeatedly selecting **Open String Toolkit** does not create multiple tabs. The assignment heading and broad suggested method category update when the student changes assignments, while their chosen method and search remain visible. No solution code is exposed; only independently authored, general-purpose examples are included.
+
+A secure content policy restricts the panel to local extension assets. Python practice remains limited to the existing whitelisted method runner, with no arbitrary code execution, network requests, or assignment-file modifications. The panel adapts to smaller editor widths. Classroom installation and update behavior remain unchanged.
+
 ## Python String Methods Toolkit (v0.7.3)
 
 A searchable, expandable **Python String Methods Toolkit** now appears in the **Learn** tab for **all three support levels** (Getting Started, Some Help, and Independent). Students can explore eight beginner-friendly methods: `.lower()`, `.upper()`, `.strip()`, `.replace()`, `.split()`, `.startswith()`, `.endswith()`, and `.isdigit()`.
