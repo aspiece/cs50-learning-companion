@@ -69,8 +69,14 @@ function html(webview,extensionUri){
  <option value="standard">Some help</option>
  <option value="independent">Independent — less help</option>
  </select>
+ <div class="card toolkit-launch">
+  <h2>Python String Methods</h2>
+  <p class="note">Look up 16 methods and try them with real Python in a larger editor panel.</p>
+  <button id="openStringToolkit" class="button" type="button" data-action="openStringToolkit">Open String Toolkit</button>
+  <p class="note">Opens on the left so your Python code can stay visible on the right.</p>
+ </div>
  <details id="stringToolkit" class="card toolkit">
-  <summary><strong>Python String Methods Toolkit</strong> <span class="note">Search · Examples · Practice</span></summary>
+  <summary><strong>Quick reference in sidebar</strong> <span class="note">Optional · Small view</span></summary>
   <p class="note">A string is text in Python. Try these tools on your own examples. This reference is available at every help level.</p>
   <p id="stringSuggestion" class="toolkit-suggestion" hidden></p>
   <label for="stringSearch">Find a string method</label>
