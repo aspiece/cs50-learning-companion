@@ -91,6 +91,14 @@ To keep the Codespaces sidebar usable, students can filter by **All methods**, *
 
 **Privacy:** This expansion uses the private solutions only to identify method names and relevant topics. No private source code or assignment solutions are included in the extension, and no student files are changed.
 
+## Start tab navigation hotfix (v0.7.8)
+
+A missing HTML element from the v0.7.7 Test-tab redesign caused a JavaScript error while rendering the sidebar. Because tab visibility was updated at the end of rendering, this could leave students stuck on the **Start** tab, including when they selected **Learning help**.
+
+The hotfix removes the obsolete element reference and changes tab navigation to switch the visible tab **before** rendering all assignment content. Regression tests compare every statically referenced sidebar element ID against the actual HTML and simulate switching among Start, Learn, Test, and Submit with a strict DOM mock that does not invent missing elements.
+
+**Student recovery:** From a stuck sidebar, select **Check for updates** and install v0.7.8, then reload Codespaces. If the sidebar cannot update itself, use the existing one-command terminal installer in the installation section above. Neither method needs a student assignment to be deleted, and the hotfix does not modify Python files or Learning Journals.
+
 ## Guided Test and Debug flow (v0.7.7)
 
 The **Test** tab now guides students through four clear steps: **Predict and run → Review the result → Debug one thing → Check with CS50**. Assignment-specific test ideas remain available but are collapsed until requested. Running a program opens a Codespaces terminal, and the sidebar explains what to do after reading the output. Problem Set 5 continues to use `pytest` instead of running the test file with Python.
