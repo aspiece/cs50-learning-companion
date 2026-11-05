@@ -45,6 +45,10 @@ jobs:
           unzip -Z1 "$VSIX" | grep -qx 'extension/src/string-methods.js'
           unzip -Z1 "$VSIX" | grep -qx 'extension/src/string-practice.js'
           unzip -Z1 "$VSIX" | grep -qx 'extension/src/string-practice.py'
+          unzip -Z1 "$VSIX" | grep -qx 'extension/src/toolkit-panel.js'
+          unzip -Z1 "$VSIX" | grep -qx 'extension/media/toolkit.html'
+          unzip -Z1 "$VSIX" | grep -qx 'extension/media/toolkit.js'
+          unzip -Z1 "$VSIX" | grep -qx 'extension/media/toolkit.css'
           sha256sum "$VSIX" > SHA256SUMS.txt
           cat SHA256SUMS.txt
       - name: Upload reproducible build
