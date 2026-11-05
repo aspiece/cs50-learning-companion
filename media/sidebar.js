@@ -18,6 +18,7 @@
  let selectedStringMethod=null;
  let lastStringRequestId=0;
  let lastDebugRequestId=0;
+ let previousSupportLevel=null;
  const escapeHtml=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function persist(){api.setState({tab,query,set:setFilter});}
  function post(type,extra={}){api.postMessage({type,...extra});}
@@ -263,6 +264,52 @@
   $('updateGuide').disabled=!state.folderExists;
   $('updateGuide').textContent=state.guideExists?'Update my README guide':'Create missing README guide';
  }
+ const supportModes={
+  guided:{
+   title:'Getting Started — step-by-step',
+   description:'Work through questions about the input and output, follow a planning guide, and use optional hints or a CS50 concept video.',
+   includes:'Includes: guiding questions · detailed planning steps · visible hints · concept video'
+  },
+  standard:{
+   title:'Some Help — light guidance',
+   description:'Write your own plan with a small reminder. Hints are available when you choose to open them.',
+   includes:'Includes: one short planning prompt · optional hints · reference tools'
+  },
+  independent:{
+   title:'Independent — challenge yourself',
+   description:'Start from the official problem instructions, choose your own approach, and test it. Support stays available if you need it.',
+   includes:'Includes: self-directed checklist · optional plan · help available on request'
+  }
+ };
+ function renderSupportLevel(level,assignmentChanged){
+  const mode=supportModes[level]||supportModes.standard;
+  const changed=level!==previousSupportLevel||assignmentChanged;
+  previousSupportLevel=level;
+  $('supportSummary').dataset.level=level;
+  $('supportTitle').textContent=mode.title;
+  $('supportDescription').textContent=mode.description;
+  $('supportIncludes').textContent=mode.includes;
+  $('independentChallenge').hidden=level!=='independent';
+  $('guidedQuestions').hidden=level!=='guided';
+  $('questions').hidden=level!=='guided';
+  $('steps').hidden=level!=='guided';
+  $('planHeading').textContent=level==='guided'?'2. Make a plan':
+   level==='independent'?'My own approach (optional)':'Make your own plan';
+  $('planGuidance').textContent=level==='guided'?
+   'Use the steps above to write your own plan before you start coding.':
+   level==='independent'?
+   'No steps are given here. Write a plan only if it helps you think.':
+   'What should happen first, next, and last? Write a short plan in your own words.';
+  $('hintSummary').textContent=level==='guided'?
+   '3. Get unstuck — step-by-step hints':'Need a hint? Open optional help';
+  if(changed)$('hintCard').open=level==='guided';
+  const video=state.learning.conceptVideo;
+  $('conceptVideoCard').hidden=level!=='guided'||!video;
+  $('openConceptVideo').disabled=!video;
+  $('conceptVideoTitle').textContent=video?.title||'';
+  $('conceptVideoFocus').textContent=video?.focus||'';
+  $('conceptVideoQuestion').textContent=video?('After watching: '+video.question):'';
+ }
  function showTab(){
   // Keep basic navigation independent of assignment rendering. If another
   // section fails to render, students can still move between tabs.
@@ -306,17 +353,8 @@
     if(element)element.value=p[field]??(field==='support'?'standard':'');
    }
   }
-  const level=$('support').value;
-  $('guidedQuestions').hidden=level==='independent';
-  $('questions').hidden=level!=='guided';
-  $('steps').hidden=level==='independent';
+  renderSupportLevel($('support').value,changed);
   renderStringToolkit();
-  const video=state.learning.conceptVideo;
-  $('conceptVideoCard').hidden=level!=='guided'||!video;
-  $('openConceptVideo').disabled=!video;
-  $('conceptVideoTitle').textContent=video?.title||'';
-  $('conceptVideoFocus').textContent=video?.focus||'';
-  $('conceptVideoQuestion').textContent=video?('After watching: '+video.question):'';
   renderStartScreen();
   renderTestWorkflow();
   $('folderStatus').textContent=state.folderExists?'Folder found':'Not set up yet';
