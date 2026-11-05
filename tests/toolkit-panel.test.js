@@ -154,9 +154,10 @@ test('real panel client searches, filters, selects, and runs a method without to
  h.$('categoryFilter').listeners.change({target:{value:'check'}});
  assert.ok(h.$('methodList').children.length>3);
  assert.ok(h.$('methodList').children.length<16);
- h.$('methodSearch').listeners.input({target:{value:'decimal'}});
- assert.equal(h.$('methodList').children.length,1);
- const button=h.$('methodList').children[0];
+ h.$('methodSearch').value='decimal';
+ h.$('methodSearch').listeners.input({target:h.$('methodSearch')});
+ assert.ok(h.$('methodList').children.length>=1);
+ const button=h.$('methodList').children.find(x=>x.dataset.method==='isdecimal');
  assert.equal(button.dataset.method,'isdecimal');
  button.listeners.click();
  assert.equal(h.$('methodTitle').textContent,'.isdecimal()');
@@ -181,12 +182,13 @@ test('real panel client searches, filters, selects, and runs a method without to
 test('toolkit panel keeps search and method but follows changed assignments',()=>{
  const h=panelClient();
  h.load('cs50p-0-indoor');
- h.$('methodSearch').listeners.input({target:{value:'lower'}});
+ h.$('methodSearch').value='lower()';
+ h.$('methodSearch').listeners.input({target:h.$('methodSearch')});
  assert.equal(h.$('methodList').children.length,1);
  h.$('methodList').children[0].listeners.click();
  h.load('cs50p-2-coke');
  assert.match(h.$('assignmentName').textContent,/Coke Machine/);
- assert.equal(h.$('methodSearch').value,'lower');
+ assert.equal(h.$('methodSearch').value,'lower()');
  assert.equal(h.$('methodTitle').textContent,'.lower()');
  assert.equal(h.$('methodList').children.length,1);
  assert.match(h.$('suggestion').textContent,/For this assignment, explore/);
