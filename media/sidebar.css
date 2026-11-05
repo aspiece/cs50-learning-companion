@@ -120,3 +120,31 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .toolkit-launch{background:var(--vscode-sideBar-background)}
 .toolkit-launch .button{margin:8px 0}
 .toolkit-launch .note{margin-bottom:6px}
+
+
+/* v0.7.7: Calm, guided Test → Review → Debug → Check workflow. */
+.test-intro{margin:0 0 12px}
+.test-step{margin:9px 0 13px;padding:12px}
+.test-step h2{display:flex;align-items:center;gap:8px;margin:0 0 10px}
+.test-step h3{font-size:12px;font-weight:650;margin:0 0 6px}
+.step-number{display:inline-grid;place-items:center;width:21px;height:21px;min-width:21px;border:1px solid var(--vscode-focusBorder);border-radius:50%;font-size:11px;line-height:1;font-weight:650}
+.test-step label{font-size:12px;font-weight:600;margin:9px 0 5px}
+.test-step textarea{margin-top:0}
+.test-step select{margin:3px 0 12px}
+.test-step p{font-size:12px}
+.test-extra{margin:10px 0 12px;border:1px solid var(--vscode-panel-border);border-radius:6px;padding:8px 10px}
+.test-extra summary,.test-debug summary{cursor:pointer;font-size:12px}
+.test-extra summary:focus-visible,.test-debug summary:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:2px;border-radius:4px}
+.test-extra #testIdeas{margin-top:9px}
+.test-command{padding:7px 9px;background:var(--vscode-textCodeBlock-background,var(--vscode-editor-background));border:1px solid var(--vscode-panel-border);border-radius:6px;overflow-wrap:anywhere}
+.test-command code{font-family:var(--vscode-editor-font-family,monospace);font-size:12px}
+.test-next,.test-advice{padding:9px 10px;background:var(--vscode-editor-inactiveSelectionBackground);border-left:3px solid var(--vscode-focusBorder);border-radius:3px;overflow-wrap:anywhere}
+.test-next{margin:5px 0 14px!important}
+.test-debug summary{display:flex;align-items:center;flex-wrap:wrap;gap:6px;line-height:1.6}
+.test-debug summary .note{font-size:11px}
+.test-debug[open]>summary{margin-bottom:12px}
+.test-advice{margin:12px 0}
+.test-advice p{margin:6px 0}
+.test-step #testTerminalStatus,.test-step #testCheckStatus{margin:8px 0 0}
+.test-step .actions .button{min-width:0}
+[hidden]{display:none!important}
