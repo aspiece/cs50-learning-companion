@@ -91,6 +91,14 @@ To keep the Codespaces sidebar usable, students can filter by **All methods**, *
 
 **Privacy:** This expansion uses the private solutions only to identify method names and relevant topics. No private source code or assignment solutions are included in the extension, and no student files are changed.
 
+## Guided Test and Debug flow (v0.7.7)
+
+The **Test** tab now guides students through four clear steps: **Predict and run → Review the result → Debug one thing → Check with CS50**. Assignment-specific test ideas remain available but are collapsed until requested. Running a program opens a Codespaces terminal, and the sidebar explains what to do after reading the output. Problem Set 5 continues to use `pytest` instead of running the test file with Python.
+
+The Review step asks students whether the result matched their expectation, differed, or showed an error. **These are student-reported observations—not automated checks or grades.** Selecting an unexpected result opens the debugging section. Students can paste an error message to get a short, local explanation of common Python or pytest errors, with guidance on where to look and how to retry. No finished solution code is provided. Error text is not transmitted to a third-party service or written to their Learning Journal.
+
+The Test tab retains its existing per-assignment journal fields for predicted output, observed results, and debugging notes. **check50** and **style50** still run in the terminal using the existing safe command workflow, and the Test tab does not submit any work, claim a passing check, or automatically mark any progress checkboxes. Terminal responses confirm only that a command was sent; they cannot determine whether the student's code passed. Existing student files and notes are preserved.
+
 ## Full-size String Methods editor (v0.7.6)
 
 Students can open a larger **Python String Methods Toolkit** workspace from **Learn → Open String Toolkit**. The editor panel opens in the **left editor group**, allowing students to keep their Python assignment code open on the right. It is not a workspace file; it never modifies source files or journals.
