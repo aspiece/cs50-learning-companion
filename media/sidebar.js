@@ -17,6 +17,7 @@
  let stringCategory='all';
  let selectedStringMethod=null;
  let lastStringRequestId=0;
+ let lastDebugRequestId=0;
  const escapeHtml=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function persist(){api.setState({tab,query,set:setFilter});}
  function post(type,extra={}){api.postMessage({type,...extra});}
@@ -153,6 +154,71 @@
   const payload=stringPracticePayload();
   if(payload)post('copyStringPractice',payload);
  }
+ function resetTestReview(){
+  $('testOutcome').value='';
+  $('errorInput').value='';
+  $('errorAdvice').hidden=true;
+  $('debugHelp').open=false;
+  $('testTerminalStatus').textContent='Select Run to open a Codespaces terminal. Return here after checking the output.';
+  $('testCheckStatus').textContent='Read the results in the terminal. These buttons do not submit your work or mark it correct.';
+  lastDebugRequestId++;
+ }
+ function renderTestGuidance(){
+  const choice=$('testOutcome').value;
+  const messages={
+   expected:'You reported that this test worked. Try a different input, then use check50. This is not an automatic grade.',
+   different:'Compare expected and actual output. Find one step to change, then run again.',
+   error:'Open Debug one thing below. Paste the last error line, read the clue, then try again.'
+  };
+  $('testNext').textContent=messages[choice]||
+   'After running, choose what happened above. This is your report, not an automatic grade.';
+ }
+ function renderTestWorkflow(){
+  if(!state)return;
+  const assignment=state.assignment;
+  const canRun=!!state.entryExists;
+  $('runPython').textContent=assignment.set===5?'Run pytest':'Run Python';
+  $('testCommand').textContent=(assignment.set===5?'pytest ':'python ')+assignment.entryFile;
+  $('runPython').disabled=!canRun;
+  $('runCheck50').disabled=!canRun;
+  $('runStyle50').disabled=!canRun;
+  if(!canRun){
+   $('testTerminalStatus').textContent='Create or locate your Python file in Start before running.';
+  }
+  renderTestGuidance();
+ }
+ function handleTestTerminalStatus(message){
+  if(!state||message.assignmentId!==state.assignment.id)return;
+  const completed=message.status==='opened';
+  if(message.kind==='run'){
+   $('testTerminalStatus').textContent=completed?
+    'Command sent to the Codespaces terminal. Read the output, then choose what happened in Step 2.':
+    'Could not open the command. Check your assignment folder in Start.';
+  }else{
+   $('testCheckStatus').textContent=completed?
+    (message.kind==='check'?'check50':'style50')+
+    ' was sent to the terminal. Read its results there. Nothing was submitted.':
+    'Could not open the command. Check your assignment folder in Start.';
+  }
+ }
+ function requestErrorAdvice(){
+  const raw=$('errorInput').value.trim();
+  if(!raw){
+   $('errorAdvice').hidden=false;
+   $('debugTitle').textContent='Paste an error first';
+   $('debugGuidance').textContent='Copy the last line of the error from the terminal, then try again.';
+   $('debugLocation').textContent='';
+   $('debugNext').textContent='';
+   return;
+  }
+  const requestId=++lastDebugRequestId;
+  $('errorAdvice').hidden=false;
+  $('debugTitle').textContent='Reading your error…';
+  $('debugGuidance').textContent='';
+  $('debugLocation').textContent='';
+  $('debugNext').textContent='';
+  post('analyzeError',{requestId,assignmentId:state.assignment.id,errorText:raw});
+ }
  function startScreenModel(folderExists,entryExists,guideExists){
   if(!folderExists)return {
    title:'Ready to begin',
@@ -204,6 +270,7 @@
   currentAssignmentId=a.id;
   if(changed){lastStringRequestId++;$('stringPracticeResult').textContent='Choose a method and try your own text.';$('tryStringMethod').disabled=false;}
   if(changed)$('startMore').open=false;
+  if(changed)resetTestReview();
   $('heading').textContent=a.title;
   $('setTag').textContent='Problem Set '+a.set;
   $('description').textContent=a.description;
@@ -241,6 +308,7 @@
   $('conceptVideoFocus').textContent=video?.focus||'';
   $('conceptVideoQuestion').textContent=video?('After watching: '+video.question):'';
   renderStartScreen();
+  renderTestWorkflow();
   $('folderStatus').textContent=state.folderExists?'Folder found':'Not set up yet';
   $('openJournal').disabled=!state.folderExists;
   $('editJournal').disabled=!state.folderExists;
@@ -261,6 +329,10 @@
  $('problem').addEventListener('change',e=>post('select',{id:e.target.value}));
  $('stringSearch').addEventListener('input',e=>{stringQuery=e.target.value;renderStringToolkit();});
  $('stringCategory').addEventListener('change',e=>{stringCategory=e.target.value;renderStringToolkit();});
+ $('testOutcome').addEventListener('change',e=>{
+  if(e.target.value==='different'||e.target.value==='error')$('debugHelp').open=true;
+  renderTestGuidance();
+ });
  document.addEventListener('click',e=>{
   const tabButton=e.target.closest('button[data-tab]');
   if(tabButton){tab=tabButton.dataset.tab;persist();render();return;}
@@ -271,6 +343,16 @@
    if(b.dataset.action==='practiceString'){tryStringPractice();return;}
    if(b.dataset.action==='copyStringPractice'){copyStringPractice();return;}
    if(b.dataset.action==='goLearn'){tab='learn';persist();render();$('tab-learn').focus();return;}
+   if(b.dataset.action==='analyzeError'){requestErrorAdvice();return;}
+   if(b.dataset.action==='run'){
+    $('testOutcome').value='';
+    $('errorAdvice').hidden=true;
+    $('testTerminalStatus').textContent='Opening a Codespaces terminal…';
+    renderTestGuidance();
+   }
+   if(b.dataset.action==='check'||b.dataset.action==='style'){
+    $('testCheckStatus').textContent='Opening a Codespaces terminal…';
+   }
    post(b.dataset.action);
   }
  });
@@ -302,6 +384,17 @@
    $('stringPracticeResult').textContent=e.data.ok?
     'Python returns ('+e.data.kind+'): '+e.data.value:
     'Could not run: '+e.data.error;
+   return;
+  }
+  if(e.data?.type==='testTerminalStatus'){handleTestTerminalStatus(e.data);return;}
+  if(e.data?.type==='testDebugAdvice'){
+   if(!state||e.data.assignmentId!==state.assignment.id||
+    e.data.requestId!==lastDebugRequestId)return;
+   $('errorAdvice').hidden=false;
+   $('debugTitle').textContent=e.data.ok?e.data.advice.title:'Could not explain the error';
+   $('debugGuidance').textContent=e.data.ok?e.data.advice.guidance:e.data.error;
+   $('debugLocation').textContent=e.data.ok?e.data.advice.location:'';
+   $('debugNext').textContent=e.data.ok?e.data.advice.next:'';
    return;
   }
   if(e.data?.type==='journalSaved'){
