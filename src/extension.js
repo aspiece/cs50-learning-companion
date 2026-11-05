@@ -9,6 +9,7 @@ const {FILENAME,createJournal,parseJournal,updateJournal}=require('./journal');
 const {conceptVideoForAssignment}=require('./concept-videos');
 const {toolkitForAssignment,validatePracticeRequest,practiceSnippet,LESSON_URL,DOCS_URL}=require('./string-methods');
 const {runStringPractice}=require('./string-practice');
+const {explainTerminalError}=require('./debugging');
 const updater=require('./updater');
 const utf=s=>Buffer.from(s,'utf8');
 const shellQuote=s=>"'"+String(s).replace(/'/g,"'\\''")+"'";
@@ -275,9 +276,13 @@ class Companion {
    'CS50 String Toolkit: '+(error.message||String(error)).slice(0,200));}
  }
  async term(a,kind){
-  if(!root()){vscode.window.showWarningMessage('Open a CS50 Codespace folder first.');return;}
+  const report=async status=>{
+   if(this.view&&['run','check','style'].includes(kind))
+    await this.view.webview.postMessage({type:'testTerminalStatus',kind,assignmentId:a.id,status});
+  };
+  if(!root()){vscode.window.showWarningMessage('Open a CS50 Codespace folder first.');await report('missing');return false;}
   const dir=join(root(),a.slug);
-  if(!await exists(dir)){vscode.window.showWarningMessage('Create the assignment folder first.');return;}
+  if(!await exists(dir)){vscode.window.showWarningMessage('Create the assignment folder first.');await report('missing');return false;}
   const entry=a.entryFile;
   const path=submissionPath(a);
   const cmd=kind==='run'?(a.set===5?'pytest '+entry:'python '+entry):
@@ -286,6 +291,8 @@ class Companion {
    shellQuote(kind==='check'?'check50':'submit50')+' '+shellQuote(path);
   const term=vscode.window.createTerminal({name:'CS50 '+a.slug,cwd:dir});term.show();
   term.sendText(cmd,true);
+  await report('opened');
+  return true;
  }
  async handle(m){
   if(!m||typeof m.type!=='string')return;
@@ -377,6 +384,23 @@ class Companion {
     }
     case 'hint':this.hint=Math.min(hintsCount(a),this.hint+1);await this.refresh();break;
     case 'run':case 'check':case 'style':await this.term(a,m.type);break;
+    case 'analyzeError':{
+     const requestId=Number.isSafeInteger(m.requestId)?m.requestId:0;
+     if(m.assignmentId!==this.id)break;
+     try{
+      const advice=explainTerminalError(m.errorText);
+      if(this.view)await this.view.webview.postMessage({
+       type:'testDebugAdvice',assignmentId:a.id,requestId,ok:true,advice
+      });
+     }catch(error){
+      if(this.view)await this.view.webview.postMessage({
+       type:'testDebugAdvice',assignmentId:a.id,requestId,ok:false,
+       error:(error.message||String(error)).slice(0,200)
+      });
+     }
+     break;
+    }
+
     case 'submit':{
       const ok=await vscode.window.showWarningMessage('Submit your own work to CS50? The extension will use a temporary copy without the Learning Journal or generated README. Check the file list CS50 shows before you confirm.',{modal:true},'Run submit50');
       if(ok==='Run submit50')await this.term(a,'submit');
