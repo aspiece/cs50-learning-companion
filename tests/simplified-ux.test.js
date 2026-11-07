@@ -80,3 +80,19 @@ test('CodeHS and gradebook navigation stays external; private grades are never r
  assert.match(backend,/vscode\.env\.openExternal\(vscode\.Uri\.parse\(CS50_GRADEBOOK\)\)/);
  assert.doesNotMatch(backend,/fetch\(CS50_GRADEBOOK\)|axios\.get\(CS50_GRADEBOOK\)/);
 });
+
+
+test('expandable sections balance correctly and cannot hide Submit or gradebook',()=>{
+ let depth=0;
+ for(const token of ui.matchAll(/<details\b[^>]*>|<\/details>/g)){
+  if(token[0].startsWith('<details'))depth++;
+  else depth--;
+  assert.ok(depth>=0,'extra closing details element');
+ }
+ assert.equal(depth,0,'unclosed optional section could hide critical buttons');
+ const area=ui.slice(ui.indexOf('id="submitReflection"'),ui.indexOf('</section>',ui.indexOf('id="submitReflection"')));
+ const close=area.indexOf('</details>');
+ const submit=area.indexOf('data-action="submit"');
+ const gradebook=area.indexOf('data-action="cs50Status"');
+ assert.ok(close>=0&&close<submit&&close<gradebook,'Submit and gradebook must be visible outside optional reflection');
+});
