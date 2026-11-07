@@ -15,12 +15,12 @@ function html(webview,extensionUri){
 <body>
 <header><h1>CS50 Companion</h1><span id="version" class="version" aria-label="Installed version"></span></header>
 <div class="stack">
- <div><label for="search" class="eyebrow">Find an assignment</label>
+ <details class="quiet-details" id="assignmentFilters"><summary>Search and filter assignments</summary><div><label for="search" class="eyebrow">Find an assignment</label>
  <div class="searchrow"><input id="search" type="search" placeholder="Search all 41 problems" aria-label="Search assignments">
  <select id="setFilter" aria-label="Filter by problem set">
  <option value="-1">All sets</option>
  ${Array.from({length:9},(_,i)=>`<option value="${i}">Set ${i}</option>`).join('')}
- </select></div></div>
+ </select></div></div></details>
  <div><label for="problem" class="eyebrow">Choose a problem</label><select id="problem" aria-label="Choose assignment"></select>
  <small id="results" aria-live="polite"></small></div>
 </div>
@@ -111,6 +111,12 @@ function html(webview,extensionUri){
  <p id="conceptVideoQuestion" class="note"></p>
  <p class="note">After watching, add one idea to <strong>My steps or pseudocode</strong> above. Watching is optional.</p>
  </div>
+ <div id="codehsSupport" class="codehs-support" hidden>
+  <span class="note">Optional CodeHS lesson for this topic</span>
+  <button type="button" id="openCodehsLesson" class="button secondary" data-action="openCodehsLesson">Open related CodeHS lesson</button>
+  <p id="codehsCourseNote" class="note">Opens a public CodeHS lesson overview in your browser.</p>
+ </div>
+ <details id="learnResources" class="quiet-details"><summary>More learning tools and journal</summary>
  <div class="card toolkit-launch">
   <h2>Reference tools — available at every level</h2>
   <p class="note">Look up 16 methods and try them with real Python in a larger editor panel.</p>
@@ -163,6 +169,7 @@ function html(webview,extensionUri){
  <button class="button link" type="button" id="reloadJournal" data-action="reloadJournal">Reload notes from journal</button>
  <p id="journalStatus" class="note" aria-live="polite">Your notes are saved in LEARNING_JOURNAL.md inside this assignment folder.</p>
  <p class="note">Markdown preview updates as your notes are saved. To edit the file directly, choose Edit journal as Markdown. Do not submit your journal to CS50.</p>
+ </details>
 </section>
 <section id="panel-test" class="panel" role="tabpanel" aria-labelledby="tab-test" hidden>
  <h2>Test and debug your program</h2>
@@ -180,6 +187,7 @@ function html(webview,extensionUri){
   <button class="button" id="runPython" type="button" data-action="run">Run Python</button>
   <p class="note" id="testTerminalStatus" aria-live="polite">Select Run to open a Codespaces terminal. Return here after checking the output.</p>
  </div>
+ <details class="quiet-details" id="testReviewDetails"><summary>Review or debug a result (optional)</summary>
  <div class="card test-step">
   <h2><span class="step-number">2</span> Review the result</h2>
   <label for="testOutcome">What happened in the terminal?</label>
@@ -211,6 +219,7 @@ function html(webview,extensionUri){
   <label for="debugNotes">My debugging notes</label>
   <textarea id="debugNotes" data-field="debugNotes" rows="2" maxlength="3000" placeholder="I'll check one thing, then run my code again..."></textarea>
  </details>
+ </details>
  <div class="card test-step">
   <h2><span class="step-number">4</span> Check with CS50</h2>
   <p>After trying your own tests, use check50 to see which checks need more work. style50 checks formatting.</p>
@@ -224,22 +233,27 @@ function html(webview,extensionUri){
 <section id="panel-submit" class="panel" role="tabpanel" aria-labelledby="tab-submit" hidden>
  <h2>Ready to submit?</h2>
  <div class="card"><p>Check your official problem page and required files. Run check50 first, then use submit50 with your own CS50 account.</p></div>
+ <details class="quiet-details" id="submitReflection"><summary>Reflect on your learning (optional)</summary>
  <div class="card">
  <h2>Reflect</h2>
  <label for="reflection">What did you learn, and how did you know the code worked?</label>
  <textarea id="reflection" data-field="reflection" rows="3" maxlength="3000" placeholder="I learned... I tested..."></textarea>
  </div>
  <button class="button" type="button" data-action="submit">Open submit50 in terminal</button>
- <p class="note">The companion submits from a temporary copy without your Learning Journal or generated README. Check CS50's file list before confirming. Only CS50 can confirm submission.</p>
+ <button id="cs50Status" type="button" class="button secondary" data-action="cs50Status">Check my CS50P submission status</button>
+ <p class="note">Opens the official CS50P gradebook in your browser. Sign in with your CS50 GitHub account. This app does not read your grades.</p>
+ <details class="quiet-details"><summary>About submitting safely</summary>
+  <p class="note">The companion submits from a temporary copy without your Learning Journal or generated README. Check CS50's file list before confirming. Only CS50 can confirm submission.</p>
+ </details>
 </section>
-<section class="progress" aria-label="Personal progress">
+<section class="progress" aria-label="Personal progress"><details class="quiet-details" id="progressDetails"><summary>My progress (optional)</summary>
  <div class="eyebrow">My progress</div>
  <p id="progressText" class="note">0 of 5 steps checked</p>
  <div class="meter" role="presentation"><div id="meter" class="meter-fill" style="width:0%"></div></div>
  <div id="checks"></div>
  <p class="note">These checkmarks are saved in this workspace and are self-reported.</p>
  <p id="practiceSummary" class="note" aria-live="polite"></p>
-</section>
+</details></section>
 <footer>
  <button class="button secondary" id="checkUpdate" type="button" data-action="checkUpdate">Check for updates</button>
  <p id="updateStatus" class="note" aria-live="polite">Update status: not checked yet.</p>
