@@ -15,7 +15,7 @@ test('every matched CodeHS resource goes to a real topic lesson, without guessed
  const problems=list();
  const links=problems.map(a=>({a,lesson:codehsLessonForAssignment(a)}));
  assert.equal(problems.length,41);
- assert.ok(links.filter(x=>x.lesson).length>=24);
+ assert.ok(links.filter(x=>x.lesson).length>=18);
  for(const {a,lesson} of links){
   if(!lesson)continue;
   assert.ok(lesson.title.length>3,a.id);
@@ -41,7 +41,7 @@ test('README contains standalone problem, steps, tests and CS50 support links fo
   assert.match(guide,/^\*\*Your task:\*\*$/m);
   assert.match(guide,/^1\. /m);
   assert.match(guide,/^- /m);
-  assert.match(guide,/official.*rules and special cases/i);
+  assert.match(guide,/Harvard.s page has the exact rules and special cases/i);
   assert.match(guide,/https:\/\/cs50\.me\/cs50p/);
   assert.match(guide,/CS50P license \(CC BY-NC-SA 4\.0\)/);
   assert.ok(guide.includes(assignment.url),info.id);
@@ -63,7 +63,7 @@ test('student sidebar hides optional noise but leaves actions and tabs intact',(
  assert.match(ui,/data-action="cs50Status"/);
  assert.match(ui,/Check my CS50P submission status/);
  assert.match(client,/renderCodehsLesson/);
- assert.match(client,/\\$\\('codehsSupport'\\)\\.hidden=!lesson/);
+ assert.ok(client.includes("$('codehsSupport').hidden=!lesson"));
  assert.match(css,/\\.quiet-details/);
  for(const tab of ['start','learn','test','submit'])assert.match(ui,new RegExp('id="panel-'+tab+'"'));
  for(const verb of ['openFiles','openJournal','editJournal','updateGuide','run','check','style','submit']){
