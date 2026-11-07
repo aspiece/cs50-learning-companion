@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.8.0** or a newer version.
+You should see version **0.8.1** or a newer version.
 
 ## If the Companion is stuck on Start
 
@@ -56,6 +56,14 @@ This fix does not delete or replace your Python files, README, or Learning Journ
 5. Type a short plan in the **Learn** tab. Then select **Preview formatted learning journal** to check that your notes were saved.
 
 Harvard's official instructions open in another browser tab or window. Keep them available while coding.
+
+## Get help without extra steps
+
+On **Start**, select **I'm stuck**. Choose what you need: **Understanding the problem**, **Writing Python**, or **Debugging an error**. You will see one clue. Select **Another clue** only if you need more. You can close help whenever you want.
+
+**What should I do next?** shows up to three suggestions based on where you are. They are not assignments or grades. You still decide when your code is ready.
+
+For errors, open **Test → Review or debug a result → Debug one thing**. Paste your Python traceback or a failed check50 result. You can also copy text from the terminal, then select **Use copied output**. If you selected error text inside an editor, choose **Use selected text**. The Companion explains what to look at and one thing to try. It does not fix code for you, access the terminal automatically, or send your text to an AI service.
 
 ## A simpler place to work
 
