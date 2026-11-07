@@ -4,25 +4,27 @@ const assert=require('node:assert/strict');
 const {list,get,guideForCodespace,submissionPath}=require('../src/core');
 
 const HEADINGS=[
- '## Your Goal',
- '## Build It',
- '## Test It',
- '## Check It',
- '## Submit'
+ '## The problem',
+ '## Test your program',
+ '## Need help? (optional)',
+ '## Check and submit'
 ];
 
-test('all 41 generated READMEs use the approved five-section format',()=>{
+test('all 41 generated READMEs show the problem, testing, optional learning and submission',()=>{
  const assignments=list();
  assert.equal(assignments.length,41);
  for(const item of assignments){
   const a=get(item.id),readme=guideForCodespace(a);
   assert.deepEqual(readme.match(/^## .+$/gm),HEADINGS,item.id+' has the wrong sections');
   const wordCount=readme.trim().split(/\s+/).length;
-  assert.ok(wordCount<=300,item.id+' README has '+wordCount+' words');
+  assert.ok(wordCount<=550,item.id+' README has '+wordCount+' words');
   assert.ok(readme.includes(a.url),item.id+' needs Harvard link');
+  assert.match(readme,/CS50P submission status\]\(https:\/\/cs50\.me\/cs50p\)/,item.id+' needs official gradebook');
+  assert.match(readme,/CS50P license \(CC BY-NC-SA 4\.0\)/,item.id+' needs Harvard attribution');
+  assert.match(readme,/student-friendly summary/,item.id+' must distinguish adaptation from official rules');
   assert.ok(readme.includes('check50 '+submissionPath(a)),item.id+' needs checker');
   assert.ok(readme.includes('submit50 '+submissionPath(a)),item.id+' needs submission command');
-  assert.match(readme,/^1\. .+/m,item.id+' needs numbered build steps');
+  assert.match(readme,/^1\. .+/m,item.id+' needs numbered problem requirements');
   assert.match(readme,/^- .+/m,item.id+' needs test ideas');
   assert.match(readme,/Only send the files Harvard requests/,item.id+' needs submission warning');
   assert.match(readme,/Learning Journal/,item.id+' needs journal warning');
