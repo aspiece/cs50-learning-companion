@@ -91,6 +91,14 @@
   if(method.args.length>1)args.push($('stringArg2').value);
   return {method:method.id,text:$('stringPracticeText').value,args};
  }
+ function renderCodehsLesson(){
+  const lesson=state?.learning?.codehsLesson;
+  $('codehsSupport').hidden=!lesson;
+  $('openCodehsLesson').disabled=!lesson;
+  $('openCodehsLesson').textContent=lesson?'CodeHS: '+lesson.title:'No matched CodeHS lesson';
+  $('codehsCourseNote').textContent=lesson?
+   'Related lesson from '+lesson.source+'. Opens in your browser.':'';
+ }
  function renderStringToolkit(){
   const toolkit=state?.learning?.stringToolkit;
   if(!toolkit)return;
@@ -354,6 +362,7 @@
    }
   }
   renderSupportLevel($('support').value,changed);
+  renderCodehsLesson();
   renderStringToolkit();
   renderStartScreen();
   renderTestWorkflow();
@@ -374,7 +383,10 @@
  $('stringSearch').addEventListener('input',e=>{stringQuery=e.target.value;renderStringToolkit();});
  $('stringCategory').addEventListener('change',e=>{stringCategory=e.target.value;renderStringToolkit();});
  $('testOutcome').addEventListener('change',e=>{
-  if(e.target.value==='different'||e.target.value==='error')$('debugHelp').open=true;
+  if(e.target.value==='different'||e.target.value==='error'){
+   $('testReviewDetails').open=true;
+   $('debugHelp').open=true;
+  }
   renderTestGuidance();
  });
  document.addEventListener('click',e=>{
