@@ -163,3 +163,30 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .support-hints>summary:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:2px;border-radius:4px}
 .support-hints[open]>summary{margin-bottom:10px}
 #planGuidance{margin:6px 0 10px}
+
+
+/* v0.8.0: student-feedback-driven progressive disclosure. */
+.stack{gap:7px}
+.assignment{margin-top:9px;padding:10px}
+.assignment p{margin-top:4px}
+.panel>.card{margin:8px 0;padding:11px}
+.panel>h2{margin-bottom:8px}
+.quiet-details{border:1px solid var(--vscode-panel-border);border-radius:7px;padding:8px 10px;margin:9px 0;background:var(--vscode-sideBar-background)}
+.quiet-details>summary{cursor:pointer;font-size:12px;font-weight:600;line-height:1.6;color:var(--vscode-textLink-foreground)}
+.quiet-details>summary:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:2px;border-radius:4px}
+.quiet-details[open]>summary{margin-bottom:11px}
+.quiet-details .card{margin:9px 0}
+.quiet-details .note{margin:6px 0}
+#assignmentFilters{border:0;background:transparent;margin:0;padding:0}
+#assignmentFilters>summary{font-size:11px;color:var(--vscode-descriptionForeground)}
+#assignmentFilters[open]{border:1px solid var(--vscode-panel-border);padding:9px}
+#supportIncludes{display:none}
+.codehs-support{padding:10px;border:1px solid var(--vscode-panel-border);border-radius:7px;margin:9px 0}
+.codehs-support .button{margin:5px 0 3px}
+.codehs-support p{margin:4px 0}
+#learnResources{margin-top:10px}
+#progressDetails{border:0;padding:0;background:transparent}
+#progressDetails summary{color:var(--vscode-descriptionForeground)}
+.test-step .step-number{display:none}
+#testReviewDetails{margin:9px 0}
+#submitReflection{margin:12px 0}
