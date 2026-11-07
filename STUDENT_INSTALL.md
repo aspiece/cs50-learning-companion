@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.7.9** or a newer version.
+You should see version **0.8.0** or a newer version.
 
 ## If the Companion is stuck on Start
 
@@ -56,6 +56,23 @@ This fix does not delete or replace your Python files, README, or Learning Journ
 5. Type a short plan in the **Learn** tab. Then select **Preview formatted learning journal** to check that your notes were saved.
 
 Harvard's official instructions open in another browser tab or window. Keep them available while coding.
+
+## A simpler place to work
+
+The Companion shows only the next actions. Extra tools are still there when you need them:
+
+- **Choose a problem:** Use the problem picker. Expand **Search and filter assignments** to find another one.
+- **Start:** Create or continue your code. Extra file and README options are under **More options**.
+- **Learn:** Select your support level. If a related CodeHS lesson is available, choose **CodeHS: [topic]** to open it in a browser. Other reference tools and your journal are under **More learning tools and journal**.
+- **Test:** Run your Python program. Expand **Review or debug a result** if you want to compare results or get a Python error clue. Use check50 to see Harvard's checks.
+- **Submit:** Submit with your own CS50 account, then select **Check my CS50P submission status** to open Harvard's official gradebook. The Companion cannot read your grades.
+- **My progress** is an optional checklist at the bottom.
+
+### The problem is in your README
+
+Open **Read README** to see the problem explained in short, student-friendly steps, how to test it, and the CS50 and CodeHS lessons that may help you. **Harvard's linked problem page has the exact rules**—check it for special cases before you submit.
+
+If you already started an assignment and want the new README, use **Start → More options → Update my README guide**. Read the prompt before approving. The Companion backs up your previous README. It never replaces your Python solution or Learning Journal.
 
 ## A simpler Start tab
 
