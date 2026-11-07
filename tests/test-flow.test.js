@@ -19,7 +19,7 @@ test('static debug advice is solution-free and explains common failures',()=>{
   ['KeyError: "item"','Dictionary key missing'],
   ['SyntaxError: invalid syntax','Syntax error'],
   ['ModuleNotFoundError: No module named "fake"','Module not found'],
-  ['FAILED tests/test.py::test_one - assert False','Test did not match'],
+  ['FAILED tests/test.py::test_one - assert False','A Python test did not match'],
   ['FileNotFoundError: no such file','File not found']
  ];
  for(const [value,title] of examples){
@@ -32,7 +32,7 @@ test('static debug advice is solution-free and explains common failures',()=>{
  }
  assert.match(explainTerminalError('File "work.py", line 22\nNameError: x').location,/line 22/);
  assert.throws(()=>explainTerminalError(''),/Paste an error/);
- assert.throws(()=>explainTerminalError('X'.repeat(2001)),/2,000/);
+ assert.throws(()=>explainTerminalError('X'.repeat(6001)),/6,000/);
 });
 
 function makeElement(id){
