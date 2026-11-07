@@ -18,6 +18,9 @@
  let selectedStringMethod=null;
  let lastStringRequestId=0;
  let lastDebugRequestId=0;
+ let lastClipboardRequestId=0;
+ let coachReason=null;
+ let coachIndex=0;
  let previousSupportLevel=null;
  const escapeHtml=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function persist(){api.setState({tab,query,set:setFilter});}
@@ -228,6 +231,38 @@
   $('debugNext').textContent='';
   post('analyzeError',{requestId,assignmentId:state.assignment.id,errorText:raw});
  }
+ function renderNextSteps(){
+  const ideas=state?.coach?.nextSteps||[];
+  $('nextStepsList').innerHTML=ideas.slice(0,3).map(item=>
+   '<li>'+escapeHtml(item)+'</li>'
+  ).join('');
+ }
+ function renderCoach(){
+  const clues=coachReason?state?.coach?.clues?.[coachReason]||[]:[];
+  $('coachClueBox').hidden=!coachReason;
+  if(!coachReason)return;
+  const titles={understand:'Understanding the problem',coding:'Writing Python',debug:'Debugging an error'};
+  $('coachTopic').textContent=titles[coachReason]||'A small clue';
+  $('coachClue').textContent=clues[coachIndex]||'Read the problem in your README and try one small step.';
+  $('coachNext').disabled=coachIndex>=clues.length-1;
+  $('coachNext').textContent=coachIndex>=clues.length-1?'All clues shown':'Another clue';
+  $('coachDebug').hidden=coachReason!=='debug';
+ }
+ function setCoachReason(reason){
+  if(!['understand','coding','debug'].includes(reason))return;
+  coachReason=reason;
+  coachIndex=0;
+  renderCoach();
+ }
+ function toggleCoach(){
+  const show=$('coachPanel').hidden;
+  $('coachPanel').hidden=!show;
+  $('coachToggle').textContent=show?'Close help':"I'm stuck";
+  $('coachToggle').setAttribute('aria-expanded',String(show));
+  if(show&&!coachReason){
+   $('coachClueBox').hidden=true;
+  }
+ }
  function startScreenModel(folderExists,entryExists,guideExists){
   if(!folderExists)return {
    title:'Ready to begin',
@@ -271,6 +306,8 @@
   $('openFiles').disabled=!state.folderExists||!state.entryExists;
   $('updateGuide').disabled=!state.folderExists;
   $('updateGuide').textContent=state.guideExists?'Update my README guide':'Create missing README guide';
+  renderNextSteps();
+  renderCoach();
  }
  const supportModes={
   guided:{
@@ -335,6 +372,13 @@
   currentAssignmentId=a.id;
   if(changed){lastStringRequestId++;$('stringPracticeResult').textContent='Choose a method and try your own text.';$('tryStringMethod').disabled=false;}
   if(changed)$('startMore').open=false;
+  if(changed){
+   coachReason=null;coachIndex=0;
+   $('coachPanel').hidden=true;
+   $('coachToggle').textContent="I'm stuck";
+   $('coachToggle').setAttribute('aria-expanded','false');
+   lastClipboardRequestId++;
+  }
   if(changed)resetTestReview();
   $('heading').textContent=a.title;
   $('setTag').textContent='Problem Set '+a.set;
@@ -400,6 +444,34 @@
    if(b.dataset.action==='copyStringPractice'){copyStringPractice();return;}
    if(b.dataset.action==='goLearn'){tab='learn';persist();showTab();render();$('tab-learn').focus();return;}
    if(b.dataset.action==='analyzeError'){requestErrorAdvice();return;}
+   if(b.dataset.action==='toggleCoach'){toggleCoach();return;}
+   if(b.dataset.action==='coachUnderstand'){setCoachReason('understand');return;}
+   if(b.dataset.action==='coachCoding'){setCoachReason('coding');return;}
+   if(b.dataset.action==='coachError'){setCoachReason('debug');return;}
+   if(b.dataset.action==='coachNext'){
+    const length=state?.coach?.clues?.[coachReason]?.length||0;
+    if(coachIndex<length-1)coachIndex++;
+    renderCoach();return;
+   }
+   if(b.dataset.action==='coachDebug'){
+    tab='test';persist();showTab();render();
+    $('testReviewDetails').open=true;
+    $('debugHelp').open=true;
+    $('errorInput').focus();
+    return;
+   }
+   if(b.dataset.action==='useClipboardDebug'||b.dataset.action==='useSelectedDebug'){
+    const requestId=++lastClipboardRequestId;
+    $('testReviewDetails').open=true;
+    $('debugHelp').open=true;
+    $('errorAdvice').hidden=false;
+    $('debugTitle').textContent='Getting the text you selected…';
+    $('debugGuidance').textContent='';
+    $('debugLocation').textContent='';
+    $('debugNext').textContent='';
+    post(b.dataset.action,{assignmentId:state.assignment.id,requestId});
+    return;
+   }
    if(b.dataset.action==='run'){
     $('testOutcome').value='';
     $('errorAdvice').hidden=true;
@@ -440,6 +512,23 @@
    $('stringPracticeResult').textContent=e.data.ok?
     'Python returns ('+e.data.kind+'): '+e.data.value:
     'Could not run: '+e.data.error;
+   return;
+  }
+  if(e.data?.type==='debugText'){
+   if(!state||e.data.assignmentId!==state.assignment.id||
+    e.data.requestId!==lastClipboardRequestId)return;
+   if(!e.data.ok){
+    $('errorAdvice').hidden=false;
+    $('debugTitle').textContent='No output selected';
+    $('debugGuidance').textContent=e.data.error||'Copy the relevant error text first.';
+    $('debugLocation').textContent='';
+    $('debugNext').textContent='';
+   }else{
+    $('errorInput').value=e.data.text;
+    $('testReviewDetails').open=true;
+    $('debugHelp').open=true;
+    requestErrorAdvice();
+   }
    return;
   }
   if(e.data?.type==='testTerminalStatus'){handleTestTerminalStatus(e.data);return;}
