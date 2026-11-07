@@ -91,6 +91,18 @@ To keep the Codespaces sidebar usable, students can filter by **All methods**, *
 
 **Privacy:** This expansion uses the private solutions only to identify method names and relevant topics. No private source code or assignment solutions are included in the extension, and no student files are changed.
 
+## Less clutter, more help when needed (v0.8.0)
+
+This update responds to student feedback that the original sidebar felt too busy. The assignment picker remains visible, while **search/filter**, **extra learning tools and journal actions**, **test-review and debugging notes**, **submission reflection**, and **self-reported progress** now live inside collapsed, clearly labeled sections. Start still has a clear primary Create/Continue action; Learn still preserves three support levels; Test still runs Python, check50 and style50; and Submit still uses the verified CS50 workflow. Existing journal data and Python code are untouched.
+
+The Learn tab now shows one **related CodeHS lesson** when a verified public topic lesson matches the assignment. The link opens externally and never presents CodeHS exercises as CS50 answers. The mapping favors the public **CodeHS Intro to Computer Science in Python 3** course; for certain later file I/O topics it uses **CodeHS Introduction to Python Programming**. Not all advanced CS50P topics have an appropriate public CodeHS lesson; the link is hidden rather than guessed. These are public topic overviews, not a student's private assigned CodeHS lesson or a claim of school enrollment.
+
+New starter READMEs now include **the problem in student-friendly terms**, concrete numbered requirements, test ideas, a verified related CodeHS lesson where available, the official CS50P concept Short, and links to Harvard's complete specification and any official hints. They include the CS50 license/attribution notice and make clear that **Harvard's full problem page is authoritative for all exact rules and examples**. The READMEs are locally generated and do not fetch or copy entire CS50 problem pages.
+
+The **Submit** tab and each new README now link directly to the official [CS50P gradebook](https://cs50.me/cs50p). Students sign in themselves with their CS50-linked GitHub accounts. The companion **does not retrieve, track, or report students' grades or submission status**.
+
+**Existing assignments:** The update never overwrites a student's README automatically. To regenerate the new version for an existing assignment, open **Start → More options → Update my README guide** and approve the prompt. The prior guide is saved as `README.backup-N.md`; student Python files and Learning Journals remain unchanged.
+
 ## Clearly different learning support levels (v0.7.9)
 
 The **Learn** tab now visibly changes immediately when a student chooses a level in **How much guidance do you want?**
