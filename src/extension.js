@@ -7,6 +7,8 @@ const RELEASES_URL='https://github.com/aspiece/cs50-learning-companion/releases'
 const {list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide}=require('./core');
 const {FILENAME,createJournal,parseJournal,updateJournal}=require('./journal');
 const {conceptVideoForAssignment}=require('./concept-videos');
+const {codehsLessonForAssignment}=require('./codehs-lessons');
+const CS50_GRADEBOOK='https://cs50.me/cs50p';
 const {toolkitForAssignment,validatePracticeRequest,practiceSnippet,LESSON_URL,DOCS_URL}=require('./string-methods');
 const {runStringPractice}=require('./string-practice');
 const {explainTerminalError}=require('./debugging');
@@ -204,7 +206,7 @@ class Companion {
   const progress=journal.status==='saved'?{...stored,...journal.notes}:stored;
   const tested=list().filter(item=>this.ctx.workspaceState.get('progress:'+item.id,{})?.tested===true);
   const practicedSubjects=[...new Set(tested.map(item=>item.subject))];
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo,stringToolkit:toolkitForAssignment(a)},practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo,codehsLesson:codehsLessonForAssignment(a),stringToolkit:toolkitForAssignment(a)},practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
   if(this.toolkitPanel)await this.sendToolkitState();
  }
  async sendToolkitState(){
@@ -320,6 +322,14 @@ class Companion {
     case 'create':if(await createStarter(a,this.ctx.workspaceState.get(this.key(),{}))){await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),starter:true});}await this.refresh();break;
     case 'openFiles':await openStarterFiles(a);break;
     case 'openStringToolkit':await this.openStringToolkit();break;
+    case 'openCodehsLesson':{
+     const lesson=codehsLessonForAssignment(a);
+     if(!lesson){vscode.window.showInformationMessage('No matching public CodeHS lesson for this topic yet.');break;}
+     await vscode.env.openExternal(vscode.Uri.parse(lesson.url));break;
+    }
+    case 'cs50Status':{
+     await vscode.env.openExternal(vscode.Uri.parse(CS50_GRADEBOOK));break;
+    }
     case 'openFolder':{
      if(!root()){vscode.window.showWarningMessage('Open a Codespace folder first.');break;}
      const dir=join(root(),a.slug);
