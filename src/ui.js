@@ -47,14 +47,35 @@ function html(webview,extensionUri){
  </div>
  <button class="button start-primary" id="startPrimary" type="button" data-action="create">Create starter files</button>
  <p id="startNextStep" class="note start-next-step">Opens your README and Python file side by side.</p>
- <div class="start-quick-actions" aria-label="Learning resources">
+ <div class="start-quick-actions" aria-label="Assignment support">
   <button class="button secondary" id="openGuide" type="button" data-action="guide">Read README</button>
-  <button class="button secondary" id="startLearningHelp" type="button" data-action="goLearn">Learning help</button>
+  <button class="button secondary" id="coachToggle" type="button" data-action="toggleCoach" aria-expanded="false" aria-controls="coachPanel">I'm stuck</button>
  </div>
- <button class="button link" type="button" data-action="official">Open official CS50 instructions</button>
+ <div class="coach-panel" id="coachPanel" hidden>
+  <h3>What do you need help with?</h3>
+  <div class="coach-choices" role="group" aria-label="Choose one kind of help">
+   <button type="button" class="button secondary" id="coachUnderstand" data-action="coachUnderstand">Understanding the problem</button>
+   <button type="button" class="button secondary" id="coachCoding" data-action="coachCoding">Writing Python</button>
+   <button type="button" class="button secondary" id="coachError" data-action="coachError">Debugging an error</button>
+  </div>
+  <div id="coachClueBox" class="coach-clue" hidden aria-live="polite">
+   <strong id="coachTopic"></strong>
+   <p id="coachClue"></p>
+   <button id="coachNext" class="button secondary" type="button" data-action="coachNext">Another clue</button>
+   <button id="coachDebug" class="button link" type="button" data-action="coachDebug" hidden>Open error helper</button>
+  </div>
+  <p class="note">One clue at a time. No finished solutions or changes to your code.</p>
+ </div>
+ <section class="next-steps" aria-label="Suggested next steps">
+  <h3>What should I do next?</h3>
+  <ol id="nextStepsList"></ol>
+  <p class="note">Suggestions only. The Companion does not grade your work.</p>
+ </section>
  <details id="startMore" class="start-more">
   <summary>More options</summary>
   <div class="start-more-actions">
+   <button class="button secondary" id="startLearningHelp" type="button" data-action="goLearn">Learning help</button>
+   <button class="button link" type="button" data-action="official">Open official CS50 instructions</button>
    <button class="button secondary" id="openFiles" type="button" data-action="openFiles">Open README and Python side by side</button>
    <button class="button secondary" id="updateGuide" type="button" data-action="updateGuide">Update my README guide</button>
   </div>
@@ -206,15 +227,20 @@ function html(webview,extensionUri){
   <summary><strong><span class="step-number">3</span> Debug one thing</strong> <span class="note">(if needed)</span></summary>
   <p>Find the last error line in the terminal. Paste it here to get a clue, not an assignment solution.</p>
   <label for="errorInput">Error message (optional)</label>
-  <textarea id="errorInput" rows="3" maxlength="2000" placeholder="Example: NameError: name 'value' is not defined"></textarea>
-  <button class="button secondary" id="analyzeError" type="button" data-action="analyzeError">Explain this error</button>
+  <textarea id="errorInput" rows="3" maxlength="6000" placeholder="Paste a Python traceback or a failed check50 result here."></textarea>
+  <div class="actions">
+   <button class="button secondary" id="useClipboardDebug" type="button" data-action="useClipboardDebug">Use copied output</button>
+   <button class="button secondary" id="useSelectedDebug" type="button" data-action="useSelectedDebug">Use selected text</button>
+  </div>
+  <p class="note">Copy output from the terminal first, or select error text in an editor. No automatic terminal reading.</p>
+  <button class="button secondary" id="analyzeError" type="button" data-action="analyzeError">Explain this result</button>
   <div id="errorAdvice" class="test-advice" role="status" aria-live="polite" hidden>
    <h3 id="debugTitle"></h3>
    <p id="debugGuidance"></p>
    <p id="debugLocation" class="note"></p>
    <p id="debugNext" class="note"></p>
   </div>
-  <p class="note">Your error text stays in this Codespace. It is not sent to an AI service or saved in your journal.</p>
+  <p class="note">The helper looks at the text you choose. It does not send it to an AI service, change code, or save it in your journal. Check official CS50 results for the full details.</p>
   <button class="button link" type="button" data-action="explain">Explain an error in a pop-up</button>
   <label for="debugNotes">My debugging notes</label>
   <textarea id="debugNotes" data-field="debugNotes" rows="2" maxlength="3000" placeholder="I'll check one thing, then run my code again..."></textarea>
