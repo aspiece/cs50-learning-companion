@@ -12,6 +12,7 @@ const CS50_GRADEBOOK='https://cs50.me/cs50p';
 const {toolkitForAssignment,validatePracticeRequest,practiceSnippet,LESSON_URL,DOCS_URL}=require('./string-methods');
 const {runStringPractice}=require('./string-practice');
 const {explainTerminalError}=require('./debugging');
+const {coachClues,nextActions}=require('./coach-model');
 const updater=require('./updater');
 const utf=s=>Buffer.from(s,'utf8');
 const shellQuote=s=>"'"+String(s).replace(/'/g,"'\\''")+"'";
@@ -206,7 +207,14 @@ class Companion {
   const progress=journal.status==='saved'?{...stored,...journal.notes}:stored;
   const tested=list().filter(item=>this.ctx.workspaceState.get('progress:'+item.id,{})?.tested===true);
   const practicedSubjects=[...new Set(tested.map(item=>item.subject))];
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo,codehsLesson:codehsLessonForAssignment(a),stringToolkit:toolkitForAssignment(a)},practice:{testedCount:tested.length,subjects:practicedSubjects},progress});
+  const coach={nextSteps:nextActions({folderExists,entryExists,guideExists,progress}),
+   clues:{
+    understand:coachClues(a,learning,'understand'),
+    coding:coachClues(a,learning,'coding'),
+    debug:coachClues(a,learning,'debug')
+   }
+  };
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo,codehsLesson:codehsLessonForAssignment(a),stringToolkit:toolkitForAssignment(a)},practice:{testedCount:tested.length,subjects:practicedSubjects},coach,progress});
   if(this.toolkitPanel)await this.sendToolkitState();
  }
  async sendToolkitState(){
@@ -394,6 +402,33 @@ class Companion {
     }
     case 'hint':this.hint=Math.min(hintsCount(a),this.hint+1);await this.refresh();break;
     case 'run':case 'check':case 'style':await this.term(a,m.type);break;
+    case 'useClipboardDebug':case 'useSelectedDebug':{
+     const requestId=Number.isSafeInteger(m.requestId)?m.requestId:0;
+     if(m.assignmentId!==this.id)break;
+     try{
+      let content='';
+      if(m.type==='useClipboardDebug'){
+       content=await vscode.env.clipboard.readText();
+      }else{
+       const editor=vscode.window.activeTextEditor;
+       content=editor&&!editor.selection.isEmpty?editor.document.getText(editor.selection):'';
+      }
+      if(typeof content!=='string'||!content.trim())
+       throw new Error(m.type==='useClipboardDebug'?
+        'Copy the error or check50 output from the terminal first.':
+        'Select the error text in an editor first. For terminal output, use Copy then Use copied output.');
+      if(content.length>6000)throw new Error('Select or copy just the error details (up to 6,000 characters).');
+      if(this.view)await this.view.webview.postMessage({
+       type:'debugText',assignmentId:a.id,requestId,ok:true,text:content
+      });
+     }catch(error){
+      if(this.view)await this.view.webview.postMessage({
+       type:'debugText',assignmentId:a.id,requestId,ok:false,
+       error:(error.message||String(error)).slice(0,220)
+      });
+     }
+     break;
+    }
     case 'analyzeError':{
      const requestId=Number.isSafeInteger(m.requestId)?m.requestId:0;
      if(m.assignmentId!==this.id)break;
