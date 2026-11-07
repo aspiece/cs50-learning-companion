@@ -91,6 +91,16 @@ To keep the Codespaces sidebar usable, students can filter by **All methods**, *
 
 **Privacy:** This expansion uses the private solutions only to identify method names and relevant topics. No private source code or assignment solutions are included in the extension, and no student files are changed.
 
+## Three student-focused support tools (v0.8.1)
+
+The main **Start** tab now includes one **I'm stuck** button. Students choose whether they need help **understanding the problem**, **writing Python**, or **debugging an error**. The Companion shows just one short, assignment-aware clue at a time. Students can request a second or third clue, switch topics, or close help; opening the error helper takes them to the existing Test tab. No AI service, assignment solution, automatic code change, or extra tab is involved.
+
+Below the main action, **What should I do next?** lists at most three short suggestions based on file existence and any **student-reported** testing/checking/submission steps. The list is advisory, not a new checklist students must complete, and it cannot detect whether code is correct or whether check50 passed.
+
+The **Test → Review or debug a result → Debug one thing** section now accepts up to 6,000 characters of Python traceback, pytest failure, or check50 output and recognizes common errors, output mismatches, prompts, timeouts, and skipped checks. Students may paste results or explicitly choose **Use copied output** (reads the Codespaces clipboard) or **Use selected text** (reads the selection in the active editor). There is **no automatic terminal scanning**; the extension reads only text a student explicitly requests, shows one general debugging clue, and never evaluates that text, changes code, saves the raw error in their journal, or sends it to an AI service. **Only official check50 and CS50 status pages** can establish submission results.
+
+**Classroom rollout:** Install v0.8.1 in a test Codespace. Verify a new assignment, an existing assignment, the three help choices, navigation from error help to Test, and pasted check50 output before distributing to students.
+
 ## Less clutter, more help when needed (v0.8.0)
 
 This update responds to student feedback that the original sidebar felt too busy. The assignment picker remains visible, while **search/filter**, **extra learning tools and journal actions**, **test-review and debugging notes**, **submission reflection**, and **self-reported progress** now live inside collapsed, clearly labeled sections. Start still has a clear primary Create/Continue action; Learn still preserves three support levels; Test still runs Python, check50 and style50; and Submit still uses the verified CS50 workflow. Existing journal data and Python code are untouched.
