@@ -8,6 +8,7 @@ const path=require('node:path');
 const browserSource=fs.readFileSync(path.join(__dirname,'../media/sidebar.js'),'utf8');
 const uiSource=fs.readFileSync(path.join(__dirname,'../src/ui.js'),'utf8');
 const markupIds=new Set([...uiSource.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
+const {coachClues,nextActions}=require('../src/coach-model');
 
 function makeElement(id){
  const listeners={};
@@ -58,7 +59,7 @@ function harness(){
   document,window,acquireVsCodeApi:()=>api,
   setTimeout,clearTimeout,Map,Set
  },{timeout:2000});
- function sendState({folderExists=false,entryExists=false,guideExists=false,id='cs50p-0-indoor'}={}){
+ function sendState({folderExists=false,entryExists=false,guideExists=false,id='cs50p-0-indoor',progress={}}={}){
   listeners['window:message']({data:{
    type:'state',version:'0.7.5',
    options:[
@@ -77,7 +78,16 @@ function harness(){
     conceptVideo:null,stringToolkit:{methods:[],suggestion:null}
    },
    practice:{testedCount:0,subjects:[]},
-   progress:{}
+   coach:{nextSteps:nextActions({folderExists,entryExists,guideExists,progress}),
+    clues:{
+     understand:coachClues({title:'Indoor Voice'},
+      {understand:['What is the input?','What is the output?']},'understand'),
+     coding:coachClues({title:'Indoor Voice'},
+      {steps:['Begin with the input'],hints:['Try a short example']},'coding'),
+     debug:coachClues({}, {},'debug')
+    }
+   },
+   progress
   }});
  }
  function click(id){
@@ -90,7 +100,8 @@ function harness(){
   if(!e?.dataset.tab)throw Error('No clickable tab '+tab);
   listeners.click({target:e});
  }
- return {get,messages,sendState,click,clickTab,storage};
+ function receive(data){listeners['window:message']({data});}
+ return {get,messages,sendState,click,clickTab,storage,receive};
 }
 
 test('webview boots, then new assignment action posts create',()=>{
