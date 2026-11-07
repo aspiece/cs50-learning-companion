@@ -64,7 +64,7 @@ test('student sidebar hides optional noise but leaves actions and tabs intact',(
  assert.match(ui,/Check my CS50P submission status/);
  assert.match(client,/renderCodehsLesson/);
  assert.ok(client.includes("$('codehsSupport').hidden=!lesson"));
- assert.match(css,/\\.quiet-details/);
+ assert.ok(css.includes('.quiet-details'));
  for(const tab of ['start','learn','test','submit'])assert.match(ui,new RegExp('id="panel-'+tab+'"'));
  for(const verb of ['openFiles','openJournal','editJournal','updateGuide','run','check','style','submit']){
   assert.ok(ui.includes('data-action="'+verb+'"'),'lost '+verb);
