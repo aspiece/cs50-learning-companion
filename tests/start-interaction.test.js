@@ -207,3 +207,79 @@ test('students can leave Start through Learning help, Test and Submit buttons',(
  h.click('startLearningHelp');
  assert.equal(h.get('panel-learn').hidden,false);
 });
+
+
+test('Stuck button shows one clue at a time without sending code',()=>{
+ const h=harness();
+ h.sendState({folderExists:true,entryExists:true,guideExists:true});
+ assert.equal(h.get('coachPanel').hidden,true);
+ h.click('coachToggle');
+ assert.equal(h.get('coachPanel').hidden,false);
+ assert.equal(h.get('coachToggle').attributes['aria-expanded'],'true');
+ h.click('coachUnderstand');
+ assert.equal(h.get('coachClueBox').hidden,false);
+ const first=h.get('coachClue').textContent;
+ assert.match(first,/README/);
+ assert.equal(h.get('coachNext').disabled,false);
+ h.click('coachNext');
+ assert.notEqual(h.get('coachClue').textContent,first);
+ h.click('coachNext');
+ assert.equal(h.get('coachNext').disabled,true);
+ h.click('coachCoding');
+ assert.match(h.get('coachClue').textContent,/Indoor Voice/);
+ assert.equal(h.get('coachNext').disabled,false);
+ h.click('coachToggle');
+ assert.equal(h.get('coachPanel').hidden,true);
+ assert.equal(h.messages.length,1,'No remote messages for local coaching');
+});
+
+test('Stuck error path opens existing Test and Debug instead of another tab',()=>{
+ const h=harness();h.sendState({folderExists:true,entryExists:true,guideExists:true});
+ h.click('coachToggle');
+ h.click('coachError');
+ assert.equal(h.get('coachDebug').hidden,false);
+ assert.match(h.get('coachClue').textContent,/terminal/);
+ h.click('coachDebug');
+ assert.equal(h.get('panel-test').hidden,false);
+ assert.equal(h.get('testReviewDetails').open,true);
+ assert.equal(h.get('debugHelp').open,true);
+ assert.equal(h.get('errorInput').focused,true);
+ h.sendState({id:'cs50p-2-coke'});
+ assert.equal(h.get('coachPanel').hidden,true,'new assignment resets clues');
+});
+
+test('next steps show at most 3 actions and respond to file state and reports',()=>{
+ const h=harness();h.sendState();
+ assert.equal((h.get('nextStepsList').innerHTML.match(/<li>/g)||[]).length,3);
+ assert.match(h.get('nextStepsList').innerHTML,/Create the assignment folder/);
+ h.sendState({folderExists:true,entryExists:true,guideExists:true,id:'cs50p-2-coke'});
+ assert.equal((h.get('nextStepsList').innerHTML.match(/<li>/g)||[]).length,3);
+ assert.match(h.get('nextStepsList').innerHTML,/Python file/);
+ h.sendState({folderExists:true,entryExists:true,guideExists:true,id:'cs50p-0-indoor',progress:{checked:true}});
+ assert.match(h.get('nextStepsList').innerHTML,/Review the actual check50 output/);
+ assert.doesNotMatch(h.get('nextStepsList').innerHTML,/passed|grade: 100/i);
+});
+
+test('debugging reads selected or copied text only on explicit button clicks',()=>{
+ const h=harness();h.sendState({folderExists:true,entryExists:true,guideExists:true});
+ h.clickTab('test');
+ const initial=h.messages.length;
+ h.click('useClipboardDebug');
+ assert.equal(h.messages.length,initial+1);
+ const request=h.messages.at(-1);
+ assert.equal(request.type,'useClipboardDebug');
+ assert.equal(request.assignmentId,'cs50p-0-indoor');
+ assert.equal(h.get('testReviewDetails').open,true);
+ h.receive({type:'debugText',assignmentId:'cs50p-0-indoor',
+  requestId:request.requestId,ok:true,text:':( expected "Hello", saw "hello"'});
+ assert.equal(h.get('errorInput').value,':( expected "Hello", saw "hello"');
+ const analyzed=h.messages.at(-1);
+ assert.equal(analyzed.type,'analyzeError');
+ assert.match(analyzed.errorText,/expected/);
+ h.receive({type:'testDebugAdvice',assignmentId:'cs50p-0-indoor',requestId:analyzed.requestId,
+  ok:true,advice:{title:'Output mismatch',guidance:'Check capitalization.',
+   location:'Check the terminal.',next:'Run it again.'}});
+ assert.equal(h.get('debugTitle').textContent,'Output mismatch');
+ h.click('useSelectedDebug');
+ assert.equal(h.messages.at(-1).type,'useSelectedDebug');
+});
