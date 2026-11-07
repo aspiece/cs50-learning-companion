@@ -239,6 +239,7 @@ function html(webview,extensionUri){
  <label for="reflection">What did you learn, and how did you know the code worked?</label>
  <textarea id="reflection" data-field="reflection" rows="3" maxlength="3000" placeholder="I learned... I tested..."></textarea>
  </div>
+ </details>
  <button class="button" type="button" data-action="submit">Open submit50 in terminal</button>
  <button id="cs50Status" type="button" class="button secondary" data-action="cs50Status">Check my CS50P submission status</button>
  <p class="note">Opens the official CS50P gradebook in your browser. Sign in with your CS50 GitHub account. This app does not read your grades.</p>
