@@ -3,6 +3,9 @@
 global.window=global.window||{};
 require('../content/cs50p-starters.js');
 const catalog=global.window.pythonLabCS50P;
+const {codehsLessonForAssignment}=require('./codehs-lessons');
+const {conceptVideoForAssignment}=require('./concept-videos');
+const CS50_GRADEBOOK='https://cs50.me/cs50p';
 if(!catalog || catalog.catalog().length!==41) throw new Error('CS50P catalog could not load');
 function list(){return catalog.catalog();}
 function get(id){return catalog.get(id);}
@@ -75,6 +78,8 @@ function guideForCodespace(a){
  safeAssignment(a);
  const base=a.files['README.md']||'';
  const guide=teachingGuide(a);
+ const codehs=codehsLessonForAssignment(a);
+ const cs50Video=conceptVideoForAssignment(a);
  const code=value=>String.fromCharCode(96)+value+String.fromCharCode(96);
  const numbered=items=>items.map((item,i)=>(i+1)+'. '+item);
  const bullet=items=>items.map(item=>'- '+item);
@@ -132,29 +137,36 @@ function guideForCodespace(a){
  return [
   '# '+a.title,'',
   '**CS50P · Problem Set '+a.set+'**  ',
-  '**File'+(fileNames.length===1?'':'s')+':** '+fileNames.map(code).join(', '),'',
-  '[Read Harvard’s Official Instructions]('+a.url+')','',
-  '## Your Goal','',
+  '**Python file'+(fileNames.length===1?'':'s')+':** '+fileNames.map(code).join(', '),'',
+  '## The problem','',
   details.goal||mission,'',
-  '## Build It','',
+  '**Your task:**','',
   ...numbered(steps),'',
   ...thought,
   ...neededFiles,
   ...(neededFiles.length?['']:[]),
-  '## Test It','',
-  ...bullet(tests),
-  '',
-  'Compare your results with the examples and rules on Harvard’s problem page.','',
-  '## Check It','',
-  'Run your program'+(a.set===5?' tests':'')+': '+code(run)+'.',
+  '**Full instructions:** [Harvard CS50P problem, examples, and hints]('+a.url+').',
+  'This is a student-friendly summary. Harvard’s page has the exact rules and special cases.','',
+  '## Test your program','',
+  ...bullet(tests),'',
+  'Try an ordinary input and one unusual input. Compare the result with Harvard’s examples.','',
+  '## Need help? (optional)','',
+  ...(codehs?['- [CodeHS: '+codehs.title+']('+codehs.url+') — a related Python lesson overview.']:[]),
+  ...(cs50Video?['- [CS50P short: '+cs50Video.title+']('+cs50Video.url+') — an official concept lesson.']:[]),
+  '- [Harvard’s full problem page]('+a.url+') — official instructions, any provided hints, and demo.',
+  '- Use **Learn** in the Companion if you want more guided questions or hints.','',
+  '## Check and submit','',
+  'Run: '+code(run)+'.',
   ...(testCommand?['Run your tests: '+code(testCommand)+'.']:[]),
-  'Check your work: '+code(check)+'.',
-  'Read any errors, make a change, and test again.','',
-  '## Submit','',
-  'When your work is ready, use the Companion’s **Submit** tab (or '+code(submit)+').',
-  'Only send the files Harvard requests. Your README and Learning Journal are for learning, not submission.',
+  'Check: '+code(check)+'.',
+  'Submit: '+code(submit)+'.',
+  'Read any errors, make one change, and test again.','',
+  '**[Check my official CS50P submission status]('+CS50_GRADEBOOK+')** — sign in with the GitHub account you used for CS50.',
+  'The Companion cannot read your gradebook or confirm your submission.',
+  'Only send the files Harvard requests. Your README and Learning Journal are for learning, not submission.','',
+  '*Based on Harvard CS50P problem specifications. Summary and support text adapted for GCI students; [Harvard CS50P license (CC BY-NC-SA 4.0)](https://cs50.harvard.edu/python/license/). This is not an official Harvard publication.*',
   ''
  ].join('\n');
 }
 
-module.exports={list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide};
+module.exports={list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide,CS50_GRADEBOOK};
