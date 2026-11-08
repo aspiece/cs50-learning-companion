@@ -260,3 +260,31 @@ test('debugging reads selected or copied text only on explicit button clicks',()
  h.click('useSelectedDebug');
  assert.equal(h.messages.at(-1).type,'useSelectedDebug');
 });
+
+
+test('Writing Python opens an optional lookup that filters by method name and purpose',()=>{
+ const h=harness();
+ h.sendState();
+ h.click('coachToggle');
+ h.click('coachUnderstand');
+ assert.equal(h.get('stringLookup').hidden,true);
+ h.click('coachCoding');
+ assert.equal(h.get('stringLookup').hidden,false);
+ const search=h.get('stringSearch');
+ const methods=require('../src/string-methods');
+ const rows=methods.map(({label,purpose})=>({firstElementChild:{textContent:label+' '+purpose}}));
+ h.get('stringMethodList').children=rows;
+ const visible=query=>{
+  search.listeners.input({target:{value:query}});
+  return methods.filter((_,index)=>!rows[index].hidden).map(method=>method.label);
+ };
+ assert.equal(methods.length,16);
+ assert.deepEqual(visible('  .LSTRIP()  '),['.lstrip(chars)']);
+ assert.deepEqual(visible('spaces from both'),['.strip()']);
+ assert.deepEqual(visible('unmatched'),[]);
+ assert.match(h.get('stringLookupStatus').textContent,/No methods found/);
+ assert.equal(visible('').length,16);
+ h.click('coachError');
+ assert.equal(h.get('stringLookup').hidden,true);
+ assert.equal(h.messages.length,1,'Lookup runs entirely in the sidebar');
+});

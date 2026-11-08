@@ -108,6 +108,7 @@
  function renderCoach(){
   const clues=coachReason?state?.coach?.clues?.[coachReason]||[]:[];
   $('coachClueBox').hidden=!coachReason;
+  $('stringLookup').hidden=coachReason!=='coding';
   if(!coachReason)return;
   const titles={understand:'Understanding the problem',coding:'Writing Python',debug:'Debugging an error'};
   $('coachTopic').textContent=titles[coachReason]||'A small clue';
@@ -221,6 +222,18 @@
  $('search').addEventListener('input',e=>{query=e.target.value;persist();applyFilters();});
  $('setFilter').addEventListener('change',e=>{setFilter=Number(e.target.value);persist();applyFilters();});
  $('problem').addEventListener('change',e=>post('select',{id:e.target.value}));
+ $('stringSearch').addEventListener('input',e=>{
+  const terms=e.target.value.toLowerCase().split(/[\s().,]+/).filter(Boolean);
+  let count=0;
+  for(const row of $('stringMethodList').children){
+   const summary=row.firstElementChild.textContent.toLowerCase();
+   row.hidden=!terms.every(term=>summary.includes(term));
+   if(!row.hidden)count++;
+  }
+  $('stringLookupStatus').textContent=count?
+   count+(count===1?' method found':' methods found'):
+   'No methods found. Try another word.';
+ });
  document.addEventListener('click',e=>{
   const tabButton=e.target.closest('button[data-tab]');
   if(tabButton){tab=tabButton.dataset.tab;persist();showTab();render();return;}

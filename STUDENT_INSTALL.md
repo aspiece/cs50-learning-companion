@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.9.0** or a newer version.
+You should see version **0.9.1** or a newer version.
 
 ## Complete a problem
 
@@ -43,7 +43,7 @@ You should see version **0.9.0** or a newer version.
 2. **Test.** Run your code and compare its output with the examples in your README. Use **Run check50** for CS50’s checks and **Run style50** for formatting. Use **Debug one thing** if you need help with an error.
 3. **Submit.** Select **Open submit50 in terminal**. Review the file list before you confirm. Open **Check my CS50P submission status** and sign in to see the official result.
 
-Choose **I’m stuck** on Start for one clue at a time. The README has links to Harvard’s full instructions, related CS50 shorts, and a matching CodeHS lesson where available.
+Choose **I’m stuck** on Start for one clue at a time. Under **Writing Python**, open **Look up Python string methods**. Search by name or try a word like “spaces.” Open a method to see an example and its result. The README has links to Harvard’s full instructions, related CS50 shorts, and a matching CodeHS lesson where available.
 
 If an older README still mentions Learn, choose **More options → Update my README guide**. The Companion asks before replacing it and saves a backup.
 

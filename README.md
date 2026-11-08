@@ -4,13 +4,13 @@ A VS Code extension for guided, solution-free CS50P practice in [cs50.dev](https
 
 **Live classroom check:** After updating to v0.9.0 or newer, follow the [Start screen Codespaces test checklist](LIVE_CODESPACES_CHECK.md) to verify the new/returning assignment workflow without deleting or changing student code.
 
-## Student workflow in v0.9.0
+## Student workflow
 
-- **Start** opens the assignment README and Python file. **I’m stuck** gives one clue at a time. The README links to Harvard’s instructions, related CS50 shorts, and matching CodeHS lessons where available.
+- **Start** opens the assignment README and Python file. **I’m stuck** gives one clue at a time. Under **Writing Python**, open **Look up Python string methods** to search examples. The README links to Harvard’s instructions, related CS50 shorts, and matching CodeHS lessons where available.
 - **Test** runs Python or pytest, check50, and style50. Open **Debug one thing** to get help with a Python error or a failed check50 result.
 - **Submit** opens submit50 and the official CS50P gradebook.
 
-This release removes the Learn tab, support levels, the separate String Methods Toolkit, and the journal and reflection forms. Existing student files are preserved. Older READMEs can be refreshed from **More options** after backing up the previous guide.
+Version 0.9.0 removed the Learn tab, support levels, the separate String Methods Toolkit, and the journal and reflection forms. Existing student files are preserved. Older READMEs can be refreshed from **More options** after backing up the previous guide.
 
 ## Install or update in CS50 Codespaces
 

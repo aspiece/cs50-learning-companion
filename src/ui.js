@@ -1,6 +1,21 @@
 'use strict';
 const vscode=require('vscode');
 const crypto=require('node:crypto');
+const stringMethods=require('./string-methods');
+
+function escapeText(value){
+ return value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+}
+
+function renderStringMethods(){
+ return stringMethods.map(({label,purpose,example,result,tip})=>`
+  <details class="string-method">
+   <summary><code>${escapeText(label)}</code> <span>${escapeText(purpose)}</span></summary>
+   <pre><code>${escapeText(example)}</code></pre>
+   <p>Returns <code>${escapeText(result)}</code></p>
+   ${tip?`<p class="note">${escapeText(tip)}</p>`:''}
+  </details>`).join('');
+}
 function html(webview,extensionUri){
  const nonce=crypto.randomBytes(16).toString('hex');
  const css=webview.asWebviewUri(vscode.Uri.joinPath(extensionUri,'media','sidebar.css'));
@@ -63,6 +78,13 @@ function html(webview,extensionUri){
    <button id="coachNext" class="button secondary" type="button" data-action="coachNext">Another clue</button>
    <button id="coachDebug" class="button link" type="button" data-action="coachDebug" hidden>Open error helper</button>
   </div>
+  <details class="quiet-details" id="stringLookup" hidden>
+   <summary>Look up Python string methods</summary>
+   <label for="stringSearch">Find a method</label>
+   <input id="stringSearch" type="search" placeholder="Try lowercase, spaces, or split">
+   <p class="note" id="stringLookupStatus" role="status"></p>
+   <div id="stringMethodList">${renderStringMethods()}</div>
+  </details>
   <p class="note">One clue at a time. No finished solutions or changes to your code.</p>
  </div>
  <section class="next-steps" aria-label="Suggested next steps">
