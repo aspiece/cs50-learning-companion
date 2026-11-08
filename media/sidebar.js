@@ -154,23 +154,25 @@
    status:'attention',symbol:'!'
   };
   return {
-   title:'Starter files ready',
-   description:'Your assignment folder and Python file are here.',
    action:'openFiles',button:'Continue coding',
    next:'Opens your README and Python file side by side. Your work is not replaced.',
-   status:'ready',symbol:'✓'
+   status:'ready'
   };
  }
  function renderStartScreen(){
   const model=startScreenModel(state.folderExists,state.entryExists,state.guideExists);
   $('startStatus').dataset.status=model.status;
-  $('startStatusTitle').textContent=model.title;
-  $('startStatusDescription').textContent=model.description;
-  $('startStatusIcon').textContent=model.symbol;
+  $('startStatus').hidden=model.status==='ready';
+  if(model.status!=='ready'){
+   $('startStatusTitle').textContent=model.title;
+   $('startStatusDescription').textContent=model.description;
+   $('startStatusIcon').textContent=model.symbol;
+  }
   $('startPrimary').textContent=model.button;
   $('startPrimary').dataset.action=model.action;
   $('startNextStep').textContent=model.next;
   $('openGuide').disabled=!state.guideExists;
+  $('openOfficial').hidden=state.guideExists;
   $('updateGuide').disabled=!state.folderExists;
   $('updateGuide').textContent=state.guideExists?'Update my README guide':'Create missing README guide';
   renderCoach();

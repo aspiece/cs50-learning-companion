@@ -58,7 +58,6 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 /* Start tab: one clear next action, with optional secondary resources. */
 .start-status{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;margin:10px 0 12px;border:1px solid var(--vscode-panel-border);border-radius:8px;background:var(--vscode-sideBar-background)}
 .start-status-icon{flex:none;display:inline-grid;place-items:center;width:22px;height:22px;border:1px solid var(--vscode-panel-border);border-radius:50%;font-size:13px;font-weight:650;color:var(--vscode-descriptionForeground)}
-.start-status[data-status="ready"] .start-status-icon{color:var(--vscode-testing-iconPassed,var(--vscode-foreground));border-color:currentColor}
 .start-status[data-status="attention"] .start-status-icon{color:var(--vscode-editorWarning-foreground,var(--vscode-foreground));border-color:currentColor}
 .start-status-title{font-weight:650;font-size:13px;line-height:1.35}
 .panel .start-status p{margin:0}

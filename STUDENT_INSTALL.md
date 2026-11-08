@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.9.3** or a newer version.
+You should see version **0.9.4** or a newer version.
 
 ## Complete a problem
 

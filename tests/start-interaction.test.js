@@ -103,6 +103,9 @@ test('webview boots, then new assignment action posts create',()=>{
  assert.equal(h.get('startPrimary').textContent,'Create starter files');
  assert.equal(h.get('startPrimary').dataset.action,'create');
  assert.equal(h.get('startStatusTitle').textContent,'Ready to begin');
+ assert.equal(h.get('openOfficial').hidden,false);
+ h.click('openOfficial');
+ assert.equal(h.messages.at(-1).type,'official');
  assert.equal(h.get('openGuide').disabled,true);
  assert.equal(h.get('updateGuide').disabled,true);
  h.click('startPrimary');
@@ -114,7 +117,8 @@ test('real UI switches to Continue coding for an existing assignment',()=>{
  h.sendState({folderExists:true,entryExists:true,guideExists:true});
  assert.equal(h.get('startPrimary').textContent,'Continue coding');
  assert.equal(h.get('startPrimary').dataset.action,'openFiles');
- assert.equal(h.get('startStatusTitle').textContent,'Starter files ready');
+ assert.equal(h.get('startStatus').hidden,true);
+ assert.equal(h.get('openOfficial').hidden,true);
  assert.equal(h.get('openGuide').disabled,false);
  h.click('startPrimary');
  assert.equal(h.messages.at(-1).type,'openFiles');
@@ -125,6 +129,8 @@ test('partial folders do not offer file creation or accidental overwrite',()=>{
  h.sendState({folderExists:true,entryExists:false,guideExists:true});
  assert.equal(h.get('startPrimary').textContent,'Inspect assignment folder');
  assert.equal(h.get('startPrimary').dataset.action,'openFolder');
+ assert.equal(h.get('startStatus').hidden,false);
+ assert.equal(h.get('openOfficial').hidden,true);
  h.click('startPrimary');
  assert.equal(h.messages.at(-1).type,'openFolder');
 });
@@ -136,6 +142,11 @@ test('missing README preserves Continue coding and exposes recovery action',()=>
  assert.equal(h.get('openGuide').disabled,true);
  assert.equal(h.get('updateGuide').disabled,false);
  assert.equal(h.get('updateGuide').textContent,'Create missing README guide');
+ assert.equal(h.get('startStatus').hidden,false);
+ assert.equal(h.get('openOfficial').hidden,false);
+ h.sendState({folderExists:true,entryExists:true,guideExists:true});
+ assert.equal(h.get('startStatus').hidden,true);
+ assert.equal(h.get('openOfficial').hidden,true);
  h.click('startPrimary');
  assert.equal(h.messages.at(-1).type,'openFiles');
  h.click('updateGuide');

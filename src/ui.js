@@ -90,7 +90,7 @@ function html(webview,extensionUri){
  <details id="startMore" class="start-more">
   <summary>More options</summary>
   <div class="start-more-actions">
-   <button class="button link" type="button" data-action="official">Open official CS50 instructions</button>
+   <button class="button link" id="openOfficial" type="button" hidden data-action="official">Open official CS50 instructions</button>
    <button class="button secondary" id="updateGuide" type="button" data-action="updateGuide">Update my README guide</button>
   </div>
   <p class="note">Updating the README asks for permission and saves a backup. Your Python work stays unchanged.</p>
