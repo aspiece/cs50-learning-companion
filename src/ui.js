@@ -87,11 +87,6 @@ function html(webview,extensionUri){
   </details>
   <p class="note">One clue at a time. No finished solutions or changes to your code.</p>
  </div>
- <section class="next-steps" aria-label="Suggested next steps">
-  <h3>What should I do next?</h3>
-  <ol id="nextStepsList"></ol>
-  <p class="note">Suggestions only. The Companion does not grade your work.</p>
- </section>
  <details id="startMore" class="start-more">
   <summary>More options</summary>
   <div class="start-more-actions">
@@ -106,10 +101,6 @@ function html(webview,extensionUri){
  <p class="note test-intro">Run your program and compare its output with the examples in your README.</p>
  <div class="card test-step">
   <h2>Run your program</h2>
-  <details id="testIdeasCard" class="test-extra">
-   <summary>Show ideas for testing</summary>
-   <div id="testIdeas" class="note"></div>
-  </details>
   <p class="test-command">Terminal command: <code id="testCommand"></code></p>
   <button class="button" id="runPython" type="button" data-action="run">Run Python</button>
   <p class="note" id="testTerminalStatus" aria-live="polite">Select Run to open a Codespaces terminal. Return here after checking the output.</p>
@@ -119,11 +110,7 @@ function html(webview,extensionUri){
   <p>Find the last error line in the terminal. Paste it here to get a clue, not an assignment solution.</p>
   <label for="errorInput">Error message (optional)</label>
   <textarea id="errorInput" rows="3" maxlength="6000" placeholder="Paste a Python traceback or a failed check50 result here."></textarea>
-  <div class="actions">
-   <button class="button secondary" id="useClipboardDebug" type="button" data-action="useClipboardDebug">Use copied output</button>
-   <button class="button secondary" id="useSelectedDebug" type="button" data-action="useSelectedDebug">Use selected text</button>
-  </div>
-  <p class="note">Copy output from the terminal first, or select error text in an editor. No automatic terminal reading.</p>
+  <button class="button secondary" id="useClipboardDebug" type="button" data-action="useClipboardDebug">Use copied output</button>
   <button class="button secondary" id="analyzeError" type="button" data-action="analyzeError">Explain this result</button>
   <div id="errorAdvice" class="test-advice" role="status" aria-live="polite" hidden>
    <h3 id="debugTitle"></h3>
@@ -152,13 +139,6 @@ function html(webview,extensionUri){
   <p class="note">The companion submits from a temporary copy without guide files or old journals. Check CS50's file list before confirming. Only CS50 can confirm submission.</p>
  </details>
 </section>
-<section class="progress" aria-label="Personal progress"><details class="quiet-details" id="progressDetails"><summary>My progress (optional)</summary>
- <div class="eyebrow">My progress</div>
- <p id="progressText" class="note">0 of 4 steps checked</p>
- <div class="meter" role="presentation"><div id="meter" class="meter-fill" style="width:0%"></div></div>
- <div id="checks"></div>
- <p class="note">These checkmarks are saved in this workspace and are self-reported.</p>
-</details></section>
 <footer>
  <button class="button secondary" id="checkUpdate" type="button" data-action="checkUpdate">Check for updates</button>
  <p id="updateStatus" class="note" aria-live="polite">Update status: not checked yet.</p>

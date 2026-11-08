@@ -8,7 +8,7 @@ const path=require('node:path');
 const browserSource=fs.readFileSync(path.join(__dirname,'../media/sidebar.js'),'utf8');
 const uiSource=fs.readFileSync(path.join(__dirname,'../src/ui.js'),'utf8');
 const markupIds=new Set([...uiSource.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
-const {coachClues,nextActions}=require('../src/coach-model');
+const {coachClues}=require('../src/coach-model');
 
 function makeElement(id){
  const listeners={};
@@ -58,7 +58,7 @@ function harness(saved={}){
   document,window,acquireVsCodeApi:()=>api,
   setTimeout,clearTimeout,Map,Set
  },{timeout:2000});
- function sendState({folderExists=false,entryExists=false,guideExists=false,id='cs50p-0-indoor',progress={}}={}){
+ function sendState({folderExists=false,entryExists=false,guideExists=false,id='cs50p-0-indoor'}={}){
   listeners['window:message']({data:{
    type:'state',version:'0.7.5',
    options:[
@@ -71,17 +71,14 @@ function harness(saved={}){
     description:'Practice writing your own code',entryFile:id.includes('coke')?'coke.py':'indoor.py'
    },
    folderExists,entryExists,guideExists,
-   testIdeas:['Try a sample'],
-   coach:{nextSteps:nextActions({folderExists,entryExists,guideExists,progress}),
-    clues:{
+   coach:{clues:{
      understand:coachClues({title:'Indoor Voice'},
       {understand:['What is the input?','What is the output?']},'understand'),
      coding:coachClues({title:'Indoor Voice'},
       {steps:['Begin with the input'],hints:['Try a short example']},'coding'),
      debug:coachClues({}, {},'debug')
     }
-   },
-   progress
+   }
   }});
  }
  function click(id){
@@ -226,19 +223,7 @@ test('Stuck error path opens existing Test and Debug instead of another tab',()=
  assert.equal(h.get('coachPanel').hidden,true,'new assignment resets clues');
 });
 
-test('next steps show at most 3 actions and respond to file state and reports',()=>{
- const h=harness();h.sendState();
- assert.equal((h.get('nextStepsList').innerHTML.match(/<li>/g)||[]).length,3);
- assert.match(h.get('nextStepsList').innerHTML,/Create the assignment folder/);
- h.sendState({folderExists:true,entryExists:true,guideExists:true,id:'cs50p-2-coke'});
- assert.equal((h.get('nextStepsList').innerHTML.match(/<li>/g)||[]).length,3);
- assert.match(h.get('nextStepsList').innerHTML,/Python file/);
- h.sendState({folderExists:true,entryExists:true,guideExists:true,id:'cs50p-0-indoor',progress:{checked:true}});
- assert.match(h.get('nextStepsList').innerHTML,/Review the actual check50 output/);
- assert.doesNotMatch(h.get('nextStepsList').innerHTML,/passed|grade: 100/i);
-});
-
-test('debugging reads selected or copied text only on explicit button clicks',()=>{
+test('debugging reads copied text only after a student clicks',()=>{
  const h=harness();h.sendState({folderExists:true,entryExists:true,guideExists:true});
  h.clickTab('test');
  const initial=h.messages.length;
@@ -257,8 +242,7 @@ test('debugging reads selected or copied text only on explicit button clicks',()
   ok:true,advice:{title:'Output mismatch',guidance:'Check capitalization.',
    location:'Check the terminal.',next:'Run it again.'}});
  assert.equal(h.get('debugTitle').textContent,'Output mismatch');
- h.click('useSelectedDebug');
- assert.equal(h.messages.at(-1).type,'useSelectedDebug');
+ assert.equal(h.get('useSelectedDebug'),null);
 });
 
 

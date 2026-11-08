@@ -7,7 +7,7 @@ A VS Code extension for guided, solution-free CS50P practice in [cs50.dev](https
 ## Student workflow
 
 - **Start** opens the assignment README and Python file. **I’m stuck** gives one clue at a time. Under **Writing Python**, open **Look up Python string methods** to search examples. The README links to Harvard’s instructions, related CS50 shorts, and matching CodeHS lessons where available.
-- **Test** runs Python or pytest, check50, and style50. Open **Debug one thing** to get help with a Python error or a failed check50 result.
+- **Test** runs Python or pytest, check50, and style50. Use the README for test ideas. In **Debug one thing**, paste an error or choose **Use copied output**.
 - **Submit** opens submit50 and the official CS50P gradebook.
 
 Version 0.9.0 removed the Learn tab, support levels, the separate String Methods Toolkit, and the journal and reflection forms. Existing student files are preserved. Older READMEs can be refreshed from **More options** after backing up the previous guide.
@@ -176,7 +176,7 @@ The toolkit includes links to [Harvard's CS50P String Methods lesson](https://cs
 - Choose from all 41 problems in CS50P problem sets 0–8.
 - Create official assignment-named folders and unsolved Python scaffolds.
 - Read README guidance and official assignment instructions.
-- Use progressive hints, starter checklists, and beginner error descriptions.
+- Use assignment clues, the string method lookup, and beginner error descriptions.
 - Run Python, check50, style50, and student-confirmed submit50 in the real Codespaces terminal.
 - Existing assignment folders are preserved. The checklist is self-reported; CS50 alone confirms submissions.
 

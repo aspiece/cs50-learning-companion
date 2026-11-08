@@ -2,7 +2,6 @@
 (() => {
  const api=acquireVsCodeApi();
  const $=id=>document.getElementById(id);
- const steps=[['starter','Files ready'],['tested','Program tested'],['checked','check50 reviewed'],['submitted','Submission verified by me']];
  const tabs=['start','test','submit'];
  let currentAssignmentId=null;
  let state=null;
@@ -99,12 +98,6 @@
   $('debugNext').textContent='';
   post('analyzeError',{requestId,assignmentId:state.assignment.id,errorText:raw});
  }
- function renderNextSteps(){
-  const ideas=state?.coach?.nextSteps||[];
-  $('nextStepsList').innerHTML=ideas.slice(0,3).map(item=>
-   '<li>'+escapeHtml(item)+'</li>'
-  ).join('');
- }
  function renderCoach(){
   const clues=coachReason?state?.coach?.clues?.[coachReason]||[]:[];
   $('coachClueBox').hidden=!coachReason;
@@ -174,7 +167,6 @@
   $('openGuide').disabled=!state.guideExists;
   $('updateGuide').disabled=!state.folderExists;
   $('updateGuide').textContent=state.guideExists?'Update my README guide':'Create missing README guide';
-  renderNextSteps();
   renderCoach();
  }
  function showTab(){
@@ -189,7 +181,7 @@
  }
  function render(){
   if(!state)return;
-  const a=state.assignment,p=state.progress||{};
+  const a=state.assignment;
   const changed=a.id!==currentAssignmentId;
   currentAssignmentId=a.id;
   if(changed)$('startMore').open=false;
@@ -206,11 +198,6 @@
   $('description').textContent=a.description;
   $('folder').textContent=a.slug+'/';
   $('version').textContent='v'+state.version;
-  const count=steps.filter(([key])=>p[key]===true).length;
-  $('progressText').textContent=count+' of '+steps.length+' steps checked';
-  $('meter').style.width=(count/steps.length*100)+'%';
-  $('checks').innerHTML=steps.map(([key,label])=>'<label class="check"><input type="checkbox" data-step="'+key+'" '+(p[key]?'checked':'')+'><span>'+escapeHtml(label)+'</span></label>').join('');
-  $('testIdeas').innerHTML=state.testIdeas.length?'<ul>'+state.testIdeas.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ul>':'Test one ordinary case and one unusual case from the official problem instructions.';
   renderStartScreen();
   renderTestWorkflow();
   $('folderStatus').textContent=state.folderExists?'Folder found':'Not set up yet';
@@ -255,11 +242,11 @@
     $('errorInput').focus();
     return;
    }
-   if(b.dataset.action==='useClipboardDebug'||b.dataset.action==='useSelectedDebug'){
+   if(b.dataset.action==='useClipboardDebug'){
     const requestId=++lastClipboardRequestId;
     $('debugHelp').open=true;
     $('errorAdvice').hidden=false;
-    $('debugTitle').textContent='Getting the text you selected…';
+    $('debugTitle').textContent='Reading copied output…';
     $('debugGuidance').textContent='';
     $('debugLocation').textContent='';
     $('debugNext').textContent='';
@@ -276,9 +263,6 @@
    post(b.dataset.action);
   }
  });
- document.addEventListener('change',e=>{
-  if(e.target.matches('input[data-step]'))post('progress',{step:e.target.dataset.step,value:e.target.checked});
- });
  $('tabs').addEventListener('keydown',e=>{
   if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
   const i=tabs.indexOf(tab);
@@ -292,7 +276,7 @@
     e.data.requestId!==lastClipboardRequestId)return;
    if(!e.data.ok){
     $('errorAdvice').hidden=false;
-    $('debugTitle').textContent='No output selected';
+    $('debugTitle').textContent='No copied output';
     $('debugGuidance').textContent=e.data.error||'Copy the relevant error text first.';
     $('debugLocation').textContent='';
     $('debugNext').textContent='';

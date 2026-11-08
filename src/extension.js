@@ -5,7 +5,7 @@ const {version}=require('../package.json');
 const RELEASES_URL='https://github.com/aspiece/cs50-learning-companion/releases';
 const {list,get,submissionPath,safeAssignment,guideForCodespace,teachingGuide,CS50_GRADEBOOK}=require('./core');
 const {explainTerminalError}=require('./debugging');
-const {coachClues,nextActions}=require('./coach-model');
+const {coachClues}=require('./coach-model');
 const updater=require('./updater');
 const utf=s=>Buffer.from(s,'utf8');
 const shellQuote=s=>"'"+String(s).replace(/'/g,"'\\''")+"'";
@@ -152,7 +152,6 @@ class Companion {
   }finally{this.updateBusy=false;}
  }
 
- key(){return 'progress:'+this.id;}
  async refresh(){
   if(!this.view)return;
   const a=get(this.id);
@@ -161,15 +160,12 @@ class Companion {
   const folderExists=directory?await exists(directory):false;
   const guideExists=folderExists?await exists(join(directory,'README.md')):false;
   const entryExists=folderExists?await exists(join(directory,a.entryFile)):false;
-  const progress=this.ctx.workspaceState.get(this.key(),{});
-  const coach={nextSteps:nextActions({folderExists,entryExists,guideExists,progress}),
-   clues:{
+  const coach={clues:{
     understand:coachClues(a,learning,'understand'),
     coding:coachClues(a,learning,'coding'),
     debug:coachClues(a,learning,'debug')
-   }
-  };
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,testIdeas:learning.checks,coach,progress});
+  }};
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,coach});
  }
  async term(a,kind){
   const report=async status=>{
@@ -212,7 +208,7 @@ class Companion {
    }
    const a=get(this.id);
    switch(m.type){
-    case 'create':if(await createStarter(a)){await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),starter:true});}await this.refresh();break;
+    case 'create':await createStarter(a);await this.refresh();break;
     case 'openFiles':await openStarterFiles(a);break;
     case 'cs50Status':{
      await vscode.env.openExternal(vscode.Uri.parse(CS50_GRADEBOOK));break;
@@ -237,22 +233,13 @@ class Companion {
       break;
     }
     case 'run':case 'check':case 'style':await this.term(a,m.type);break;
-    case 'useClipboardDebug':case 'useSelectedDebug':{
+    case 'useClipboardDebug':{
      const requestId=Number.isSafeInteger(m.requestId)?m.requestId:0;
      if(m.assignmentId!==this.id)break;
      try{
-      let content='';
-      if(m.type==='useClipboardDebug'){
-       content=await vscode.env.clipboard.readText();
-      }else{
-       const editor=vscode.window.activeTextEditor;
-       content=editor&&!editor.selection.isEmpty?editor.document.getText(editor.selection):'';
-      }
-      if(typeof content!=='string'||!content.trim())
-       throw new Error(m.type==='useClipboardDebug'?
-        'Copy the error or check50 output from the terminal first.':
-        'Select the error text in an editor first. For terminal output, use Copy then Use copied output.');
-      if(content.length>6000)throw new Error('Select or copy just the error details (up to 6,000 characters).');
+      const content=await vscode.env.clipboard.readText();
+      if(!content.trim())throw new Error('Copy the error or check50 output from the terminal first.');
+      if(content.length>6000)throw new Error('Copy just the error details (up to 6,000 characters).');
       if(this.view)await this.view.webview.postMessage({
        type:'debugText',assignmentId:a.id,requestId,ok:true,text:content
       });
@@ -284,12 +271,6 @@ class Companion {
     case 'submit':{
       const ok=await vscode.window.showWarningMessage('Submit your own work to CS50? The extension will use a temporary copy without the Learning Journal or generated README. Check the file list CS50 shows before you confirm.',{modal:true},'Run submit50');
       if(ok==='Run submit50')await this.term(a,'submit');
-      break;
-    }
-    case 'progress':{
-      if(!['starter','tested','checked','submitted'].includes(m.step)||typeof m.value!=='boolean')break;
-      await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),[m.step]:m.value});
-      await this.refresh();
       break;
     }
    }

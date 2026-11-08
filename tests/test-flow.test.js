@@ -73,8 +73,7 @@ function simulate(){
     {id:'cs50p-5-test_fuel',title:'Testing Fuel',slug:'test_fuel',set:5}
    ],
    assignment:{id,title:id.includes('fuel')?'Testing Fuel':'Indoor Voice',slug:id.includes('fuel')?'test_fuel':'indoor',set,entryFile:id.includes('fuel')?'test_fuel.py':'indoor.py',description:'Practice'},
-   folderExists:exists,entryExists:exists,guideExists:exists,progress:{},
-   testIdeas:['Normal test']
+   folderExists:exists,entryExists:exists,guideExists:exists
   }});
  };
  const click=id=>{
@@ -86,10 +85,10 @@ function simulate(){
  return {get,send,click,reply,messages,storage};
 }
 
-test('Test tab shows manual testing, optional debugging and official tools',()=>{
+test('Test tab shows running Python, optional debugging and official tools',()=>{
  const section=ui.slice(ui.indexOf('<section id="panel-test"'),ui.indexOf('<section id="panel-submit"'));
  for(const id of ['errorInput','errorAdvice',
-  'testTerminalStatus','testCheckStatus','runPython','runCheck50','runStyle50','testIdeas'])assert.match(section,new RegExp('id="'+id+'"'));
+  'testTerminalStatus','testCheckStatus','runPython','runCheck50','runStyle50'])assert.match(section,new RegExp('id="'+id+'"'));
  for(const action of ['run','check','style','analyzeError'])assert.match(section,new RegExp('data-action="'+action+'"'));
  assert.match(section,/not an assignment solution/);
  assert.match(css,/\.test-advice/);

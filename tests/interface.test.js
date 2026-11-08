@@ -19,7 +19,7 @@ test('sidebar resources are present and browser scripts use CSP nonces',()=>{
 test('all navigation panels and existing actions remain available',()=>{
  for(const tab of ['start','test','submit']) assert.match(ui,new RegExp('id="panel-'+tab+'"'));
  for(const action of ['create','official','guide','toggleCoach','run','check','style','submit','checkUpdate']) assert.match(ui,new RegExp('data-action="'+action+'"'));
- assert.match(browser,/data-step/);
+ assert.doesNotMatch(ui,/progressDetails|nextStepsList|testIdeasCard|useSelectedDebug/);
  assert.match(browser,/data-tab/);
  assert.match(browser,/applyFilters/);
 });
@@ -27,13 +27,13 @@ test('UI respects VS Code theme and narrow sidebar layout',()=>{
  assert.match(css,/--vscode-/);
  assert.match(css,/@media\(max-width:240px\)/);
 });
-test('selected problem and progress remain workspace scoped',()=>{
+test('selected problem remains workspace scoped',()=>{
  assert.match(source,/selectedAssignment/);
  assert.match(source,/workspaceState/);
  assert.match(source,/folderExists/);
  assert.match(source,/guideExists/);
 });
-test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.9.1'));
+test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.9.2'));
 
 test('starter opens the README and entry Python file in separate editor columns',()=>{
  assert.match(source,/async function openStarterFiles/);
