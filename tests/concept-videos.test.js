@@ -1,8 +1,6 @@
 'use strict';
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
 const {list,get}=require('../src/core');
 const {TOPICS,ASSIGNMENT_TOPICS,conceptVideoForAssignment}=require('../src/concept-videos');
 
@@ -48,21 +46,4 @@ test('every topic has an official static Harvard page and clear reflection',()=>
   assert.ok(topic.focus.length>0);
   assert.ok(topic.question.length>0);
  }
-});
-
-test('video link appears only in guided mode, with no autoplay',()=>{
- const ui=fs.readFileSync(path.join(__dirname,'../src/ui.js'),'utf8');
- const client=fs.readFileSync(path.join(__dirname,'../media/sidebar.js'),'utf8');
- const backend=fs.readFileSync(path.join(__dirname,'../src/extension.js'),'utf8');
- assert.match(ui,/id="conceptVideoCard" hidden/);
- assert.match(ui,/data-action="openConceptVideo"/);
- assert.match(ui,/Optional CS50 concept video/);
- assert.match(client,/conceptVideoCard'\)\.hidden=level!=='guided'\|\|!video/);
- assert.match(client,/video\?\.title/);
- assert.match(client,/video\?\.focus/);
- assert.match(client,/video\.question/);
- assert.match(backend,/conceptVideoForAssignment\(a\)/);
- assert.match(backend,/case 'openConceptVideo':/);
- assert.match(backend,/vscode\.env\.openExternal\(vscode\.Uri\.parse\(resource\.url\)\)/);
- assert.doesNotMatch(ui,/autoplay|<iframe|youtu\.be|playlist=/i);
 });

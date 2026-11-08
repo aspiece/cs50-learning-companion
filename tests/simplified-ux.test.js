@@ -7,9 +7,7 @@ const {list,get,guideForCodespace,CS50_GRADEBOOK}=require('../src/core');
 const {codehsLessonForAssignment,LESSONS}=require('../src/codehs-lessons');
 
 const ui=fs.readFileSync(path.join(__dirname,'../src/ui.js'),'utf8');
-const client=fs.readFileSync(path.join(__dirname,'../media/sidebar.js'),'utf8');
 const backend=fs.readFileSync(path.join(__dirname,'../src/extension.js'),'utf8');
-const css=fs.readFileSync(path.join(__dirname,'../media/sidebar.css'),'utf8');
 
 test('every matched CodeHS resource goes to a real topic lesson, without guessed paths',()=>{
  const problems=list();
@@ -53,30 +51,17 @@ test('README contains standalone problem, steps, tests and CS50 support links fo
  }
 });
 
-test('student sidebar hides optional noise but leaves actions and tabs intact',()=>{
- for(const name of ['assignmentFilters','learnResources','progressDetails',
-  'testReviewDetails','submitReflection'])
-  assert.match(ui,new RegExp('<details[^>]*id="'+name+'"'));
- for(const name of ['openCodehsLesson','codehsSupport','codehsCourseNote','cs50Status'])
-  assert.match(ui,new RegExp('id="'+name+'"'));
- assert.match(ui,/data-action="openCodehsLesson"/);
- assert.match(ui,/data-action="cs50Status"/);
- assert.match(ui,/Check my CS50P submission status/);
- assert.match(client,/renderCodehsLesson/);
- assert.ok(client.includes("$('codehsSupport').hidden=!lesson"));
- assert.ok(css.includes('.quiet-details'));
- for(const tab of ['start','learn','test','submit'])assert.match(ui,new RegExp('id="panel-'+tab+'"'));
- for(const verb of ['openFiles','openJournal','editJournal','updateGuide','run','check','style','submit']){
+test('sidebar keeps the assignment workflow and removes unrelated panels',()=>{
+ for(const tab of ['start','test','submit'])assert.match(ui,new RegExp('id="panel-'+tab+'"'));
+ assert.doesNotMatch(ui,/panel-learn|goLearn|learnResources|submitReflection|data-field=/);
+ for(const verb of ['guide','toggleCoach','updateGuide','run','check','style','submit','cs50Status']){
   assert.ok(ui.includes('data-action="'+verb+'"'),'lost '+verb);
  }
 });
 
-test('CodeHS and gradebook navigation stays external; private grades are never retrieved',()=>{
- assert.match(backend,/case 'openCodehsLesson'/);
+test('Gradebook navigation stays external; private grades are never retrieved',()=>{
  assert.match(backend,/case 'cs50Status'/);
- assert.match(backend,/codehsLessonForAssignment\(a\)/);
  assert.match(backend,/CS50_GRADEBOOK/);
- assert.match(backend,/vscode\.env\.openExternal\(vscode\.Uri\.parse\(lesson\.url\)\)/);
  assert.match(backend,/vscode\.env\.openExternal\(vscode\.Uri\.parse\(CS50_GRADEBOOK\)\)/);
  assert.doesNotMatch(backend,/fetch\(CS50_GRADEBOOK\)|axios\.get\(CS50_GRADEBOOK\)/);
 });
@@ -90,9 +75,9 @@ test('expandable sections balance correctly and cannot hide Submit or gradebook'
   assert.ok(depth>=0,'extra closing details element');
  }
  assert.equal(depth,0,'unclosed optional section could hide critical buttons');
- const area=ui.slice(ui.indexOf('id="submitReflection"'),ui.indexOf('</section>',ui.indexOf('id="submitReflection"')));
- const close=area.indexOf('</details>');
+ const area=ui.slice(ui.indexOf('id="panel-submit"'),ui.indexOf('</section>',ui.indexOf('id="panel-submit"')));
+ const details=area.indexOf('<details');
  const submit=area.indexOf('data-action="submit"');
  const gradebook=area.indexOf('data-action="cs50Status"');
- assert.ok(close>=0&&close<submit&&close<gradebook,'Submit and gradebook must be visible outside optional reflection');
+ assert.ok(submit>=0&&submit<gradebook&&gradebook<details,'Submit and gradebook must be visible above optional details');
 });

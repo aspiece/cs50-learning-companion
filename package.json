@@ -2,7 +2,7 @@
   "name": "cs50-learning-companion",
   "displayName": "CS50 Learning Companion",
   "description": "Guided, solution-free CS50P support inside GitHub Codespaces",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "publisher": "geneseelearninglab",
   "license": "MIT",
   "engines": {
@@ -35,7 +35,7 @@
       "cs50Companion": [
         {
           "id": "cs50Companion.sidebar",
-          "name": "Guided Learning",
+          "name": "CS50 Problems",
           "type": "webview"
         }
       ]

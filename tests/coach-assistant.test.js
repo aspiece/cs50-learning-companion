@@ -86,12 +86,12 @@ test('text is read only for explicit clipboard or editor-selection actions',()=>
 });
 
 test('coaching stays in Start and Debug, with no new tab or forced documentation',()=>{
- const start=ui.slice(ui.indexOf('id="panel-start"'),ui.indexOf('id="panel-learn"'));
+ const start=ui.slice(ui.indexOf('id="panel-start"'),ui.indexOf('id="panel-test"'));
  const testUI=ui.slice(ui.indexOf('id="panel-test"'),ui.indexOf('id="panel-submit"'));
  for(const id of ['coachToggle','coachPanel','coachUnderstand','coachCoding',
   'coachError','coachClueBox','coachNext','coachDebug','nextStepsList'])
   assert.ok(start.includes('id="'+id+'"'),id);
  assert.match(start,/aria-expanded="false"/);
  assert.match(testUI,/id="errorAdvice"/);
- assert.equal((ui.match(/role="tab"/g)||[]).length,4);
+ assert.equal((ui.match(/role="tab"/g)||[]).length,3);
 });

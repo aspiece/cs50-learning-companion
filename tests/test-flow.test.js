@@ -48,7 +48,6 @@ function makeElement(id){
   closest(selector){
    if(selector==='button[data-tab]')return this.dataset.tab?this:null;
    if(selector==='button[data-action]')return this.dataset.action?this:null;
-   if(selector==='button[data-select-string]')return this.dataset.selectString?this:null;
    return null;
   }
  };
@@ -75,9 +74,7 @@ function simulate(){
    ],
    assignment:{id,title:id.includes('fuel')?'Testing Fuel':'Indoor Voice',slug:id.includes('fuel')?'test_fuel':'indoor',set,entryFile:id.includes('fuel')?'test_fuel.py':'indoor.py',description:'Practice'},
    folderExists:exists,entryExists:exists,guideExists:exists,progress:{},
-   journalStatus:'saved',forceNotes:false,hint:0,hints:['Think'],
-   learning:{understand:['Think'],steps:['Plan'],checks:['Normal test'],conceptVideo:null,stringToolkit:{methods:[],suggestion:null}},
-   practice:{testedCount:0,subjects:[]}
+   testIdeas:['Normal test']
   }});
  };
  const click=id=>{
@@ -85,22 +82,16 @@ function simulate(){
   assert.ok(e.dataset.action,'Expected button action for '+id);
   listeners.click({target:e});
  };
- const choose=(value)=>{
-  get('testOutcome').value=value;
-  get('testOutcome').listeners.change({target:get('testOutcome')});
- };
  const reply=data=>listeners['window:message']({data});
- return {get,send,click,choose,reply,messages,storage};
+ return {get,send,click,reply,messages,storage};
 }
 
-test('Test tab keeps prediction, observation, debugging notes and official tools',()=>{
+test('Test tab shows manual testing, optional debugging and official tools',()=>{
  const section=ui.slice(ui.indexOf('<section id="panel-test"'),ui.indexOf('<section id="panel-submit"'));
- for(const id of ['prediction','observed','debugNotes','testOutcome','errorInput','errorAdvice',
+ for(const id of ['errorInput','errorAdvice',
   'testTerminalStatus','testCheckStatus','runPython','runCheck50','runStyle50','testIdeas'])assert.match(section,new RegExp('id="'+id+'"'));
- for(const action of ['run','check','style','explain','analyzeError'])assert.match(section,new RegExp('data-action="'+action+'"'));
- assert.match(section,/not an automatic grade/);
+ for(const action of ['run','check','style','analyzeError'])assert.match(section,new RegExp('data-action="'+action+'"'));
  assert.match(section,/not an assignment solution/);
- assert.match(css,/\.test-next/);
  assert.match(css,/\.test-advice/);
  assert.doesNotMatch(section,/<iframe|autoplay/i);
 });
@@ -122,20 +113,10 @@ test('run action sends the terminal command but never claims Python passed',()=>
  h.reply({type:'testTerminalStatus',kind:'run',assignmentId:'cs50p-0-indoor',status:'opened'});
  assert.match(h.get('testTerminalStatus').textContent,/Command sent/);
  assert.doesNotMatch(h.get('testTerminalStatus').textContent,/passed|correct|success/i);
- h.choose('expected');
- assert.match(h.get('testNext').textContent,/You reported/);
- h.choose('different');
- assert.equal(h.get('debugHelp').open,true);
- assert.match(h.get('testNext').textContent,/Compare expected/);
- h.choose('error');
- assert.match(h.get('testNext').textContent,/Paste the last error/);
- h.click('runPython');
- assert.equal(h.get('testOutcome').value,'');
- assert.match(h.get('testNext').textContent,/not an automatic grade/);
 });
 
 test('pasted traceback is handled locally and stale replies are ignored',()=>{
- const h=simulate();h.send();h.choose('error');
+ const h=simulate();h.send();
  h.get('errorInput').value='File "indoor.py", line 3\nNameError: name "voice" is not defined';
  h.click('analyzeError');
  const msg=h.messages.at(-1);

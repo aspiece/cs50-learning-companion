@@ -1,6 +1,6 @@
 # GCI CS50 Companion — Live Codespaces Check
 
-Use this after installing **v0.7.5** or newer. The automated tests have passed, but this check verifies the interface in a real CS50 Codespace.
+Use this after installing **v0.9.0** or newer. The automated tests have passed, but this check verifies the interface in a real CS50 Codespace.
 
 **Important:** Use your own test Codespace or a test assignment. Do not delete, rename, or change a student's Python files to set up a test. Never submit a test assignment to CS50.
 
@@ -8,7 +8,7 @@ Use this after installing **v0.7.5** or newer. The automated tests have passed, 
 
 1. Open your Codespace at [cs50.dev](https://cs50.dev).
 2. In the GCI Companion sidebar, select **Check for updates**. Install the newest release if prompted, then reload.
-3. Confirm the version shown beside **CS50 Companion** is v0.7.5 or newer.
+3. Confirm the version shown beside **CS50 Companion** is v0.9.0 or newer.
 4. Keep the VS Code **Explorer** open so you can see files.
 
 ## Check A — A new assignment
@@ -21,7 +21,9 @@ Select an assignment you have **not started** and confirm its folder does not al
 - [ ] The README opens on the left and Python code on the right.
 - [ ] The starter contains TODO comments but not a completed solution.
 - [ ] **Continue coding** replaces **Create starter files** once the folder exists.
-- [ ] **Learning help** opens the Learn tab without changing assignment files.
+- [ ] The sidebar has **Start**, **Test**, and **Submit**.
+- [ ] **I’m stuck** shows one clue at a time. Its debugging option opens the error helper on Test.
+- [ ] The new folder contains the starter files and README without a generated journal.
 
 ## Check B — An existing assignment
 
@@ -33,7 +35,7 @@ Select an assignment with a Python file you already started. Make a note of one 
 - [ ] The code you noted is unchanged.
 - [ ] **Read README** opens the current guide.
 - [ ] **Open official CS50 instructions** opens Harvard's problem page.
-- [ ] **More options** shows the extra README and file-opening tools.
+- [ ] **More options** shows the README update and official instructions.
 
 ## Check C — Incomplete folders (optional)
 

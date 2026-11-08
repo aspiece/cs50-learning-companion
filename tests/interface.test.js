@@ -17,8 +17,8 @@ test('sidebar resources are present and browser scripts use CSP nonces',()=>{
  assert.match(source,/registerWebviewViewProvider/);
 });
 test('all navigation panels and existing actions remain available',()=>{
- for(const tab of ['start','learn','test','submit']) assert.match(ui,new RegExp('id="panel-'+tab+'"'));
- for(const action of ['create','official','guide','hint','run','check','style','explain','submit','updates']) assert.match(ui,new RegExp('data-action="'+action+'"'));
+ for(const tab of ['start','test','submit']) assert.match(ui,new RegExp('id="panel-'+tab+'"'));
+ for(const action of ['create','official','guide','toggleCoach','run','check','style','submit','checkUpdate']) assert.match(ui,new RegExp('data-action="'+action+'"'));
  assert.match(browser,/data-step/);
  assert.match(browser,/data-tab/);
  assert.match(browser,/applyFilters/);
@@ -33,7 +33,7 @@ test('selected problem and progress remain workspace scoped',()=>{
  assert.match(source,/folderExists/);
  assert.match(source,/guideExists/);
 });
-test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.8.1'));
+test('version is a new minor pilot release',()=>assert.equal(pkg.version,'0.9.0'));
 
 test('starter opens the README and entry Python file in separate editor columns',()=>{
  assert.match(source,/async function openStarterFiles/);
@@ -42,16 +42,6 @@ test('starter opens the README and entry Python file in separate editor columns'
  assert.match(source,/if\(await exists\(dir\)\)/);
  assert.match(source,/await openStarterFiles\(a\)/);
 });
-test('guided learning prompts and notes are present',()=>{
- for(const id of ['support','inputNotes','outputNotes','plan','prediction','observed','reflection','debugNotes','openFiles']){
-  assert.match(ui,new RegExp('id="'+id+'"'));
- }
- assert.match(browser,/data-field/);
- assert.match(browser,/state\.learning\.understand/);
- assert.match(browser,/state\.learning\.steps/);
- assert.match(source,/workspaceState\.update\(this\.key\(\)/);
-});
-
 test('students can refresh existing README without overwriting Python files',()=>{
  assert.match(ui,/data-action="updateGuide"/);
  assert.match(browser,/updateGuide/);
@@ -68,32 +58,17 @@ test('official CS50 instructions open directly in the regular browser',()=>{
  assert.doesNotMatch(ui,/data-action="officialExternal"|instructions in editor/);
 });
 
-test('learning notes sync to the Markdown journal with a separate editor action',()=>{
- assert.match(source,/async function ensureJournal/);
- assert.match(source,/async function writeJournalField/);
- assert.match(source,/createJournal\(a,oldNotes\)/);
- assert.match(source,/this\.journalWrites/);
- assert.match(ui,/data-action="openJournal"/);
- assert.match(ui,/data-action="reloadJournal"/);
- assert.match(browser,/journalSaved/);
- assert.match(browser,/scheduleLearning/);
-});
 test('check50 and submit50 run from isolated copies without the journal',()=>{
  assert.match(source,/clean-cs50-command\.sh/);
  assert.match(source,/case 'submit'/);
 });
 
-test('Markdown previews render student guides and journal without changing files',()=>{
+test('Markdown previews render student guides without changing files',()=>{
  assert.match(source,/async function openFormattedMarkdown/);
  assert.match(source,/executeCommand\(\s*'vscode\.openWith',uri,'vscode\.markdown\.preview\.editor'/);
  assert.match(source,/executeCommand\('markdown\.showPreview',uri/);
- assert.match(source,/case 'openJournal'/);
- assert.match(source,/case 'editJournal'/);
  assert.match(source,/case 'guide'/);
- assert.match(ui,/data-action="editJournal"/);
- assert.match(ui,/Preview formatted learning journal/);
  assert.match(ui,/Read README/);
- assert.match(browser,/editJournal/);
 });
 
 test('assignment selection and first sidebar opening automatically show the formatted preview',()=>{
@@ -122,7 +97,7 @@ test('direct Markdown preview chooses the requested editor group and falls back 
  const fallback=[];
  mock.commands.executeCommand=async(...args)=>{fallback.push(args);if(args[0]==='vscode.openWith')throw Error('Unsupported');};
  mock.window.showTextDocument=async(...args)=>fallback.push(['showTextDocument',...args]);
- assert.equal(await openPreview('journal-uri',1),true);
+ assert.equal(await openPreview('readme-uri',1),true);
  assert.equal(fallback[0][0],'vscode.openWith');
  assert.equal(fallback[1][0],'showTextDocument');
  assert.equal(fallback[2][0],'markdown.showPreview');

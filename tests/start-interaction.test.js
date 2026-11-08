@@ -27,13 +27,12 @@ function makeElement(id){
   closest(selector){
    if(selector==='button[data-tab]')return this.dataset.tab?this:null;
    if(selector==='button[data-action]')return this.dataset.action?this:null;
-   if(selector==='button[data-select-string]')return this.dataset.selectString?this:null;
    return null;
   }
  };
 }
 
-function harness(){
+function harness(saved={}){
  const elements=new Map();
  const get=id=>{
   // Match actual document.getElementById: missing IDs must not be faked.
@@ -42,7 +41,7 @@ function harness(){
   return elements.get(id);
  };
  const listeners={};
- const messages=[],storage={};
+ const messages=[],storage={state:saved};
  const document={
   getElementById:get,
   addEventListener(name,fn){listeners[name]=fn;}
@@ -72,12 +71,7 @@ function harness(){
     description:'Practice writing your own code',entryFile:id.includes('coke')?'coke.py':'indoor.py'
    },
    folderExists,entryExists,guideExists,
-   journalStatus:'pending',forceNotes:false,hint:0,hints:['Try an example'],
-   learning:{
-    understand:['What does it need?'],steps:['Read the problem'],checks:['Try a sample'],
-    conceptVideo:null,stringToolkit:{methods:[],suggestion:null}
-   },
-   practice:{testedCount:0,subjects:[]},
+   testIdeas:['Try a sample'],
    coach:{nextSteps:nextActions({folderExists,entryExists,guideExists,progress}),
     clues:{
      understand:coachClues({title:'Indoor Voice'},
@@ -124,7 +118,6 @@ test('real UI switches to Continue coding for an existing assignment',()=>{
  assert.equal(h.get('startPrimary').dataset.action,'openFiles');
  assert.equal(h.get('startStatusTitle').textContent,'Starter files ready');
  assert.equal(h.get('openGuide').disabled,false);
- assert.equal(h.get('openFiles').disabled,false);
  h.click('startPrimary');
  assert.equal(h.messages.at(-1).type,'openFiles');
 });
@@ -134,7 +127,6 @@ test('partial folders do not offer file creation or accidental overwrite',()=>{
  h.sendState({folderExists:true,entryExists:false,guideExists:true});
  assert.equal(h.get('startPrimary').textContent,'Inspect assignment folder');
  assert.equal(h.get('startPrimary').dataset.action,'openFolder');
- assert.equal(h.get('openFiles').disabled,true);
  h.click('startPrimary');
  assert.equal(h.messages.at(-1).type,'openFolder');
 });
@@ -152,17 +144,12 @@ test('missing README preserves Continue coding and exposes recovery action',()=>
  assert.equal(h.messages.at(-1).type,'updateGuide');
 });
 
-test('Learning help switches to Learn without changing files or sending a backend command',()=>{
- const h=harness();
+test('a saved Learn tab from an older version opens Start',()=>{
+ const h=harness({tab:'learn'});
  h.sendState({folderExists:true,entryExists:true,guideExists:true});
- const previousMessages=h.messages.length;
- h.click('startLearningHelp');
- assert.equal(h.messages.length,previousMessages);
- assert.equal(h.get('panel-learn').hidden,false);
- assert.equal(h.get('panel-start').hidden,true);
- assert.equal(h.get('tab-learn').attributes['aria-selected'],'true');
- assert.equal(h.storage.state.tab,'learn');
- assert.equal(h.get('tab-learn').focused,true);
+ assert.equal(h.get('panel-learn'),null);
+ assert.equal(h.get('panel-start').hidden,false);
+ assert.equal(h.get('tab-start').attributes['aria-selected'],'true');
 });
 
 test('switching assignments updates Start action and collapses More options',()=>{
@@ -180,32 +167,24 @@ test('every sidebar element referenced by a literal ID exists in the rendered HT
  const referenced=[...browserSource.matchAll(/\$\('([^']+)'\)/g)].map(match=>match[1]);
  const missing=[...new Set(referenced.filter(id=>!markupIds.has(id)))];
  assert.deepEqual(missing,[],'Missing HTML element IDs can crash render() before tabs switch');
- for(const tab of ['start','learn','test','submit']){
+ for(const tab of ['start','test','submit']){
   assert.ok(markupIds.has('tab-'+tab));
   assert.ok(markupIds.has('panel-'+tab));
  }
- for(const index of [1,2]){
-  for(const suffix of ['Wrap','Label',''])assert.ok(markupIds.has('stringArg'+index+suffix));
- }
 });
 
-test('students can leave Start through Learning help, Test and Submit buttons',()=>{
+test('students can leave Start through Test and Submit buttons',()=>{
  const h=harness();
  h.sendState({folderExists:true,entryExists:true,guideExists:true});
  assert.equal(h.get('panel-start').hidden,false);
- h.click('startLearningHelp');
- assert.equal(h.get('panel-learn').hidden,false);
- assert.equal(h.get('panel-start').hidden,true);
  h.clickTab('test');
+ assert.equal(h.get('panel-start').hidden,true);
  assert.equal(h.get('panel-test').hidden,false);
- assert.equal(h.get('panel-learn').hidden,true);
  assert.equal(h.get('tab-test').attributes['aria-selected'],'true');
  h.clickTab('submit');
  assert.equal(h.get('panel-submit').hidden,false);
  h.clickTab('start');
  assert.equal(h.get('panel-start').hidden,false);
- h.click('startLearningHelp');
- assert.equal(h.get('panel-learn').hidden,false);
 });
 
 
@@ -241,7 +220,6 @@ test('Stuck error path opens existing Test and Debug instead of another tab',()=
  assert.match(h.get('coachClue').textContent,/terminal/);
  h.click('coachDebug');
  assert.equal(h.get('panel-test').hidden,false);
- assert.equal(h.get('testReviewDetails').open,true);
  assert.equal(h.get('debugHelp').open,true);
  assert.equal(h.get('errorInput').focused,true);
  h.sendState({id:'cs50p-2-coke'});
@@ -269,7 +247,6 @@ test('debugging reads selected or copied text only on explicit button clicks',()
  const request=h.messages.at(-1);
  assert.equal(request.type,'useClipboardDebug');
  assert.equal(request.assignmentId,'cs50p-0-indoor');
- assert.equal(h.get('testReviewDetails').open,true);
  h.receive({type:'debugText',assignmentId:'cs50p-0-indoor',
   requestId:request.requestId,ok:true,text:':( expected "Hello", saw "hello"'});
  assert.equal(h.get('errorInput').value,':( expected "Hello", saw "hello"');

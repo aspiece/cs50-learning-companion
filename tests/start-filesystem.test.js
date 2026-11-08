@@ -34,21 +34,16 @@ function environment(assignment=get('cs50p-0-indoor')){
  };
  const root=()=>'/school';
  const utf=text=>Buffer.from(text,'utf8');
- const ensureJournal=async(a)=>{
-  const uri=join(root(),a.slug,'LEARNING_JOURNAL.md');
-  if(!files.has(uri))files.set(uri,utf('# Student journal'));
-  return {status:'saved'};
- };
  const openFormattedMarkdown=async(uri,column)=>{
   opened.push({kind:'readme',uri,column});return true;
  };
  const slice=ext.slice(start,end);
  const actions=Function(
   'root','join','exists','vscode','safeAssignment','guideForCodespace',
-  'utf','ensureJournal','openFormattedMarkdown','Buffer',
+  'utf','openFormattedMarkdown','Buffer',
   slice+'\nreturn {createStarter,openStarterFiles,updateStudentGuide};'
  )(root,join,exists,vscode,safeAssignment,guideForCodespace,utf,
-  ensureJournal,openFormattedMarkdown,Buffer);
+  openFormattedMarkdown,Buffer);
  const read=uri=>files.get(uri)?.toString('utf8');
  return {
   actions,dirs,files,opened,notifications,read,assignment,
@@ -57,14 +52,14 @@ function environment(assignment=get('cs50p-0-indoor')){
  };
 }
 
-test('new assignment writes expected starter, short guide and journal exactly once',async()=>{
+test('new assignment writes expected starter, short guide without generating a journal',async()=>{
  const h=environment(),a=h.assignment;
- const created=await h.actions.createStarter(a,{});
+ const created=await h.actions.createStarter(a);
  assert.equal(created,true);
  assert.ok(h.dirs.has('/school/indoor'));
  assert.equal(h.read('/school/indoor/indoor.py'),a.files['indoor.py']);
  assert.equal(h.read('/school/indoor/README.md'),guideForCodespace(a));
- assert.ok(h.read('/school/indoor/LEARNING_JOURNAL.md'));
+ assert.equal(h.read('/school/indoor/LEARNING_JOURNAL.md'),undefined);
  assert.deepEqual(h.opened.slice(-2),[
   {kind:'readme',uri:'/school/indoor/README.md',column:1},
   {kind:'code',uri:'/school/indoor/indoor.py',column:2}
@@ -73,7 +68,7 @@ test('new assignment writes expected starter, short guide and journal exactly on
 
 test('Continue coding opens files in two editor groups without rewriting code or journal',async()=>{
  const h=environment(),a=h.assignment;
- await h.actions.createStarter(a,{});
+ await h.actions.createStarter(a);
  const edited="print('student code is mine')\n";
  const journal='# My journal\nMy own learning notes.\n';
  h.set('/school/indoor/indoor.py',edited);
@@ -92,7 +87,7 @@ test('already-existing folder is never re-created or overwritten by Create',asyn
  const h=environment(),a=h.assignment;
  h.dirs.add('/school/indoor');
  h.set('/school/indoor/indoor.py',"print('existing student work')");
- const created=await h.actions.createStarter(a,{});
+ const created=await h.actions.createStarter(a);
  assert.equal(created,false);
  assert.equal(h.read('/school/indoor/indoor.py'),"print('existing student work')");
  assert.equal(h.read('/school/indoor/README.md'),undefined);

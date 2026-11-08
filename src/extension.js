@@ -1,16 +1,9 @@
 'use strict';
 const vscode=require('vscode');
 const {html:renderSidebar}=require('./ui');
-const {toolkitHtml}=require('./toolkit-panel');
 const {version}=require('../package.json');
 const RELEASES_URL='https://github.com/aspiece/cs50-learning-companion/releases';
-const {list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide}=require('./core');
-const {FILENAME,createJournal,parseJournal,updateJournal}=require('./journal');
-const {conceptVideoForAssignment}=require('./concept-videos');
-const {codehsLessonForAssignment}=require('./codehs-lessons');
-const CS50_GRADEBOOK='https://cs50.me/cs50p';
-const {toolkitForAssignment,validatePracticeRequest,practiceSnippet,LESSON_URL,DOCS_URL}=require('./string-methods');
-const {runStringPractice}=require('./string-practice');
+const {list,get,submissionPath,safeAssignment,guideForCodespace,teachingGuide,CS50_GRADEBOOK}=require('./core');
 const {explainTerminalError}=require('./debugging');
 const {coachClues,nextActions}=require('./coach-model');
 const updater=require('./updater');
@@ -22,37 +15,9 @@ async function exists(uri){
  try{await vscode.workspace.fs.stat(uri);return true;}
  catch(e){if(e.code==='FileNotFound')return false;throw e;}
 }
-async function ensureJournal(a,oldNotes={}){
- const dir=root()?join(root(),a.slug):null;
- if(!dir||!await exists(dir))return {status:'pending',notes:{}};
- const uri=join(dir,FILENAME);
- if(!await exists(uri)){
-  await vscode.workspace.fs.writeFile(uri,utf(createJournal(a,oldNotes)));
- }
- const doc=await vscode.workspace.openTextDocument(uri);
- const notes=parseJournal(doc.getText());
- if(!notes)return {status:'unmanaged',notes:{}};
- return {status:'saved',notes};
-}
-async function writeJournalField(a,field,value,oldNotes){
- const journal=await ensureJournal(a,oldNotes);
- if(journal.status==='pending')return 'pending';
- if(journal.status==='unmanaged')throw new Error('The existing LEARNING_JOURNAL.md does not use the GCI format. It was not overwritten.');
- const uri=join(root(),a.slug,FILENAME);
- const doc=await vscode.workspace.openTextDocument(uri);
- const previous=doc.getText();
- const next=updateJournal(previous,field,value);
- if(next!==previous){
-  const edit=new vscode.WorkspaceEdit();
-  edit.replace(uri,new vscode.Range(doc.positionAt(0),doc.positionAt(previous.length)),next);
-  if(!await vscode.workspace.applyEdit(edit))throw new Error('Could not update the Learning Journal.');
-  if(!await doc.save())throw new Error('Could not save the Learning Journal.');
- }
- return 'saved';
-}
 async function openFormattedMarkdown(uri,viewColumn=vscode.ViewColumn.One){
  // Open the real Markdown preview editor directly in the requested pane.
- // This avoids leaving a raw README or journal tab in front of the preview.
+ // This avoids leaving a raw README tab in front of the preview.
  try{
   await vscode.commands.executeCommand(
    'vscode.openWith',uri,'vscode.markdown.preview.editor',
@@ -109,12 +74,11 @@ async function updateStudentGuide(a){
  vscode.window.showInformationMessage('Student README updated. Your Python files were not changed.');
  return true;
 }
-async function createStarter(a,previousNotes={}){
+async function createStarter(a){
  safeAssignment(a);
  if(!root()){vscode.window.showWarningMessage('Open a folder in your CS50 Codespace first.');return false;}
  const dir=join(root(),a.slug);
  if(await exists(dir)){
-  await ensureJournal(a,previousNotes);
   vscode.window.showInformationMessage('Folder already exists. Your code was not changed.');
   await openStarterFiles(a);
   return false;
@@ -123,14 +87,13 @@ async function createStarter(a,previousNotes={}){
  for(const [name,content] of Object.entries(a.files)){
    await vscode.workspace.fs.writeFile(join(dir,name),utf(name==='README.md'?guideForCodespace(a):content));
  }
- await ensureJournal(a,previousNotes);
  await openStarterFiles(a);
  vscode.window.showInformationMessage('Starter ready. Read the guide, then write your own code.');
  return true;
 }
 
 class Companion {
- constructor(ctx){this.ctx=ctx;const saved=ctx.workspaceState.get('selectedAssignment');this.id=list().some(a=>a.id===saved)?saved:list()[0].id;this.hint=0;this.journalWrites=Promise.resolve();this.updateStatus={state:'idle'};this.updateReady=null;this.updateBusy=false;this.updateChecked=false;this.toolkitPanel=null;}
+ constructor(ctx){this.ctx=ctx;const saved=ctx.workspaceState.get('selectedAssignment');this.id=list().some(a=>a.id===saved)?saved:list()[0].id;this.updateStatus={state:'idle'};this.updateBusy=false;this.updateChecked=false;}
  resolveWebviewView(view){
   this.view=view;
   view.webview.options={enableScripts:true,localResourceRoots:[vscode.Uri.joinPath(this.ctx.extensionUri,'media')]};
@@ -149,7 +112,6 @@ class Companion {
   try{
    await this.sendUpdateStatus({state:'checking'});
    const release=await updater.checkForUpdate(version);
-   this.updateReady=release;
    if(!release){
     await this.sendUpdateStatus({state:'current',installed:version});
     if(!silent)vscode.window.showInformationMessage('GCI CS50 Companion v'+version+' is up to date.');
@@ -191,22 +153,15 @@ class Companion {
  }
 
  key(){return 'progress:'+this.id;}
- async refresh(forceNotes=false){
+ async refresh(){
   if(!this.view)return;
-  await this.journalWrites.catch(()=>{});
   const a=get(this.id);
   const learning=teachingGuide(a);
-  const conceptVideo=conceptVideoForAssignment(a);
-  const hints=learning.hints;
   const directory=root()?join(root(),a.slug):null;
   const folderExists=directory?await exists(directory):false;
   const guideExists=folderExists?await exists(join(directory,'README.md')):false;
   const entryExists=folderExists?await exists(join(directory,a.entryFile)):false;
-  const stored=this.ctx.workspaceState.get(this.key(),{});
-  const journal=await ensureJournal(a,stored);
-  const progress=journal.status==='saved'?{...stored,...journal.notes}:stored;
-  const tested=list().filter(item=>this.ctx.workspaceState.get('progress:'+item.id,{})?.tested===true);
-  const practicedSubjects=[...new Set(tested.map(item=>item.subject))];
+  const progress=this.ctx.workspaceState.get(this.key(),{});
   const coach={nextSteps:nextActions({folderExists,entryExists,guideExists,progress}),
    clues:{
     understand:coachClues(a,learning,'understand'),
@@ -214,76 +169,7 @@ class Companion {
     debug:coachClues(a,learning,'debug')
    }
   };
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,journalStatus:journal.status,forceNotes,hint:this.hint,hints,learning:{...learning,conceptVideo,codehsLesson:codehsLessonForAssignment(a),stringToolkit:toolkitForAssignment(a)},practice:{testedCount:tested.length,subjects:practicedSubjects},coach,progress});
-  if(this.toolkitPanel)await this.sendToolkitState();
- }
- async sendToolkitState(){
-  if(!this.toolkitPanel)return;
-  const assignment=get(this.id);
-  await this.toolkitPanel.webview.postMessage({
-   type:'toolkitState',
-   assignment:{id:assignment.id,title:assignment.title,set:assignment.set},
-   toolkit:toolkitForAssignment(assignment)
-  });
- }
- async openStringToolkit(){
-  if(this.toolkitPanel){
-   this.toolkitPanel.reveal(vscode.ViewColumn.One);
-   await this.sendToolkitState();
-   return;
-  }
-  // The left editor group replaces the README preview while the student's
-  // Python file can remain visible on the right. No workspace file is opened.
-  const panel=vscode.window.createWebviewPanel(
-   'cs50Companion.stringToolkit',
-   'Python String Methods',
-   vscode.ViewColumn.One,
-   {enableScripts:true,retainContextWhenHidden:true,
-    localResourceRoots:[vscode.Uri.joinPath(this.ctx.extensionUri,'media')]}
-  );
-  this.toolkitPanel=panel;
-  panel.webview.onDidReceiveMessage(message=>{void this.handleToolkitMessage(message,panel);},
-   null,this.ctx.subscriptions);
-  panel.onDidDispose(()=>{if(this.toolkitPanel===panel)this.toolkitPanel=null;},
-   null,this.ctx.subscriptions);
-  panel.webview.html=toolkitHtml(panel.webview,this.ctx.extensionUri);
- }
- async handleToolkitMessage(message,panel){
-  if(this.toolkitPanel!==panel||!message||typeof message.type!=='string')return;
-  try{
-   if(message.type==='ready'){await this.sendToolkitState();return;}
-   if(message.type==='openVideo'){
-    await vscode.env.openExternal(vscode.Uri.parse(LESSON_URL));return;
-   }
-   if(message.type==='openDocs'){
-    await vscode.env.openExternal(vscode.Uri.parse(DOCS_URL));return;
-   }
-   if(message.type==='practiceString'){
-    const requestId=Number.isSafeInteger(message.requestId)?message.requestId:0;
-    try{
-     const request=validatePracticeRequest(message);
-     const result=await runStringPractice(request);
-     if(this.toolkitPanel===panel)
-      await panel.webview.postMessage({type:'stringPracticeResult',requestId,ok:true,...result});
-    }catch(error){
-     if(this.toolkitPanel===panel)
-      await panel.webview.postMessage({type:'stringPracticeResult',requestId,ok:false,
-       error:(error.message||String(error)).slice(0,300)});
-    }
-    return;
-   }
-   if(message.type==='copyStringPractice'){
-    try{
-     const sample=practiceSnippet(message);
-     await vscode.env.clipboard.writeText(sample);
-     await panel.webview.postMessage({type:'copyStatus',ok:true});
-    }catch(error){
-     await panel.webview.postMessage({type:'copyStatus',ok:false,
-      error:(error.message||String(error)).slice(0,300)});
-    }
-   }
-  }catch(error){vscode.window.showWarningMessage(
-   'CS50 String Toolkit: '+(error.message||String(error)).slice(0,200));}
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,testIdeas:learning.checks,coach,progress});
  }
  async term(a,kind){
   const report=async status=>{
@@ -320,21 +206,14 @@ class Companion {
    }
    if(m.type==='select'){
     if(!list().some(a=>a.id===m.id))return;
-    await this.journalWrites.catch(()=>{});
-    this.id=m.id;this.hint=0;await this.ctx.workspaceState.update('selectedAssignment',this.id);await this.refresh();
+    this.id=m.id;await this.ctx.workspaceState.update('selectedAssignment',this.id);await this.refresh();
     if(root()&&await exists(join(root(),get(this.id).slug)))await openStarterFiles(get(this.id));
     return;
    }
    const a=get(this.id);
    switch(m.type){
-    case 'create':if(await createStarter(a,this.ctx.workspaceState.get(this.key(),{}))){await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),starter:true});}await this.refresh();break;
+    case 'create':if(await createStarter(a)){await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),starter:true});}await this.refresh();break;
     case 'openFiles':await openStarterFiles(a);break;
-    case 'openStringToolkit':await this.openStringToolkit();break;
-    case 'openCodehsLesson':{
-     const lesson=codehsLessonForAssignment(a);
-     if(!lesson){vscode.window.showInformationMessage('No matching public CodeHS lesson for this topic yet.');break;}
-     await vscode.env.openExternal(vscode.Uri.parse(lesson.url));break;
-    }
     case 'cs50Status':{
      await vscode.env.openExternal(vscode.Uri.parse(CS50_GRADEBOOK));break;
     }
@@ -347,52 +226,9 @@ class Companion {
      catch(error){vscode.window.showWarningMessage('Find '+a.slug+'/ in Explorer. Your files have not been changed.');}
      break;
     }
-    case 'openJournal':{
-     const info=await ensureJournal(a,this.ctx.workspaceState.get(this.key(),{}));
-     if(info.status==='pending'){vscode.window.showWarningMessage('Create the assignment folder first.');break;}
-     await openFormattedMarkdown(join(root(),a.slug,FILENAME),vscode.ViewColumn.One);
-     break;
-    }
-    case 'editJournal':{
-     const info=await ensureJournal(a,this.ctx.workspaceState.get(this.key(),{}));
-     if(info.status==='pending'){vscode.window.showWarningMessage('Create the assignment folder first.');break;}
-     await vscode.window.showTextDocument(join(root(),a.slug,FILENAME),{viewColumn:vscode.ViewColumn.One,preview:false});
-     break;
-    }
-    case 'reloadJournal':await this.refresh(true);break;
     case 'updateGuide':await updateStudentGuide(a);await this.refresh();break;
     case 'checkUpdate':await this.checkUpdates(false);break;
-    case 'updates':await vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL));break;
     case 'official':await vscode.env.openExternal(vscode.Uri.parse(a.url));break;
-    case 'stringMethodsDocs':await vscode.env.openExternal(vscode.Uri.parse(DOCS_URL));break;
-    case 'stringMethodsVideo':await vscode.env.openExternal(vscode.Uri.parse(LESSON_URL));break;
-    case 'practiceString':{
-     const requestId=Number.isSafeInteger(m.requestId)?m.requestId:0;
-     try{
-      const request=validatePracticeRequest(m);
-      const result=await runStringPractice(request);
-      if(this.view)await this.view.webview.postMessage({type:'stringPracticeResult',requestId,ok:true,...result});
-     }catch(error){
-      if(this.view)await this.view.webview.postMessage({
-       type:'stringPracticeResult',requestId,ok:false,
-       error:(error.message||String(error)).slice(0,300)
-      });
-     }
-     break;
-    }
-    case 'copyStringPractice':{
-     try{
-      const sample=practiceSnippet(m);
-      await vscode.env.clipboard.writeText(sample);
-      vscode.window.showInformationMessage('Practice example copied. This is not your assignment solution.');
-     }catch(error){vscode.window.showWarningMessage('Choose a method and fill in its options first.');}
-     break;
-    }
-    case 'openConceptVideo':{
-     const resource=conceptVideoForAssignment(a);
-     if(resource)await vscode.env.openExternal(vscode.Uri.parse(resource.url));
-     break;
-    }
     case 'guide':{
       if(!root())break;
       const uri=join(root(),a.slug,'README.md');
@@ -400,7 +236,6 @@ class Companion {
       else vscode.window.showWarningMessage('Create the starter folder first.');
       break;
     }
-    case 'hint':this.hint=Math.min(hintsCount(a),this.hint+1);await this.refresh();break;
     case 'run':case 'check':case 'style':await this.term(a,m.type);break;
     case 'useClipboardDebug':case 'useSelectedDebug':{
      const requestId=Number.isSafeInteger(m.requestId)?m.requestId:0;
@@ -451,30 +286,8 @@ class Companion {
       if(ok==='Run submit50')await this.term(a,'submit');
       break;
     }
-    case 'explain':{
-      const err=await vscode.window.showInputBox({prompt:'Paste the last line of the Python error (no personal information).'});
-      if(err!==undefined)await vscode.window.showInformationMessage(explain(err),{modal:true});
-      break;
-    }
-    case 'learning':{
-      const allowed=['support','inputNotes','outputNotes','plan','prediction','observed','reflection','debugNotes'];
-      if(!allowed.includes(m.field)||typeof m.value!=='string'||m.value.length>3000)break;
-      const target=list().some(item=>item.id===m.id)?get(m.id):a;
-      const targetKey='progress:'+target.id;
-      const value=m.field==='support'&&!['guided','standard','independent'].includes(m.value)?'standard':m.value;
-      const task=async()=>{
-       const saved=this.ctx.workspaceState.get(targetKey,{});
-       const next={...saved,[m.field]:value};
-       await this.ctx.workspaceState.update(targetKey,next);
-       return writeJournalField(target,m.field,value,next);
-      };
-      this.journalWrites=this.journalWrites.then(task,task);
-      const status=await this.journalWrites;
-      if(this.view&&target.id===this.id)await this.view.webview.postMessage({type:'journalSaved',status});
-      break;
-    }
     case 'progress':{
-      if(!['starter','planned','tested','checked','submitted'].includes(m.step)||typeof m.value!=='boolean')break;
+      if(!['starter','tested','checked','submitted'].includes(m.step)||typeof m.value!=='boolean')break;
       await this.ctx.workspaceState.update(this.key(),{...this.ctx.workspaceState.get(this.key(),{}),[m.step]:m.value});
       await this.refresh();
       break;
@@ -483,7 +296,6 @@ class Companion {
   }catch(e){vscode.window.showErrorMessage('CS50 Companion: '+(e.message||String(e)));}
  }
 }
-function hintsCount(a){return teachingGuide(a).hints.length;}
 function activate(ctx){
  const provider=new Companion(ctx);
  ctx.subscriptions.push(vscode.window.registerWebviewViewProvider('cs50Companion.sidebar',provider));
@@ -491,7 +303,7 @@ function activate(ctx){
  ctx.subscriptions.push(vscode.commands.registerCommand('cs50Companion.checkForUpdates',()=>provider.checkUpdates(false)));
  ctx.subscriptions.push(vscode.commands.registerCommand('cs50Companion.createStarter',async()=>{
   const choice=await vscode.window.showQuickPick(list().map(a=>({label:a.title,description:'Set '+a.set,id:a.id})),{placeHolder:'Choose an assignment'});
-  if(choice)await createStarter(get(choice.id),ctx.workspaceState.get('progress:'+choice.id,{}));
+  if(choice)await createStarter(get(choice.id));
  }));
 }
-module.exports={activate,createStarter,openStarterFiles,updateStudentGuide,ensureJournal,writeJournalField,openFormattedMarkdown};
+module.exports={activate,createStarter,openStarterFiles,updateStudentGuide,openFormattedMarkdown};

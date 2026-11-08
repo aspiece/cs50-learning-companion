@@ -21,15 +21,6 @@ function safeAssignment(a){
  }
  return a;
 }
-function explain(error){
- if(/IndentationError|TabError/i.test(error))return 'Check the spaces before each line. Code inside an if, loop, or function must be indented evenly.';
- if(/NameError/i.test(error))return 'Python does not recognize a name. Check spelling and whether you created that variable first.';
- if(/SyntaxError/i.test(error))return 'Look for a missing colon, quote, parenthesis, or an extra character near this line.';
- if(/ModuleNotFoundError/i.test(error))return 'Python cannot find an imported library. Check its name and the official setup instructions.';
- if(/FileNotFoundError/i.test(error))return 'Python cannot find a file. Check its filename and where your program is running.';
- if(/TypeError|ValueError/i.test(error))return 'Check the kind of data you gave the function and whether it can be converted.';
- return 'Read the last line of the error and find the filename and line number above it. Try a smaller test.';
-}
 
 function section(readme,heading){
  const start=readme.indexOf('## '+heading+'\n');
@@ -154,7 +145,7 @@ function guideForCodespace(a){
   ...(codehs?['- [CodeHS: '+codehs.title+']('+codehs.url+') — a related Python lesson overview.']:[]),
   ...(cs50Video?['- [CS50P short: '+cs50Video.title+']('+cs50Video.url+') — an official concept lesson.']:[]),
   '- [Harvard’s full problem page]('+a.url+') — official instructions, any provided hints, and demo.',
-  '- Use **Learn** in the Companion if you want more guided questions or hints.','',
+  '- Choose **I’m stuck** in the Companion for a clue about this problem.','',
   '## Check and submit','',
   'Run: '+code(run)+'.',
   ...(testCommand?['Run your tests: '+code(testCommand)+'.']:[]),
@@ -163,10 +154,10 @@ function guideForCodespace(a){
   'Read any errors, make one change, and test again.','',
   '**[Check my official CS50P submission status]('+CS50_GRADEBOOK+')** — sign in with the GitHub account you used for CS50.',
   'The Companion cannot read your gradebook or confirm your submission.',
-  'Only send the files Harvard requests. Your README and Learning Journal are for learning, not submission.','',
+  'Only send the files Harvard requests. Leave out this guide and any old Learning Journal.','',
   '*Based on Harvard CS50P problem specifications. Summary and support text adapted for GCI students; [Harvard CS50P license (CC BY-NC-SA 4.0)](https://cs50.harvard.edu/python/license/). This is not an official Harvard publication.*',
   ''
  ].join('\n');
 }
 
-module.exports={list,get,submissionPath,safeAssignment,guideForCodespace,explain,teachingGuide,CS50_GRADEBOOK};
+module.exports={list,get,submissionPath,safeAssignment,guideForCodespace,teachingGuide,CS50_GRADEBOOK};

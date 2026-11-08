@@ -21,7 +21,7 @@ input[type="search"]::placeholder{color:var(--vscode-input-placeholderForeground
 .assignment p{color:var(--vscode-descriptionForeground);font-size:12px;margin-top:6px}
 .folder{font-family:var(--vscode-editor-font-family,monospace);font-size:11px;overflow-wrap:anywhere}
 .status{display:inline-flex;gap:5px;align-items:center;font-size:11px;background:var(--vscode-badge-background);color:var(--vscode-badge-foreground);padding:3px 8px;border-radius:15px}
-.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;margin-top:16px;border-bottom:1px solid var(--vscode-panel-border)}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;margin-top:16px;border-bottom:1px solid var(--vscode-panel-border)}
 .tab{background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:9px 2px;color:var(--vscode-descriptionForeground);font-size:12px}
 .tab[aria-selected="true"]{border-bottom-color:var(--vscode-focusBorder);color:var(--vscode-foreground);font-weight:650}
 .panel{padding-top:15px}
@@ -34,7 +34,6 @@ input[type="search"]::placeholder{color:var(--vscode-input-placeholderForeground
 .button.secondary:hover{background:var(--vscode-button-secondaryHoverBackground)}
 .button.link{border-color:var(--vscode-panel-border);background:transparent;color:var(--vscode-textLink-foreground)}
 .button:disabled{cursor:not-allowed;opacity:.5}
-.tip{border-left:3px solid var(--vscode-focusBorder);padding:9px 11px;background:var(--vscode-editor-inactiveSelectionBackground);margin:12px 0;overflow-wrap:anywhere}
 .card{border:1px solid var(--vscode-panel-border);border-radius:8px;padding:12px;margin:10px 0}
 .card p{color:var(--vscode-descriptionForeground);font-size:12px}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -48,7 +47,7 @@ footer{margin-top:22px;padding-top:11px;border-top:1px solid var(--vscode-panel-
 footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-textLink-foreground);text-align:left}
 .note{font-size:11px;color:var(--vscode-descriptionForeground)}
 .empty{padding:9px;color:var(--vscode-descriptionForeground);font-size:12px}
-@media(max-width:240px){.searchrow{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.tabs{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:240px){.searchrow{grid-template-columns:1fr}.actions{grid-template-columns:1fr}}
 
 /* Guided learning controls */
 [hidden]{display:none!important}
@@ -60,41 +59,6 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .panel .card p{margin-bottom:10px}
 .panel textarea:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:1px}
 
-
-/* Accessible, optional Python String Methods Toolkit */
-.toolkit > summary{cursor:pointer;list-style-position:inside;line-height:1.6}
-.toolkit > summary:focus-visible,.method-entry > summary:focus-visible{
- outline:2px solid var(--vscode-focusBorder);outline-offset:2px;border-radius:4px
-}
-.toolkit > summary .note{display:block;margin:3px 0 0 12px}
-.toolkit > p{margin-top:10px}
-.toolkit input[type="text"],.toolkit input[type="search"]{
- display:block;width:100%;min-width:0;
- padding:8px;margin:4px 0 11px;
- border:1px solid var(--vscode-input-border,var(--vscode-widget-border));
- border-radius:5px;color:var(--vscode-input-foreground);background:var(--vscode-input-background);
- font:inherit
-}
-.toolkit input:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:1px}
-.toolkit-suggestion{padding:8px 10px;border-left:3px solid var(--vscode-focusBorder);background:var(--vscode-editor-inactiveSelectionBackground)}
-.string-method-list{display:grid;gap:7px;margin:8px 0 13px}
-.method-entry{border:1px solid var(--vscode-panel-border);border-radius:6px;padding:8px;overflow-wrap:anywhere}
-.method-entry[open]{background:var(--vscode-editor-inactiveSelectionBackground)}
-.method-entry > summary{cursor:pointer}
-.method-entry > summary .method-purpose{display:block;margin:3px 0 0 14px;color:var(--vscode-descriptionForeground);font-size:11px}
-.method-entry .method-recommended{font-size:10px;color:var(--vscode-textLink-foreground);display:inline-block;margin-left:6px}
-.method-entry pre,.practice-result{
- padding:9px;background:var(--vscode-textCodeBlock-background,var(--vscode-editor-background));
- color:var(--vscode-foreground);
- border:1px solid var(--vscode-panel-border);border-radius:5px;
- white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--vscode-editor-font-family,monospace);font-size:11px
-}
-.method-entry pre{margin:5px 0 10px}
-.method-entry .button{margin:8px 0 0}
-.practice-box{border-top:1px solid var(--vscode-panel-border);padding-top:12px;margin-top:12px}
-.practice-box h3{font-size:13px;margin:0 0 6px}
-.practice-result{margin:9px 0}
-.practice-result[data-error="true"]{border-left:3px solid var(--vscode-errorForeground)}
 
 /* Start tab: one clear next action, with optional secondary resources. */
 .start-status{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;margin:10px 0 12px;border:1px solid var(--vscode-panel-border);border-radius:8px;background:var(--vscode-sideBar-background)}
@@ -116,18 +80,11 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .panel .start-more .note{margin:8px 0 0}
 @media(max-width:240px){.start-quick-actions{grid-template-columns:1fr}}
 
-/* Keep the Learn tab focused; the full toolkit lives in a workspace editor. */
-.toolkit-launch{background:var(--vscode-sideBar-background)}
-.toolkit-launch .button{margin:8px 0}
-.toolkit-launch .note{margin-bottom:6px}
-
-
 /* v0.7.7: Calm, guided Test → Review → Debug → Check workflow. */
 .test-intro{margin:0 0 12px}
 .test-step{margin:9px 0 13px;padding:12px}
 .test-step h2{display:flex;align-items:center;gap:8px;margin:0 0 10px}
 .test-step h3{font-size:12px;font-weight:650;margin:0 0 6px}
-.step-number{display:inline-grid;place-items:center;width:21px;height:21px;min-width:21px;border:1px solid var(--vscode-focusBorder);border-radius:50%;font-size:11px;line-height:1;font-weight:650}
 .test-step label{font-size:12px;font-weight:600;margin:9px 0 5px}
 .test-step textarea{margin-top:0}
 .test-step select{margin:3px 0 12px}
@@ -138,8 +95,7 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .test-extra #testIdeas{margin-top:9px}
 .test-command{padding:7px 9px;background:var(--vscode-textCodeBlock-background,var(--vscode-editor-background));border:1px solid var(--vscode-panel-border);border-radius:6px;overflow-wrap:anywhere}
 .test-command code{font-family:var(--vscode-editor-font-family,monospace);font-size:12px}
-.test-next,.test-advice{padding:9px 10px;background:var(--vscode-editor-inactiveSelectionBackground);border-left:3px solid var(--vscode-focusBorder);border-radius:3px;overflow-wrap:anywhere}
-.test-next{margin:5px 0 14px!important}
+.test-advice{padding:9px 10px;background:var(--vscode-editor-inactiveSelectionBackground);border-left:3px solid var(--vscode-focusBorder);border-radius:3px;overflow-wrap:anywhere}
 .test-debug summary{display:flex;align-items:center;flex-wrap:wrap;gap:6px;line-height:1.6}
 .test-debug summary .note{font-size:11px}
 .test-debug[open]>summary{margin-bottom:12px}
@@ -148,21 +104,6 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 .test-step #testTerminalStatus,.test-step #testCheckStatus{margin:8px 0 0}
 .test-step .actions .button{min-width:0}
 [hidden]{display:none!important}
-
-
-/* Guidance levels: make the chosen amount of help clear and immediate. */
-.support-summary{margin:10px 0 15px;padding:11px 12px;border:1px solid var(--vscode-panel-border);border-left:3px solid var(--vscode-focusBorder);border-radius:7px;background:var(--vscode-editor-inactiveSelectionBackground)}
-.support-summary strong{display:block;font-size:13px;line-height:1.4}
-.support-summary p{margin:6px 0 0!important;font-size:12px;line-height:1.5}
-.support-summary .note{color:var(--vscode-descriptionForeground);font-size:11px}
-.support-summary[data-level="independent"]{background:var(--vscode-sideBar-background)}
-.support-summary[data-level="guided"]{border-left-width:4px}
-.independent-challenge{margin:8px 0 13px}
-.independent-challenge p{margin:7px 0!important}
-.support-hints>summary{cursor:pointer;line-height:1.5;font-size:12px}
-.support-hints>summary:focus-visible{outline:2px solid var(--vscode-focusBorder);outline-offset:2px;border-radius:4px}
-.support-hints[open]>summary{margin-bottom:10px}
-#planGuidance{margin:6px 0 10px}
 
 
 /* v0.8.0: student-feedback-driven progressive disclosure. */
@@ -180,16 +121,8 @@ footer button{background:transparent;border:0;padding:3px 0;color:var(--vscode-t
 #assignmentFilters{border:0;background:transparent;margin:0;padding:0}
 #assignmentFilters>summary{font-size:11px;color:var(--vscode-descriptionForeground)}
 #assignmentFilters[open]{border:1px solid var(--vscode-panel-border);padding:9px}
-#supportIncludes{display:none}
-.codehs-support{padding:10px;border:1px solid var(--vscode-panel-border);border-radius:7px;margin:9px 0}
-.codehs-support .button{margin:5px 0 3px}
-.codehs-support p{margin:4px 0}
-#learnResources{margin-top:10px}
 #progressDetails{border:0;padding:0;background:transparent}
 #progressDetails summary{color:var(--vscode-descriptionForeground)}
-.test-step .step-number{display:none}
-#testReviewDetails{margin:9px 0}
-#submitReflection{margin:12px 0}
 
 
 /* v0.8.1: one visible help entry point, gentle next steps, and optional debugging. */
