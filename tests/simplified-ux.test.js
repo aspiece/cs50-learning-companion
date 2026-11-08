@@ -22,7 +22,7 @@ test('every matched CodeHS resource goes to a real topic lesson, without guessed
  }
  assert.match(codehsLessonForAssignment('cs50p-0-indoor').url,/5657\/explore\/module\/7892\/lesson\/1404727$/);
  assert.match(codehsLessonForAssignment('cs50p-1-bank').url,/5657\/explore\/module\/7889\/lesson\/1404573$/);
- assert.match(codehsLessonForAssignment('cs50p-3-grocery').url,/5657\/explore\/module\/7894\/lesson\/9562205$/);
+ assert.match(codehsLessonForAssignment('cs50p-3-grocery').url,/5657\/module\/7894$/);
  assert.match(codehsLessonForAssignment('cs50p-6-lines').url,/21076\/explore\/module\/29325\/lesson\/9551211$/);
  assert.equal(codehsLessonForAssignment('cs50p-7-numb3rs'),null,'No invented regular expressions lesson');
  assert.equal(codehsLessonForAssignment('unknown-id'),null);

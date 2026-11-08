@@ -103,6 +103,7 @@ function html(webview,extensionUri){
   <h2>Run your program</h2>
   <p class="test-command">Terminal command: <code id="testCommand"></code></p>
   <button class="button" id="runPython" type="button" data-action="run">Run Python</button>
+  <button class="button secondary" id="runPytest" type="button" data-action="test" hidden>Run pytest</button>
   <p class="note" id="testTerminalStatus" aria-live="polite">Select Run to open a Codespaces terminal. Return here after checking the output.</p>
  </div>
  <details class="card test-step test-debug quiet-details" id="debugHelp">

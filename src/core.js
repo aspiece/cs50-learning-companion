@@ -1,4 +1,6 @@
 'use strict';
+const {createHash}=require('node:crypto');
+const legacyGuideHashes=require('../content/legacy-guide-hashes.json');
 // This library is copied from aspiece/python-lab; it contains original, unsolved starters.
 global.window=global.window||{};
 require('../content/cs50p-starters.js');
@@ -65,6 +67,51 @@ function teachingGuide(a){
  return {understand,steps:tasks,checks,hints,concept:subject};
 }
 
+const runArguments={
+ 'cs50p-4-bitcoin':'2',
+ 'cs50p-6-lines':'lines.py',
+ 'cs50p-6-pizza':'regular.csv',
+ 'cs50p-6-scourgify':'before.csv after.csv',
+ 'cs50p-6-shirt':'before1.jpg after1.jpg'
+};
+const packages={
+ emojize:'emoji',figlet:'pyfiglet',adieu:'inflect',bitcoin:'requests',
+ pizza:'tabulate',shirt:'Pillow',response:'validators',seasons:'inflect',shirtificate:'fpdf2'
+};
+const setupNotes={
+ bitcoin:'Get a CoinCap API key and follow Harvard’s CoinCap v3 instructions. Keep your key private and out of files you submit.',
+ lines:'The sample command uses lines.py as its own input file. You can also try a second Python file in this folder.',
+ shirt:'For the sample command, run `unzip muppets.zip` there to get before1.jpg.',
+ shirtificate:'After running your code, open shirtificate.pdf in Explorer to inspect it. Leave the PDF out of your submission.'
+};
+const setTwoExamples={
+ camel:['Type `firstName`. Expect `first_name`.','Type `name`. Expect `name`.'],
+ coke:['Enter `25` and `25` on separate lines. Expect `Change Owed: 0`.','Enter `25`, `10`, `10`, then `10`. Expect `Change Owed: 5`.'],
+ twttr:['Type `Twitter`. Expect `Twttr`.','Type `CS50!`. Expect `CS50!`.'],
+ plates:['Type `CS50`. Expect `Valid`.','Type `CS05`. Expect `Invalid`.'],
+ nutrition:['Type `apple`. Expect `Calories: 130`.','Type `banana bread`. Expect no calorie output.']
+};
+
+function assignmentCommands(a){
+ safeAssignment(a);
+ const testFile=Object.keys(a.files).find(name=>/^test_.*\.py$/.test(name));
+ const pytest=testFile?'pytest '+testFile:null;
+ const args=runArguments[a.id];
+ return {
+  run:a.set===5?pytest:'python '+a.entryFile+(args?' '+args:''),
+  test:a.set===5?null:pytest,
+  testFile
+ };
+}
+
+function guideHash(text){return createHash('sha256').update(text).digest('hex');}
+
+function isGeneratedGuide(a,text){
+ if(legacyGuideHashes[a.id]?.includes(guideHash(text)))return true;
+ const header=/^<!-- gci-cs50-guide (cs50p-[0-8]-[a-z0-9_]+) ([a-f0-9]{64}) -->\n/.exec(text);
+ return Boolean(header&&header[1]===a.id&&header[2]===guideHash(text.slice(header[0].length)));
+}
+
 function guideForCodespace(a){
  safeAssignment(a);
  const base=a.files['README.md']||'';
@@ -103,29 +150,21 @@ function guideForCodespace(a){
  };
  const details=special[a.id]||{};
  const steps=details.steps||guide.steps.slice(0,6);
- const tests=details.checks||guide.checks.slice(0,3);
- const runExamples={
-  'cs50p-4-bitcoin':'python bitcoin.py 2',
-  'cs50p-6-lines':'python lines.py example.py',
-  'cs50p-6-pizza':'python pizza.py regular.csv',
-  'cs50p-6-scourgify':'python scourgify.py before.csv after.csv',
-  'cs50p-6-shirt':'python shirt.py input.jpg output.jpg'
- };
- const run=a.set===5?'pytest '+a.entryFile:(runExamples[a.id]||'python '+a.entryFile);
+ const tests=[...(details.checks||guide.checks.slice(0,3)),
+  ...(a.set===2?setTwoExamples[a.slug]:[])];
+ const {run,test:testCommand,testFile}=assignmentCommands(a);
  const check='check50 '+submissionPath(a);
  const submit='submit50 '+submissionPath(a);
  const extra=a.extraFiles||[];
  const filesBlock=extra.map(file=>'- ['+code(file.name)+']('+file.url+') — '+file.kind);
- const neededFiles=extra.length?[
-  '**Needed files:** Get the required files from Harvard. Optional samples can help with testing. Keep the files you use in this assignment folder.',
-  ...filesBlock
- ]:a.slug==='lines'?[
-  '**For testing:** Put a sample Python file beside '+code(a.entryFile)+' so your program has a file to read.'
- ]:[];
- const testFiles=fileNames.filter(name=>/^test_.*\.py$/.test(name));
- const testCommand=a.set!==5&&testFiles.length?'pytest '+testFiles[0]:null;
+ const setup=[
+  ...(packages[a.slug]?['If Python says a package is missing, run '+code('python -m pip install '+packages[a.slug])+' in the Codespaces terminal.']:[]),
+  ...(extra.length?['**Needed files:** Save these in the same Codespaces folder as '+code(a.entryFile)+'.\n\n'+filesBlock.join('\n')]:[]),
+  ...(setupNotes[a.slug]?[setupNotes[a.slug]]:[]),
+  ...(a.set===5?['If you finished the earlier problem, copy its '+code(a.sourceFile)+' into this test folder and adapt it to the function rules on Harvard’s page. If you need a fresh start, use the scaffold here.']:[])
+ ];
  const thought=details.thought?['**Think about it:** '+details.thought,'']:[];
- return [
+ const body=[
   '# '+a.title,'',
   '**CS50P · Problem Set '+a.set+'**  ',
   '**Python file'+(fileNames.length===1?'':'s')+':** '+fileNames.map(code).join(', '),'',
@@ -134,12 +173,12 @@ function guideForCodespace(a){
   '**Your task:**','',
   ...numbered(steps),'',
   ...thought,
-  ...neededFiles,
-  ...(neededFiles.length?['']:[]),
   '**Full instructions:** [Harvard CS50P problem, examples, and hints]('+a.url+').',
   'This is a student-friendly summary. Harvard’s page has the exact rules and special cases.','',
+  ...(setup.length?['**Before you run**','',setup.join('\n\n'),'']:[]),
   '## Test your program','',
-  ...bullet(tests),'',
+  ...bullet(tests),
+  ...(testFile?['- In '+code(testFile)+', add your own checks and remove each '+code('pytest.skip(...)')+' line when that test is ready.']:[]),'',
   'Try an ordinary input and one unusual input. Compare the result with Harvard’s examples.','',
   '## Need help? (optional)','',
   ...(codehs?['- [CodeHS: '+codehs.title+']('+codehs.url+') — a related Python lesson overview.']:[]),
@@ -158,6 +197,7 @@ function guideForCodespace(a){
   '*Based on Harvard CS50P problem specifications. Summary and support text adapted for GCI students; [Harvard CS50P license (CC BY-NC-SA 4.0)](https://cs50.harvard.edu/python/license/). This is not an official Harvard publication.*',
   ''
  ].join('\n');
+ return '<!-- gci-cs50-guide '+a.id+' '+guideHash(body)+' -->\n'+body;
 }
 
-module.exports={list,get,submissionPath,safeAssignment,guideForCodespace,teachingGuide,CS50_GRADEBOOK};
+module.exports={list,get,submissionPath,safeAssignment,guideForCodespace,isGeneratedGuide,assignmentCommands,teachingGuide,CS50_GRADEBOOK};

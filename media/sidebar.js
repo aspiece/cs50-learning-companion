@@ -57,7 +57,9 @@
   const assignment=state.assignment;
   const canRun=!!state.entryExists;
   $('runPython').textContent=assignment.set===5?'Run pytest':'Run Python';
-  $('testCommand').textContent=(assignment.set===5?'pytest ':'python ')+assignment.entryFile;
+  $('testCommand').textContent=state.commands.run;
+  $('runPytest').hidden=!state.commands.test;
+  $('runPytest').disabled=!state.testExists;
   $('runPython').disabled=!canRun;
   $('runCheck50').disabled=!canRun;
   $('runStyle50').disabled=!canRun;
@@ -68,6 +70,10 @@
  }
  function handleTestTerminalStatus(message){
   if(!state||message.assignmentId!==state.assignment.id)return;
+  if(message.status==='canceled'){
+   $(message.kind==='run'?'testTerminalStatus':'testCheckStatus').textContent='Command canceled. Save your work and try again.';
+   return;
+  }
   const completed=message.status==='opened';
   if(message.kind==='run'){
    $('testTerminalStatus').textContent=completed?
@@ -253,7 +259,7 @@
     post(b.dataset.action,{assignmentId:state.assignment.id,requestId});
     return;
    }
-   if(b.dataset.action==='run'){
+   if(b.dataset.action==='run'||b.dataset.action==='test'){
     $('errorAdvice').hidden=true;
     $('testTerminalStatus').textContent='Opening a Codespaces terminal…';
    }

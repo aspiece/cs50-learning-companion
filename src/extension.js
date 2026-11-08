@@ -3,7 +3,7 @@ const vscode=require('vscode');
 const {html:renderSidebar}=require('./ui');
 const {version}=require('../package.json');
 const RELEASES_URL='https://github.com/aspiece/cs50-learning-companion/releases';
-const {list,get,submissionPath,safeAssignment,guideForCodespace,teachingGuide,CS50_GRADEBOOK}=require('./core');
+const {list,get,submissionPath,safeAssignment,guideForCodespace,isGeneratedGuide,assignmentCommands,teachingGuide,CS50_GRADEBOOK}=require('./core');
 const {explainTerminalError}=require('./debugging');
 const {coachClues}=require('./coach-model');
 const updater=require('./updater');
@@ -48,6 +48,25 @@ async function openStarterFiles(a){
  if(await exists(script))await vscode.window.showTextDocument(script,{viewColumn:vscode.ViewColumn.Two,preview:false});
  return true;
 }
+function hasUnsavedGuide(uri){
+ return vscode.workspace.textDocuments.some(doc=>doc.isDirty&&doc.uri.toString()===uri.toString());
+}
+async function refreshGeneratedGuide(a,workspace){
+ const uri=join(workspace,a.slug,'README.md');
+ if(!await exists(uri)||hasUnsavedGuide(uri))return false;
+ const current=Buffer.from(await vscode.workspace.fs.readFile(uri));
+ const next=utf(guideForCodespace(a));
+ if(current.equals(next)||!isGeneratedGuide(a,current.toString('utf8')))return false;
+ return replaceGuide(uri,current,next);
+}
+async function replaceGuide(uri,current,next){
+ // Check again after prompts or backups so edits made during an update win.
+ if(hasUnsavedGuide(uri)||!await exists(uri))return false;
+ const latest=Buffer.from(await vscode.workspace.fs.readFile(uri));
+ if(!latest.equals(current)||hasUnsavedGuide(uri))return false;
+ await vscode.workspace.fs.writeFile(uri,next);
+ return true;
+}
 async function updateStudentGuide(a){
  safeAssignment(a);
  if(!root()){vscode.window.showWarningMessage('Open your CS50 Codespace workspace first.');return false;}
@@ -55,23 +74,31 @@ async function updateStudentGuide(a){
  if(!await exists(dir)){vscode.window.showWarningMessage('Create the assignment folder first.');return false;}
  const readme=join(dir,'README.md');
  const next=utf(guideForCodespace(a));
+ if(hasUnsavedGuide(readme)){
+  vscode.window.showWarningMessage('Save your README edits before updating the guide.');
+  return false;
+ }
  if(await exists(readme)){
-  const current=await vscode.workspace.fs.readFile(readme);
-  if(Buffer.compare(Buffer.from(current),next)===0){
+  const current=Buffer.from(await vscode.workspace.fs.readFile(readme));
+  if(current.equals(next)){
    vscode.window.showInformationMessage('Your README already uses the latest learning guide.');
    await openStarterFiles(a);
    return false;
   }
-  const choice=await vscode.window.showWarningMessage('Replace this README with the shorter Your Goal → Build It → Test It → Check It → Submit guide? A backup will be saved. Your Python code and Learning Journal will not change.',{modal:true},'Update README');
+  const choice=await vscode.window.showWarningMessage('Replace this README with the latest assignment guide? The Companion will save a copy of the old guide.',{modal:true},'Update README');
   if(choice!=='Update README')return false;
-  // Preserve the previous version in the same folder before writing a new guide.
   let n=1,backup;
   do{backup=join(dir,'README.backup-'+n+'.md');n++;}while(await exists(backup));
   await vscode.workspace.fs.writeFile(backup,current);
+  if(!await replaceGuide(readme,current,next)){
+   vscode.window.showWarningMessage('The README changed while the update was open. Open the guide and try again.');
+   return false;
+  }
+ }else{
+  await vscode.workspace.fs.writeFile(readme,next);
  }
- await vscode.workspace.fs.writeFile(readme,next);
  await openStarterFiles(a);
- vscode.window.showInformationMessage('Student README updated. Your Python files were not changed.');
+ vscode.window.showInformationMessage('Student README updated.');
  return true;
 }
 async function createStarter(a){
@@ -90,6 +117,26 @@ async function createStarter(a){
  await openStarterFiles(a);
  vscode.window.showInformationMessage('Starter ready. Read the guide, then write your own code.');
  return true;
+}
+
+async function saveAssignmentEdits(directory){
+ const dirty=()=>vscode.workspace.textDocuments.filter(doc=>doc.isDirty&&
+  doc.uri.scheme===directory.scheme&&doc.uri.authority===directory.authority&&
+  doc.uri.path.startsWith(directory.path+'/'));
+ const documents=dirty();
+ if(!documents.length)return true;
+ const choice=await vscode.window.showWarningMessage(
+  'Save your assignment edits before opening the terminal command?',{modal:true},'Save and continue');
+ if(choice!=='Save and continue')return false;
+ for(const doc of documents){
+  if(doc.isDirty&&!await doc.save()){
+   vscode.window.showWarningMessage('Could not save '+doc.fileName+'. Save it and try again.');
+   return false;
+  }
+ }
+ if(!dirty().length)return true;
+ vscode.window.showWarningMessage('Your assignment still has unsaved edits. Save them and try again.');
+ return false;
 }
 
 class Companion {
@@ -152,6 +199,14 @@ class Companion {
   }finally{this.updateBusy=false;}
  }
 
+ async refreshExistingGuides(workspace){
+  const results=await Promise.allSettled(list().map(item=>refreshGeneratedGuide(get(item.id),workspace)));
+  const updated=results.filter(result=>result.status==='fulfilled'&&result.value).length;
+  if(updated)vscode.window.showInformationMessage('Updated '+updated+' CS50 assignment '+(updated===1?'README.':'READMEs.'));
+  if(results.some(result=>result.status==='rejected')){
+   vscode.window.showWarningMessage('Some CS50 READMEs could not be checked. You can update them from More options.');
+  }
+ }
  async refresh(){
   if(!this.view)return;
   const a=get(this.id);
@@ -160,24 +215,37 @@ class Companion {
   const folderExists=directory?await exists(directory):false;
   const guideExists=folderExists?await exists(join(directory,'README.md')):false;
   const entryExists=folderExists?await exists(join(directory,a.entryFile)):false;
+  const commands=assignmentCommands(a);
+  const testExists=folderExists&&commands.test?await exists(join(directory,commands.testFile)):false;
   const coach={clues:{
     understand:coachClues(a,learning,'understand'),
     coding:coachClues(a,learning,'coding'),
     debug:coachClues(a,learning,'debug')
   }};
-  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,coach});
+  await this.view.webview.postMessage({type:'state',version,options:list().map(x=>({id:x.id,title:x.title,slug:x.slug,set:x.set})),assignment:{id:a.id,title:a.title,slug:a.slug,set:a.set,entryFile:a.entryFile,description:a.description},folderExists,guideExists,entryExists,commands,testExists,coach});
  }
  async term(a,kind){
+  const reportKind=kind==='test'?'run':kind;
   const report=async status=>{
-   if(this.view&&['run','check','style'].includes(kind))
-    await this.view.webview.postMessage({type:'testTerminalStatus',kind,assignmentId:a.id,status});
+   if(this.view&&['run','check','style'].includes(reportKind))
+    await this.view.webview.postMessage({type:'testTerminalStatus',kind:reportKind,assignmentId:a.id,status});
   };
   if(!root()){vscode.window.showWarningMessage('Open a CS50 Codespace folder first.');await report('missing');return false;}
   const dir=join(root(),a.slug);
   if(!await exists(dir)){vscode.window.showWarningMessage('Create the assignment folder first.');await report('missing');return false;}
   const entry=a.entryFile;
+  const commands=assignmentCommands(a);
+  if(kind==='test'&&!commands.test)return false;
+  const file=kind==='test'?commands.testFile:entry;
+  if(!file||!await exists(join(dir,file))){
+   vscode.window.showWarningMessage('Add the assignment file in Explorer first.');
+   await report('missing');
+   return false;
+  }
+  if(kind!=='style'&&!await saveAssignmentEdits(dir)){await report('canceled');return false;}
   const path=submissionPath(a);
-  const cmd=kind==='run'?(a.set===5?'pytest '+entry:'python '+entry):
+  const cmd=kind==='run'?commands.run:
+   kind==='test'?commands.test:
    kind==='style'?'style50 '+entry:
    'bash '+shellQuote(join(this.ctx.extensionUri,'src','clean-cs50-command.sh').fsPath)+' '+
    shellQuote(kind==='check'?'check50':'submit50')+' '+shellQuote(path);
@@ -191,6 +259,11 @@ class Companion {
   try{
    if(m.type==='ready'){
     await this.refresh();
+    const workspace=root();
+    if(workspace){
+     this.guideRefresh??=this.refreshExistingGuides(workspace);
+     await this.guideRefresh;
+    }
     await this.sendUpdateStatus(this.updateStatus);
     if(!this.updateChecked){this.updateChecked=true;void this.checkUpdates(true);}
     if(!this.initialPreviewOpened){
@@ -232,7 +305,7 @@ class Companion {
       else vscode.window.showWarningMessage('Create the starter folder first.');
       break;
     }
-    case 'run':case 'check':case 'style':await this.term(a,m.type);break;
+    case 'run':case 'test':case 'check':case 'style':await this.term(a,m.type);break;
     case 'useClipboardDebug':{
      const requestId=Number.isSafeInteger(m.requestId)?m.requestId:0;
      if(m.assignmentId!==this.id)break;

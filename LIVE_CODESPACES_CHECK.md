@@ -1,6 +1,6 @@
 # GCI CS50 Companion — Live Codespaces Check
 
-Use this after installing **v0.9.0** or newer. The automated tests have passed, but this check verifies the interface in a real CS50 Codespace.
+Use this after installing **v0.9.3** or newer. The automated tests have passed, but this check verifies the interface in a real CS50 Codespace.
 
 **Important:** Use your own test Codespace or a test assignment. Do not delete, rename, or change a student's Python files to set up a test. Never submit a test assignment to CS50.
 
@@ -8,7 +8,7 @@ Use this after installing **v0.9.0** or newer. The automated tests have passed, 
 
 1. Open your Codespace at [cs50.dev](https://cs50.dev).
 2. In the GCI Companion sidebar, select **Check for updates**. Install the newest release if prompted, then reload.
-3. Confirm the version shown beside **CS50 Companion** is v0.9.0 or newer.
+3. Confirm the version shown beside **CS50 Companion** is v0.9.3 or newer.
 4. Keep the VS Code **Explorer** open so you can see files.
 
 ## Check A — A new assignment
@@ -54,6 +54,14 @@ Only do this for an assignment whose README you are comfortable updating.
 - [ ] Canceling makes no changes.
 - [ ] Approving saves an old copy named `README.backup-1.md` or the next available number.
 - [ ] The Python file and `LEARNING_JOURNAL.md` remain unchanged.
+
+## Check E — Run and update guides
+
+- [ ] Open an untouched older guide, reload Codespaces, and open the Companion. The README refreshes.
+- [ ] Repeat with a guide that has a saved student note. The note stays in the guide.
+- [ ] In Pizza Py, save Harvard’s regular.csv beside pizza.py. Run from the sidebar and confirm the terminal receives `python pizza.py regular.csv`.
+- [ ] In Working 9 to 5, confirm both Python and pytest can be opened from Test.
+- [ ] Make an unsaved edit and click Run. Cancel the save prompt and confirm the terminal command did not start.
 
 ## What to send back if something fails
 

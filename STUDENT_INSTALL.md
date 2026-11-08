@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.9.2** or a newer version.
+You should see version **0.9.3** or a newer version.
 
 ## Complete a problem
 
@@ -45,7 +45,7 @@ You should see version **0.9.2** or a newer version.
 
 Choose **I’m stuck** on Start for one clue at a time. Under **Writing Python**, open **Look up Python string methods**. Search by name or try a word like “spaces.” Open a method to see an example and its result. The README has links to Harvard’s full instructions, related CS50 shorts, and a matching CodeHS lesson where available.
 
-If an older README still mentions Learn, choose **More options → Update my README guide**. The Companion asks before replacing it and saves a backup.
+After an update, reload Codespaces and open **CS50 Companion**. It refreshes old guides it recognizes as untouched. If you changed a guide, use **More options → Update my README guide** to replace it and keep a backup. Save any open README edits first.
 
 ## If the installation stops
 

@@ -5,6 +5,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
 const {explainTerminalError}=require('../src/debugging');
+const {get:assignmentById,list,assignmentCommands,submissionPath}=require('../src/core');
 
 const ui=fs.readFileSync(path.join(__dirname,'../src/ui.js'),'utf8');
 const js=fs.readFileSync(path.join(__dirname,'../media/sidebar.js'),'utf8');
@@ -66,14 +67,14 @@ function simulate(){
   postMessage:msg=>messages.push(msg)
  };
  vm.runInNewContext(js,{document,window,acquireVsCodeApi:()=>api,setTimeout,clearTimeout,Map,Set},{timeout:2000});
- const send=(id='cs50p-0-indoor',exists=true,set=0)=>{
+ const send=(id='cs50p-0-indoor',exists=true)=>{
+  const assignment=assignmentById(id);
+  const commands=assignmentCommands(assignment);
   listeners['window:message']({data:{
-   type:'state',version:'0.7.7',options:[
-    {id:'cs50p-0-indoor',title:'Indoor Voice',slug:'indoor',set:0},
-    {id:'cs50p-5-test_fuel',title:'Testing Fuel',slug:'test_fuel',set:5}
-   ],
-   assignment:{id,title:id.includes('fuel')?'Testing Fuel':'Indoor Voice',slug:id.includes('fuel')?'test_fuel':'indoor',set,entryFile:id.includes('fuel')?'test_fuel.py':'indoor.py',description:'Practice'},
-   folderExists:exists,entryExists:exists,guideExists:exists
+   type:'state',version:'0.9.3',options:list(),
+   assignment,
+   folderExists:exists,entryExists:exists,guideExists:exists,
+   commands,testExists:exists&&!!commands.test
   }});
  };
  const click=id=>{
@@ -89,14 +90,14 @@ test('Test tab shows running Python, optional debugging and official tools',()=>
  const section=ui.slice(ui.indexOf('<section id="panel-test"'),ui.indexOf('<section id="panel-submit"'));
  for(const id of ['errorInput','errorAdvice',
   'testTerminalStatus','testCheckStatus','runPython','runCheck50','runStyle50'])assert.match(section,new RegExp('id="'+id+'"'));
- for(const action of ['run','check','style','analyzeError'])assert.match(section,new RegExp('data-action="'+action+'"'));
+ for(const action of ['run','test','check','style','analyzeError'])assert.match(section,new RegExp('data-action="'+action+'"'));
  assert.match(section,/not an assignment solution/);
  assert.match(css,/\.test-advice/);
  assert.doesNotMatch(section,/<iframe|autoplay/i);
 });
 
 test('new assignment cannot launch terminal and shows clear next action',()=>{
- const h=simulate();h.send('cs50p-0-indoor',false,0);
+ const h=simulate();h.send('cs50p-0-indoor',false);
  assert.equal(h.get('runPython').disabled,true);
  assert.equal(h.get('runCheck50').disabled,true);
  assert.match(h.get('testTerminalStatus').textContent,/Create or locate/);
@@ -129,7 +130,7 @@ test('pasted traceback is handled locally and stale replies are ignored',()=>{
  h.reply({type:'testDebugAdvice',assignmentId:'cs50p-0-indoor',requestId:msg.requestId-1,ok:true,
    advice:{title:'Wrong reply',guidance:'bad',location:'',next:''}});
  assert.equal(h.get('debugTitle').textContent,'Unknown name');
- h.send('cs50p-5-test_fuel',true,5);
+ h.send('cs50p-5-test_fuel',true);
  assert.equal(h.get('errorInput').value,'');
  assert.equal(h.get('errorAdvice').hidden,true);
  h.reply({type:'testDebugAdvice',assignmentId:'cs50p-0-indoor',requestId:msg.requestId,ok:true,
@@ -138,7 +139,7 @@ test('pasted traceback is handled locally and stale replies are ignored',()=>{
 });
 
 test('CS50P set 5 uses pytest; check50 and style50 remain separate',()=>{
- const h=simulate();h.send('cs50p-5-test_fuel',true,5);
+ const h=simulate();h.send('cs50p-5-test_fuel',true);
  assert.equal(h.get('testCommand').textContent,'pytest test_fuel.py');
  assert.equal(h.get('runPython').textContent,'Run pytest');
  h.click('runCheck50');
@@ -151,11 +152,52 @@ test('CS50P set 5 uses pytest; check50 and style50 remain separate',()=>{
 });
 
 test('backend launches terminal commands and reports launch—not test success',()=>{
- assert.match(backend,/const cmd=kind==='run'\?\(a\.set===5\?'pytest '\+entry:'python '\+entry\)/);
- assert.match(backend,/case 'run':case 'check':case 'style':await this\.term\(a,m\.type\);break/);
+ assert.match(backend,/const cmd=kind==='run'\?commands\.run/);
+ assert.match(backend,/case 'run':case 'test':case 'check':case 'style':await this\.term\(a,m\.type\);break/);
  assert.match(backend,/case 'analyzeError':/);
  assert.match(backend,/explainTerminalError\(m\.errorText\)/);
- assert.match(backend,/type:'testTerminalStatus',kind,assignmentId:a\.id,status/);
+ assert.match(backend,/type:'testTerminalStatus',kind:reportKind,assignmentId:a\.id,status/);
  assert.match(backend,/type:'testDebugAdvice'/);
  assert.match(backend,/case 'submit':/);
+});
+
+test('Test tab uses the README command and shows pytest only for an additional test file',()=>{
+ const h=simulate();
+ h.send('cs50p-6-pizza');
+ assert.equal(h.get('testCommand').textContent,'python pizza.py regular.csv');
+ assert.equal(h.get('runPytest').hidden,true);
+ h.send('cs50p-7-working');
+ assert.equal(h.get('testCommand').textContent,'python working.py');
+ assert.equal(h.get('runPytest').hidden,false);
+ h.click('runPytest');
+ assert.equal(h.messages.at(-1).type,'test');
+ h.send('cs50p-5-test_fuel');
+ assert.equal(h.get('runPython').textContent,'Run pytest');
+ assert.equal(h.get('runPytest').hidden,true);
+});
+
+test('terminal uses assignment arguments and stops when the save is declined',async()=>{
+ const start=backend.indexOf(' async term(a,kind)');
+ const end=backend.indexOf(' async handle(m)',start);
+ const launches=[];
+ const messages=[];
+ let canSave=true;
+ const vscode={window:{createTerminal:options=>({
+  show(){},sendText:command=>launches.push({cwd:options.cwd,command})
+ })}};
+ const term=Function('vscode','root','join','exists','assignmentCommands','submissionPath','saveAssignmentEdits','shellQuote',
+  'return ({'+backend.slice(start,end)+'}).term;'
+ )(vscode,()=>'/school',(...parts)=>parts.join('/'),async()=>true,assignmentCommands,submissionPath,async()=>canSave,JSON.stringify);
+ const companion={ctx:{extensionUri:'/extension'},view:{webview:{postMessage:msg=>messages.push(msg)}}};
+ assert.equal(await term.call(companion,assignmentById('cs50p-6-pizza'),'run'),true);
+ assert.equal(await term.call(companion,assignmentById('cs50p-7-working'),'test'),true);
+ assert.deepEqual(launches,[
+  {cwd:'/school/pizza',command:'python pizza.py regular.csv'},
+  {cwd:'/school/working',command:'pytest test_working.py'}
+ ]);
+ canSave=false;
+ for(const kind of ['run','test','check','submit'])
+  assert.equal(await term.call(companion,assignmentById('cs50p-7-working'),kind),false);
+ assert.equal(launches.length,2);
+ assert.equal(messages.at(-1).status,'canceled');
 });

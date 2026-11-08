@@ -9,6 +9,7 @@ const browserSource=fs.readFileSync(path.join(__dirname,'../media/sidebar.js'),'
 const uiSource=fs.readFileSync(path.join(__dirname,'../src/ui.js'),'utf8');
 const markupIds=new Set([...uiSource.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
 const {coachClues}=require('../src/coach-model');
+const {get:assignmentById,assignmentCommands}=require('../src/core');
 
 function makeElement(id){
  const listeners={};
@@ -70,7 +71,7 @@ function harness(saved={}){
     slug:id.includes('coke')?'coke':'indoor',set:id.includes('coke')?2:0,
     description:'Practice writing your own code',entryFile:id.includes('coke')?'coke.py':'indoor.py'
    },
-   folderExists,entryExists,guideExists,
+   folderExists,entryExists,guideExists,commands:assignmentCommands(assignmentById(id)),testExists:false,
    coach:{clues:{
      understand:coachClues({title:'Indoor Voice'},
       {understand:['What is the input?','What is the output?']},'understand'),
