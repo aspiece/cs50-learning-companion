@@ -14,6 +14,14 @@ The starter scaffolds now use four support bands (guided for Sets 0–1, support
 
 Version 0.9.0 removed the Learn tab, support levels, the separate String Methods Toolkit, and the journal and reflection forms. Existing student files are preserved. After updating and reopening the Companion, it refreshes older READMEs it recognizes as untouched. For a guide you edited, use **More options → Update my README guide** to approve the replacement and save a backup.
 
+## Automatic classroom updates (v0.9.7)
+
+When a student opens the CS50 Companion sidebar, the extension checks the official GitHub releases. If a newer version exists, it automatically downloads the versioned VSIX, verifies its SHA-256 checksum, and installs it with the Codespaces CLI. If the release is current, nothing changes.
+
+After installation, students receive a **Reload now / Later** prompt. The extension does not silently reload Codespaces, so students can save unfinished work first. An offline or blocked update leaves the existing extension usable. The manual **Check for updates** control remains available.
+
+**This only applies once students have installed v0.9.7 or newer.** Older extensions cannot be retroactively forced to update without a new installation or their existing update workflow. Student assignment Python files are never overwritten.
+
 ## Install or update in CS50 Codespaces
 
 **Classroom installation:** Open the terminal inside [cs50.dev](https://cs50.dev) and paste **one command**. It works for first-time setup and for updates, from any starting directory:
