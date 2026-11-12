@@ -44,7 +44,7 @@ test('test problems retain source and test files with the required APIs',()=>{
  assert.ok(fuel.files['test_fuel.py'].includes('from fuel import convert, gauge'));
  const jar=get('cs50p-8-jar');
  assert.match(jar.files['jar.py'],/class Jar:/);
- for(const signature of ['deposit(self, cookies)','withdraw(self, cookies)','__init__(self, capacity=12)'])
+ for(const signature of ['deposit(self, n)','withdraw(self, n)','__init__(self, capacity=12)'])
   assert.ok(jar.files['jar.py'].includes('def '+signature+':'));
  assert.ok(jar.files['test_jar.py'].includes('from jar import Jar'));
 });
@@ -62,4 +62,45 @@ test('all student Python starter files have valid Python syntax',t=>{
  if(result.error&&result.error.code==='ENOENT'){t.diagnostic('Python 3 unavailable; syntax check skipped');return;}
  assert.equal(result.status,0,result.stderr||result.error?.message);
  assert.ok(Number(result.stdout.trim())>=41);
+});
+
+
+test('required interfaces match verified Harvard specifications and optional helpers stay optional',()=>{
+ const cases=[
+  ['cs50p-5-test_twttr','twttr.py',['def main():','def shorten(word):']],
+  ['cs50p-5-test_fuel','fuel.py',['def convert(fraction):','def gauge(percentage):']],
+  ['cs50p-4-professor','professor.py',['def get_level():','def generate_integer(level):']],
+  ['cs50p-7-working','working.py',['def convert(s):']],
+  ['cs50p-7-numb3rs','numb3rs.py',['def validate(ip):']],
+  ['cs50p-8-jar','jar.py',['def deposit(self, n):','def withdraw(self, n):','def capacity(self):','def size(self):']]
+ ];
+ for(const [id,file,interfaces] of cases){
+  const code=get(id).files[file];
+  for(const signature of interfaces)assert.ok(code.includes(signature),id+' missing '+signature);
+ }
+ assert.doesNotMatch(get('cs50p-7-working').files['working.py'],/def convert_time\(/);
+ assert.doesNotMatch(get('cs50p-4-game').files['game.py'],/def get_guess\(/);
+ assert.match(get('cs50p-8-seasons').files['seasons.py'],/def main\(/);
+ assert.match(get('cs50p-8-seasons').files['test_seasons.py'],/test_date_logic/);
+ assert.doesNotMatch(get('cs50p-8-shirtificate').files['shirtificate.py'],/class PDF\(/);
+});
+
+test('all 41 Codespaces READMEs align with code and increasing independence',()=>{
+ const {guideForCodespace}=require('../src/core');
+ const bands=['guided','supported','targeted','independent'];
+ for(const item of list()){
+  const a=get(item.id),guide=guideForCodespace(a);
+  assert.match(guide,/Harvard CS50P problem/);
+  assert.match(guide,/README|The problem/);
+  for(const file of Object.keys(a.files).filter(name=>name.endsWith('.py'))){
+   assert.ok(guide.includes('`'+file+'`'),item.id+' guide missing '+file);
+   assert.match(a.files[file],/Learning support: (guided|supported|targeted|independent)/);
+   const expected=a.set<=1?bands[0]:a.set<=3?bands[1]:a.set<=5?bands[2]:bands[3];
+   assert.ok(a.files[file].includes('Learning support: '+expected));
+  }
+  assert.match(guide,/official|Harvard/i);
+  assert.doesNotMatch(guide,/Open .+ in Python Lab|Move to Codespaces/);
+  if(Object.keys(a.files).some(name=>/^test_.*\.py$/.test(name)))
+   assert.match(guide,/skipped test|A skipped test/);
+ }
 });
