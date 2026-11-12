@@ -258,12 +258,14 @@ test('debugging reads copied text only after a student clicks',()=>{
 });
 
 
-test('Writing Python opens an optional lookup that filters by method name and purpose',()=>{
+test('Start includes a standalone collapsible string-method lookup with working search',()=>{
  const h=harness();
  h.sendState();
+ assert.equal(h.get('stringLookup').hidden,false,'Lookup is available without opening coaching');
+ assert.equal(h.get('stringLookup').open,false,'Lookup starts collapsed');
  h.click('coachToggle');
  h.click('coachUnderstand');
- assert.equal(h.get('stringLookup').hidden,true);
+ assert.equal(h.get('stringLookup').hidden,false,'Changing coaching does not hide the lookup');
  h.click('coachCoding');
  assert.equal(h.get('stringLookup').hidden,false);
  const search=h.get('stringSearch');
@@ -281,6 +283,8 @@ test('Writing Python opens an optional lookup that filters by method name and pu
  assert.match(h.get('stringLookupStatus').textContent,/No methods found/);
  assert.equal(visible('').length,16);
  h.click('coachError');
- assert.equal(h.get('stringLookup').hidden,true);
+ assert.equal(h.get('stringLookup').hidden,false,'Lookup remains available when debugging');
+ h.click('coachToggle');
+ assert.equal(h.get('stringLookup').hidden,false,'Closing help does not hide the lookup');
  assert.equal(h.messages.length,1,'Lookup runs entirely in the sidebar');
 });
