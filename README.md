@@ -10,6 +10,8 @@ A VS Code extension for guided, solution-free CS50P practice in [cs50.dev](https
 - **Test** runs the command shown in the assignment README. When an assignment includes a separate test file, **Run pytest** appears. Run, Check, and Submit ask you to save any open assignment edits first. Use the README for test ideas. In **Debug one thing**, paste an error or choose **Use copied output**.
 - **Submit** opens submit50 and the official CS50P gradebook.
 
+The starter scaffolds now use four support bands (guided for Sets 0–1, supported for 2–3, targeted for 4–5, independent for 6–8). Function and class signatures are preserved when required by Harvard. Test files include specific test ideas but no completed assertions. Existing Python files are **never overwritten** by a Companion update; only recognized unchanged generated guides are refreshed.
+
 Version 0.9.0 removed the Learn tab, support levels, the separate String Methods Toolkit, and the journal and reflection forms. Existing student files are preserved. After updating and reopening the Companion, it refreshes older READMEs it recognizes as untouched. For a guide you edited, use **More options → Update my README guide** to approve the replacement and save a backup.
 
 ## Install or update in CS50 Codespaces
