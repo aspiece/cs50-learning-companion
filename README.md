@@ -36,20 +36,13 @@ If the CLI is unavailable, the script prints the generated VSIX location and ins
 
 The source repository remains at <https://github.com/aspiece/cs50-learning-companion>. Follow the [student installation guide](STUDENT_INSTALL.md) for classroom steps and error help. **Do not delete a Codespace to retry installation.** The script does not modify Python assignment files.
 
-## Built-in classroom updates (v0.7.0)
+## Built-in classroom updates (v0.7.0 and later)
 
-Students install the companion once. After that, they can update it directly from the **GCI CS50 Companion sidebar**:
+**v0.9.7 and newer:** Opening the Companion automatically checks the repository's versioned classroom releases. If a newer verified release is available, the extension downloads and installs the VSIX automatically, then asks the student to reload Codespaces. It does **not** silently reload while work could be unsaved. Offline/network/CLI failures leave the existing extension working; a manual VSIX installation path is offered if necessary.
 
-1. The sidebar checks GitHub for newer classroom releases when opened (no automatic installation).
-2. If an update exists, **Check for updates** shows its version. Select it to review the update.
-3. Choose **Install update**. The extension downloads the signed-off release artifact from our GitHub repository, checks its SHA-256 checksum, and uses the Codespaces VS Code CLI to install it.
-4. Choose **Reload now** to start the new version. Students are asked before installation and before reloading.
+**v0.7.0–v0.9.6:** Earlier installed versions check on launch, but do not automatically install updates. Students must use **Check for updates** or the one-command installer to obtain v0.9.7 once. After that, subsequent releases use the new automatic-install flow.
 
-There is also a Command Palette option **CS50 Companion: Check for Updates**. If the Codespace cannot install a VSIX through the CLI, the extension keeps the verified file, shows its exact path, and explains **Extensions → ... → Install from VSIX**. It never modifies student assignment folders, code, or Learning Journals.
-
-GitHub Actions now publishes **versioned classroom prereleases automatically after tests pass on main**. Each prerelease has a versioned `.vsix` and `SHA256SUMS.txt`. Release downloads are constrained to the `aspiece/cs50-learning-companion` GitHub repository and checksummed before installation. The updater requires an accessible network and VS Code CLI and does not silently install new code.
-
-**First-time installation or upgrading from pre-v0.7.0:** Use the [one-command student installer](STUDENT_INSTALL.md) one last time. After v0.7.0 is installed, later versions can be installed with the sidebar button.
+The manual **Check for updates** control remains in the sidebar, and the Command Palette includes **CS50 Companion: Check for Updates**. Each release contains a versioned VSIX and SHA-256 checksum and is restricted to the trusted GitHub repository. No automatic updater rewrites a student's Python assignment files; recognized untouched generated READMEs may be refreshed through the existing safe update process.
 
 ## Versioning and publication
 
