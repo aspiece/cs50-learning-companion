@@ -1250,6 +1250,7 @@
    if(signature==='PDF.header(self)'||signature==='Jar')continue;
    body+=(wantMain||body?'\n':'')+functionBlock(signature,problem);
   }
+  if(problem.set===8&&problem.slug==='seasons')body+='\n# TODO: Add at least one helper function besides main() and test it.\n';
   if(wantMain)body+='\nif __name__ == "__main__":\n    main()\n';
   if(!wantMain&&signatures.filter(x=>x!=='PDF.header(self)').length===0){
    // Use any existing input/import setup, but move the teaching steps out of Python.
@@ -1324,6 +1325,7 @@
   return [
    '# '+problem.title+' — Student tests',
    '# Read README.md for the testing steps.',
+   '# Learning support: '+supportBand(problem.set)+'. Write your own assertions.',
    '',
    ...imports,
    '',
