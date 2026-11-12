@@ -107,7 +107,6 @@
  function renderCoach(){
   const clues=coachReason?state?.coach?.clues?.[coachReason]||[]:[];
   $('coachClueBox').hidden=!coachReason;
-  $('stringLookup').hidden=coachReason!=='coding';
   if(!coachReason)return;
   const titles={understand:'Understanding the problem',coding:'Writing Python',debug:'Debugging an error'};
   $('coachTopic').textContent=titles[coachReason]||'A small clue';
