@@ -78,15 +78,16 @@ function html(webview,extensionUri){
    <button id="coachNext" class="button secondary" type="button" data-action="coachNext">Another clue</button>
    <button id="coachDebug" class="button link" type="button" data-action="coachDebug" hidden>Open error helper</button>
   </div>
-  <details class="quiet-details" id="stringLookup" hidden>
-   <summary>Look up Python string methods</summary>
+
+  <p class="note">One clue at a time. No finished solutions or changes to your code.</p>
+ </div>
+   <details class="quiet-details" id="stringLookup">
+   <summary>Python String Methods</summary>
    <label for="stringSearch">Find a method</label>
    <input id="stringSearch" type="search" placeholder="Try lowercase, spaces, or split">
    <p class="note" id="stringLookupStatus" role="status"></p>
    <div id="stringMethodList">${renderStringMethods()}</div>
   </details>
-  <p class="note">One clue at a time. No finished solutions or changes to your code.</p>
- </div>
  <details id="startMore" class="start-more">
   <summary>More options</summary>
   <div class="start-more-actions">
