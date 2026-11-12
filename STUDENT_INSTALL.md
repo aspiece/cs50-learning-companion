@@ -43,7 +43,7 @@ You should see version **0.9.4** or a newer version.
 2. **Test.** Run your code and compare its output with the examples in your README. Use **Run check50** for CS50’s checks and **Run style50** for formatting. Open **Debug one thing** and paste an error or choose **Use copied output** for a clue.
 3. **Submit.** Select **Open submit50 in terminal**. Review the file list before you confirm. Open **Check my CS50P submission status** and sign in to see the official result.
 
-Choose **I’m stuck** on Start for one clue at a time. Under **Writing Python**, open **Look up Python string methods**. Search by name or try a word like “spaces.” Open a method to see an example and its result. The README has links to Harvard’s full instructions, related CS50 shorts, and a matching CodeHS lesson where available.
+Choose **I’m stuck** on Start for one clue at a time. Expand **Python String Methods** on Start whenever you need a reference. Search by name or try a word like “spaces.” Open a method to see an example and its result. The README has links to Harvard’s full instructions, related CS50 shorts, and a matching CodeHS lesson where available.
 
 After an update, reload Codespaces and open **CS50 Companion**. It refreshes old guides it recognizes as untouched. If you changed a guide, use **More options → Update my README guide** to replace it and keep a backup. Save any open README edits first.
 
