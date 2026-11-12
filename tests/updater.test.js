@@ -56,6 +56,17 @@ test('UI provides explicit update check, confirmation and reload after successfu
  assert.match(extension,/workbench\.action\.reloadWindow/);
  assert.match(client,/updateStatus/);
 });
+test('opening Companion automatically installs verified newer releases without forcing a dirty-editor reload',()=>{
+ const extension=fs.readFileSync(path.join(__dirname,'../src/extension.js'),'utf8');
+ assert.match(extension,/this\\.checkUpdates\\(true,true\\)/);
+ assert.match(extension,/async checkUpdates\\(silent=false,autoInstall=false\\)/);
+ assert.match(extension,/if\\(!autoInstall\\)/);
+ assert.match(extension,/downloadVerified\\(release,folder\\)/);
+ assert.match(extension,/installWithCodeCLI\\(file\\)/);
+ assert.match(extension,/textDocuments\\.some\\(doc=>doc\\.isDirty\\)/);
+ assert.match(extension,/Reload now','Later'/);
+ assert.match(extension,/if\\(!silent\\|\\|autoInstall\\)/);
+});
 test('GitHub workflow publishes versioned package only after validation',()=>{
  const flow=fs.readFileSync(path.join(__dirname,'../.github/workflows/build.yml'),'utf8');
  assert.match(flow,/needs: build/);
