@@ -153,7 +153,7 @@ class Companion {
   this.updateStatus=next;
   if(this.view)await this.view.webview.postMessage({type:'updateStatus',...next});
  }
- async checkUpdates(silent=false){
+ async checkUpdates(silent=false,autoInstall=false){
   if(this.updateBusy)return;
   this.updateBusy=true;
   try{
@@ -165,12 +165,13 @@ class Companion {
     return;
    }
    await this.sendUpdateStatus({state:'available',installed:version,latest:release.version});
-   if(silent)return;
-   const choice=await vscode.window.showInformationMessage(
-    'GCI CS50 Companion v'+release.version+' is available (installed: v'+version+'). Install the verified update now?',
-    {modal:true},'Install update'
-   );
-   if(choice!=='Install update')return;
+   if(!autoInstall){
+    const choice=await vscode.window.showInformationMessage(
+     'GCI CS50 Companion v'+release.version+' is available (installed: v'+version+'). Install the verified update now?',
+     {modal:true},'Install update'
+    );
+    if(choice!=='Install update')return;
+   }
    await this.sendUpdateStatus({state:'installing',latest:release.version});
    const folder=this.ctx.globalStorageUri.fsPath;
    const file=await updater.downloadVerified(release,folder);
@@ -179,7 +180,7 @@ class Companion {
    }catch(error){
     await this.sendUpdateStatus({state:'manual',latest:release.version});
     const action=await vscode.window.showWarningMessage(
-     'The update was downloaded and verified, but VS Code could not install it automatically. Use Extensions → … → Install from VSIX and choose: '+file,
+     'Companion v'+release.version+' was verified but automatic installation failed. Use Extensions → … → Install from VSIX and choose: '+file,
      'Copy VSIX path','Open Extensions'
     );
     if(action==='Copy VSIX path')await vscode.env.clipboard.writeText(file);
@@ -187,15 +188,21 @@ class Companion {
     return;
    }
    await this.sendUpdateStatus({state:'installed',latest:release.version});
+   const dirty=vscode.workspace.textDocuments.some(doc=>doc.isDirty);
    const action=await vscode.window.showInformationMessage(
-    'GCI CS50 Companion v'+release.version+' installed. Reload Codespaces to start using it.',
-    'Reload now','Later'
+    'CS50 Companion v'+release.version+' was installed automatically. '+
+     (dirty?'Save your open changes before reloading Codespaces.':'Reload Codespaces to use the new version.'),
+    {modal:true},'Reload now','Later'
    );
-   if(action==='Reload now')await vscode.commands.executeCommand('workbench.action.reloadWindow');
+   if(action==='Reload now'){
+    // VS Code handles any remaining unsaved editor changes during reload.
+    await vscode.commands.executeCommand('workbench.action.reloadWindow');
+   }
   }catch(error){
    const message=(error&&error.message?error.message:String(error)).slice(0,450);
    await this.sendUpdateStatus({state:'error',message});
-   if(!silent)vscode.window.showWarningMessage('Could not check or install GCI updates: '+message+' You can keep using your current version.');
+   if(!silent||autoInstall)
+    vscode.window.showWarningMessage('Could not update GCI CS50 Companion: '+message+'. Your current extension and assignment files are unchanged.');
   }finally{this.updateBusy=false;}
  }
 
@@ -265,7 +272,7 @@ class Companion {
      await this.guideRefresh;
     }
     await this.sendUpdateStatus(this.updateStatus);
-    if(!this.updateChecked){this.updateChecked=true;void this.checkUpdates(true);}
+    if(!this.updateChecked){this.updateChecked=true;void this.checkUpdates(true,true);}
     if(!this.initialPreviewOpened){
      this.initialPreviewOpened=true;
      const selected=get(this.id);
