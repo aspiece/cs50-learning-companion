@@ -546,7 +546,7 @@
   '4/emojize':{imports:['import emoji']},
   '4/figlet':{imports:['import random','import sys','from pyfiglet import Figlet']},
   '4/adieu':{imports:['import inflect']},
-  '4/game':{imports:['import random'],functions:['get_guess()','get_level()','get_number(prompt)'],main:true},
+  '4/game':{imports:['import random'],functions:[],main:true},
   '4/professor':{imports:['import random'],functions:['get_level()','generate_integer(level)'],main:true},
   '4/bitcoin':{imports:['import os','import requests','import sys']},
   '5/test_twttr':{functions:['shorten(word)'],main:true,testNames:['test_shorten']},
@@ -559,12 +559,12 @@
   '6/shirt':{imports:['import os','import sys','from PIL import Image, ImageOps']},
   '7/numb3rs':{imports:['import re'],functions:['validate(ip)'],main:true,testNames:['test_valid','test_invalid']},
   '7/watch':{imports:['import re'],functions:['parse(s)'],main:true},
-  '7/working':{imports:['import re','import sys'],functions:['convert(s)','convert_time(t)'],main:true,testNames:['test_format','test_with_minutes','test_without_minutes'],testImports:['import pytest']},
+  '7/working':{imports:['import re','import sys'],functions:['convert(s)'],main:true,testNames:['test_format','test_with_minutes','test_without_minutes'],testImports:['import pytest']},
   '7/um':{imports:['import re'],functions:['count(s)'],main:true,testNames:['test_0','test_1','test_2']},
   '7/response':{imports:['import validators'],main:true},
-  '8/seasons':{imports:['import inflect','import sys','from datetime import date'],functions:['calculate(t0, t1)'],main:true,testNames:['test_calculate'],testImports:['from datetime import date']},
+  '8/seasons':{imports:['import inflect','import sys','from datetime import date'],functions:[],main:true,testNames:['test_calculate'],testImports:['from datetime import date']},
   '8/jar':{functions:['Jar'],testNames:['test_init','test_str','test_deposit','test_withdraw'],testImports:['import pytest']},
-  '8/shirtificate':{imports:['from fpdf import FPDF'],functions:['PDF.header(self)'],main:true}
+  '8/shirtificate':{imports:['from fpdf import FPDF'],functions:[],main:true}
  };
  const learnerGuide={
  "0/indoor": {
@@ -1046,7 +1046,7 @@
   "steps": [
    "Write convert(s) to read a time range.",
    "Check that the times use the right format.",
-   "Use convert_time(t) as a helper if you want.",
+   "Decide if a helper for one time would make your code easier to understand.",
    "Return the new time range and write tests."
   ],
   "checks": [
@@ -1086,7 +1086,7 @@
   "steps": [
    "Ask for a date of birth.",
    "Use dates to find how much time has passed.",
-   "Write calculate(t0, t1) to help with the math.",
+   "Choose whether to write a helper to make date calculations easier to test.",
    "Write the answer in words and test your code."
   ],
   "checks": [
@@ -1150,6 +1150,21 @@
 
  // Small pieces of runnable setup help students reach the first TODO.
  // These inputs are not solutions to the assignment.
+ const firstMove={
+  '0/faces':"Decide what convert(s) returns, not what it prints.",
+  '0/tip':"Work out how each helper changes input text into a number.",
+  '1/meal':"Write the contract for convert(time): what number does it return?",
+  '2/twttr':"Choose where to collect the characters that you keep.",
+  '2/plates':"Write down each validation rule before combining them.",
+  '3/fuel':"Identify which invalid inputs should cause another prompt.",
+  '3/outdated':"Identify which of the two accepted date formats was entered.",
+  '4/professor':"Identify the responsibility of each required function.",
+  '5/test_fuel':"Plan one normal case and one exception case for convert.",
+  '6/scourgify':"Compare input and output CSV column names.",
+  '6/shirt':"List the checks to perform before opening image files.",
+  '7/working':"Write down when convert(s) must raise ValueError.",
+  '8/jar':"Choose how capacity and current size will be stored."
+ };
  const mainInputs={
   '0/faces':['text = input("Input: ")'],
   '0/tip':['meal_cost = input("How much was the meal? ")','tip_percent = input("What percentage would you like to tip? ")'],
@@ -1172,20 +1187,23 @@
  };
  const indentedHint=(text,level=1)=>'    '.repeat(level)+'# TODO: '+text+'\n';
  const safeGuide=problem=>learnerGuide[problem.set+'/'+problem.slug]||{steps:[problem.goal],checks:['Compare your output with the official examples.']};
+ const supportBand=set=>set<=1?'guided':set<=3?'supported':set<=5?'targeted':'independent';
  function header(problem){
-  return '# '+problem.title+'\n# Read README.md for the assignment steps.\n\n';
+  return '# '+problem.title+'\n# Read README.md for the assignment steps.\n'+
+   '# Learning support: '+supportBand(problem.set)+'. Write your own solution.\n\n';
  }
  function functionBlock(signature,problem){
   const funcName=signature.split('(')[0];
   const initial=funcName==='main'?(mainInputs[problem.set+'/'+problem.slug]||[]):[];
   const todo=funcName==='main'?
-   'Use your functions and print the answer.':
-   'Finish '+funcName+' using the steps in README.md.';
+   'Connect input, processing, and output using your README plan.':
+   'Identify what '+funcName+' must return or raise. Read the official rules.';
   return [
    'def '+signature+':',
    ...initial.map(line=>'    '+line),
+   ...(supportBand(problem.set)==='guided'&&firstMove[problem.set+'/'+problem.slug]?['    # First step: '+firstMove[problem.set+'/'+problem.slug]]:[]),
    '    # TODO: '+todo,
-   '    pass',
+   '    pass  # Replace this placeholder when you implement the function.',
    '',
    ''
   ].join('\n');
@@ -1210,14 +1228,14 @@
    body+='class Jar:\n';
    for(const [signature,task] of [
     ['__init__(self, capacity=12)','Save the limit and start with an empty jar.'],
-    ['__str__(self)','Show the cookies as text.'],
-    ['deposit(self, cookies)','Add cookies if there is room.'],
-    ['withdraw(self, cookies)','Take cookies out if there are enough.']
+    ['__str__(self)','Return the required cookie string, not a printed value.'],
+    ['deposit(self, n)','Add n cookies if there is room.'],
+    ['withdraw(self, n)','Take n cookies out if there are enough.']
    ]){
-    body+='    def '+signature+':\n'+indentedHint(task,2)+'        pass\n\n';
+    body+='    def '+signature+':\n'+indentedHint(task,2)+'        pass  # Replace this placeholder.\n\n';
    }
    for(const signature of ['capacity(self)','size(self)']){
-    body+='    @property\n    def '+signature+':\n'+indentedHint('Return this value.',2)+'        pass\n\n';
+    body+='    @property\n    def '+signature+':\n'+indentedHint('Return the requested value; do not print it.',2)+'        pass  # Replace this placeholder.\n\n';
    }
    return header(problem)+body;
   }
@@ -1237,11 +1255,55 @@
    // Use any existing input/import setup, but move the teaching steps out of Python.
    const setup=(guide.setup||'').split('\n').filter(line=>!/^\s*# TODO:/i.test(line)).join('\n').trim();
    if(setup)body+=setup+'\n\n';
-   const tasks=guide.steps.slice(/\binput\s*\(/.test(setup)?1:0).slice(-3);
+   const tasks=guide.steps.slice(/\binput\s*\(/.test(setup)?1:0).slice(0,supportBand(problem.set)==='independent'?2:3);
+   if(firstMove[problem.set+'/'+problem.slug])body+='# First step: '+firstMove[problem.set+'/'+problem.slug]+'\n\n';
    body+=tasks.map(step=>'# TODO: '+step).join('\n\n')+'\n';
   }
   return header(problem)+body;
  }
+ const testingPlans={
+ "5/test_twttr": {
+  "test_shorten": "Test upper/lowercase vowels, digits, and words with no vowels."
+ },
+ "5/test_bank": {
+  "test_hello": "Test the special greeting.",
+  "test_with_h": "Test another greeting that starts with H.",
+  "test_without_h": "Test a greeting that does not start with H."
+ },
+ "5/test_plates": {
+  "test_starts_with_two_letters": "Test the first two characters.",
+  "test_two_to_six_characters": "Test minimum, maximum, and invalid lengths.",
+  "test_numbers_at_end": "Test where digits may appear.",
+  "test_not_allowed": "Test punctuation and the zero-position rule."
+ },
+ "5/test_fuel": {
+  "test_convert": "Test normal fractions and exceptions for invalid fractions.",
+  "test_gauge": "Test empty/full threshold boundaries and a middle value."
+ },
+ "7/numb3rs": {
+  "test_valid": "Test valid addresses with boundary octets.",
+  "test_invalid": "Test missing parts and out-of-range octets."
+ },
+ "7/working": {
+  "test_format": "Test range separators and invalid formats.",
+  "test_with_minutes": "Test valid and invalid minute values.",
+  "test_without_minutes": "Test noon, midnight, and hour-only input."
+ },
+ "7/um": {
+  "test_0": "Test a sentence without the whole word.",
+  "test_1": "Test one whole-word match beside punctuation.",
+  "test_2": "Test repeated words without matching longer words."
+ },
+ "8/jar": {
+  "test_init": "Test starting size, capacity, and invalid capacity.",
+  "test_str": "Test zero and nonzero cookie display.",
+  "test_deposit": "Test valid deposits and capacity errors.",
+  "test_withdraw": "Test valid withdrawals and not enough cookies."
+ },
+ "8/seasons": {
+  "test_calculate": "Plan a date-based test; optional helper names are your choice."
+ }
+};
  function buildTest(filename,source,problem){
   const outline=shape(problem);
   const functions=(outline.functions||problem.functions).filter(x=>x!=='Jar'&&!x.startsWith('PDF.'));
@@ -1251,10 +1313,12 @@
   else imported='import '+source.replace(/\.py$/,'');
   const imports=[...new Set(['import pytest',...(outline.testImports||[]),imported])];
   const names=outline.testNames||['test_your_first_case'];
+  const plans=testingPlans[problem.set+'/'+problem.slug]||{};
   const stubs=names.map(name=>[
    'def '+name+'():',
-   '    # TODO: Add your own test. See README.md.',
-   '    pytest.skip("Add an assert test, then remove this line.")',
+   '    # TODO: '+(plans[name]||'Plan a normal, boundary, or invalid case.'),
+   '    # TODO: Write an assert or use pytest.raises for an expected error.',
+   '    pytest.skip("Not yet tested: replace this with your assertion.")',
    ''
   ].join('\n')).join('\n');
   return [
