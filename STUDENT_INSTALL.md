@@ -35,7 +35,7 @@ After the installer says **Installation complete**:
 3. Choose that command.
 4. Find the **GCI** letters in the left sidebar. Select them to open **CS50 Companion**.
 
-You should see version **0.9.4** or a newer version.
+You should see version **0.9.7** or a newer version.
 
 ## Complete a problem
 
@@ -65,14 +65,14 @@ If you're not sure what happened, copy the **last 10–20 lines** from the termi
 
 ## Updating later (v0.7.0 and newer)
 
-After your first installation, you do **not** need to copy terminal commands for normal updates.
+After installing version **0.9.7** or newer, opening the Companion automatically checks for a newer release and installs verified classroom updates when available. The editor asks you to reload so you can save your work first. You do **not** need to copy terminal commands for normal updates.
 
 1. Open your CS50 Codespace and select the **GCI** icon.
 2. At the bottom of the companion sidebar, look for **Check for updates**.
 3. If a newer version is available, select **Install update** when prompted.
 4. When the extension finishes installing, choose **Reload now**.
 
-The companion checks for newer versions when its sidebar opens, but **never installs without asking**. The update comes from the official GCI companion GitHub release and is checked for download errors. Your Python assignments and Learning Journal files are not replaced.
+The Companion checks for newer versions when its sidebar opens and automatically installs verified newer classroom versions. It asks before reloading Codespaces, and never overwrites your Python files. The update comes from the official GCI companion GitHub release and is checked for download errors. Your Python assignments and Learning Journal files are not replaced.
 
 If you are still using **v0.6.2 or earlier**, the built-in update button is not available yet. Run the one-line installation command from Step 2 one more time to upgrade to v0.7.0. After that, use the sidebar for future updates.
 
