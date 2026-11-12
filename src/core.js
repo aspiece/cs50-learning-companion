@@ -164,6 +164,18 @@ function guideForCodespace(a){
   ...(a.set===5?['If you finished the earlier problem, copy its '+code(a.sourceFile)+' into this test folder and adapt it to the function rules on Harvard’s page. If you need a fresh start, use the scaffold here.']:[])
  ];
  const thought=details.thought?['**Think about it:** '+details.thought,'']:[];
+ const helpLevel=a.set<=1?'Getting started':a.set<=3?'Build the algorithm':a.set<=5?'Use the required interfaces':'Plan independently';
+ const starterGuidance={
+  'cs50p-5-test_fuel':'Test both returned values and the exceptions the two functions must raise.',
+  'cs50p-7-working':'Keep convert(s) as the required interface. Any additional helper is your choice.',
+  'cs50p-8-seasons':'Harvard requires at least one function besides main(). Choose its name and test it in test_seasons.py.',
+  'cs50p-8-jar':'Use the exact Jar methods and parameter names shown on Harvard\'s page.',
+  'cs50p-8-shirtificate':'A PDF subclass and header override are optional design choices, not requirements.'
+ };
+ const startHint=a.set<=1?'The starter includes a first action. Find the TODOs and make one small change.':
+  a.set<=3?'Read the TODOs, then plan the loop or condition before writing it.':
+  a.set<=5?'Use the required function signatures and write the core logic yourself.':
+  'Plan the implementation from the official requirements. The starter only provides essential structure.';
  const body=[
   '# '+a.title,'',
   '**CS50P · Problem Set '+a.set+'**  ',
@@ -172,13 +184,19 @@ function guideForCodespace(a){
   details.goal||mission,'',
   '**Your task:**','',
   ...numbered(steps),'',
+  '**'+helpLevel+':** '+startHint,
+  ...(starterGuidance[a.id]?['', '**Important:** '+starterGuidance[a.id]]:[]),
+  '',
   ...thought,
   '**Full instructions:** [Harvard CS50P problem, examples, and hints]('+a.url+').',
   'This is a student-friendly summary. Harvard’s page has the exact rules and special cases.','',
   ...(setup.length?['**Before you run**','',setup.join('\n\n'),'']:[]),
   '## Test your program','',
   ...bullet(tests),
-  ...(testFile?['- In '+code(testFile)+', add your own checks and remove each '+code('pytest.skip(...)')+' line when that test is ready.']:[]),'',
+  ...(testFile?[
+   '- In '+code(testFile)+', replace each '+code('pytest.skip(...)')+' with a meaningful '+code('assert')+' or '+code('pytest.raises(...)')+' check.',
+   '- A skipped test does not show that the code is correct. Include a normal case, a boundary case, and an invalid case when appropriate.'
+  ]:[]),'',
   'Try an ordinary input and one unusual input. Compare the result with Harvard’s examples.','',
   '## Need help? (optional)','',
   ...(codehs?['- [CodeHS: '+codehs.title+']('+codehs.url+') — a related Python lesson overview.']:[]),
