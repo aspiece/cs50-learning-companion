@@ -23,15 +23,15 @@
    idle:'Update status: not checked yet.',
    checking:'Checking for new versions...',
    current:'You have the latest companion version (v'+(message.installed||'?')+').',
-   available:'Update available: v'+message.latest+'. Installed: v'+message.installed+'.',
-   installing:'Installing the verified update v'+message.latest+'...',
-   installed:'Update v'+message.latest+' installed. Reload Codespaces to use it.',
+   available:'New version v'+message.latest+' found. Installing the classroom update...',
+   installing:'Installing verified classroom update v'+message.latest+'...',
+   installed:'Update v'+message.latest+' installed. Reload Codespaces to activate it.',
    manual:'Update v'+message.latest+' verified. Install the saved VSIX using the Extensions menu.',
    error:'Update check failed: '+(message.message||'Please try again later.')
   };
   $('updateStatus').textContent=descriptions[state]||'Check for updates when you are ready.';
-  $('checkUpdate').disabled=state==='checking'||state==='installing';
-  $('checkUpdate').textContent=state==='available'?'Install v'+message.latest:'Check for updates';
+  $('checkUpdate').disabled=state==='checking'||state==='installing'||state==='available';
+  $('checkUpdate').textContent=state==='available'||state==='installing'?'Updating to v'+message.latest+'...':'Check for updates';
  }
  function applyFilters(){
   if(!state)return;
