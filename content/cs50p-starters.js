@@ -562,7 +562,7 @@
   '7/working':{imports:['import re','import sys'],functions:['convert(s)'],main:true,testNames:['test_format','test_with_minutes','test_without_minutes'],testImports:['import pytest']},
   '7/um':{imports:['import re'],functions:['count(s)'],main:true,testNames:['test_0','test_1','test_2']},
   '7/response':{imports:['import validators'],main:true},
-  '8/seasons':{imports:['import inflect','import sys','from datetime import date'],functions:[],main:true,testNames:['test_calculate'],testImports:['from datetime import date']},
+  '8/seasons':{imports:['import inflect','import sys','from datetime import date'],functions:[],main:true,testNames:['test_date_logic'],testImports:['from datetime import date']},
   '8/jar':{functions:['Jar'],testNames:['test_init','test_str','test_deposit','test_withdraw'],testImports:['import pytest']},
   '8/shirtificate':{imports:['from fpdf import FPDF'],functions:[],main:true}
  };
@@ -1086,7 +1086,7 @@
   "steps": [
    "Ask for a date of birth.",
    "Use dates to find how much time has passed.",
-   "Choose whether to write a helper to make date calculations easier to test.",
+   "Write at least one helper function besides main, with a name you choose; test it.",
    "Write the answer in words and test your code."
   ],
   "checks": [
@@ -1301,7 +1301,7 @@
   "test_withdraw": "Test valid withdrawals and not enough cookies."
  },
  "8/seasons": {
-  "test_calculate": "Plan a date-based test; optional helper names are your choice."
+  "test_date_logic": "Test a helper you design for date or minute calculations."
  }
 };
  function buildTest(filename,source,problem){
