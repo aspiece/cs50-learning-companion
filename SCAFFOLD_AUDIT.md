@@ -1,57 +1,28 @@
-# CS50 Companion starter-scaffolding audit
+# CS50P starter baseline audit
 
-Updated for version 0.9.6 (November 2026).
+Reviewed November 17, 2026 for version 0.9.8.
 
-## Scope
+All **41 assignment pages** in Problem Sets 0–8 were fetched and reviewed for supplied starter programs, data, and test examples. The URLs and selected original code blocks are recorded in `tests/fixtures/cs50-provided-code.json`.
 
-The catalog contains **41 CS50P assignments** across Problem Sets 0–8. The shared generator creates **50 Python files**, including source and test files. These are *unsolved* student scaffolds, not Harvard's starter solutions. The official problem page linked in each README remains the source of truth.
+## What students receive
 
-## Learning design
+- Harvard's provided program skeletons for Tip Calculator, Meal Time, Vanity Plates, Little Professor, all four Set 5 exercises, NUMB3RS, Watch, Working 9 to 5, Um, Seasons, and Cookie Jar.
+- Supplied executable code remains intact, including input/output wiring in `main`, Tip Calculator's calculation/formatting, and Cookie Jar's completed `test_str` example.
+- Taqueria's nine-item menu and Outdated's twelve-month list, assigned to named variables.
+- FIGlet's supplied object setup and Bitcoin's supplied request-exception outline.
+- Nutrition Facts: a teacher-provided dictionary of all 20 fruits and their calorie values, transcribed from the FDA table linked by the assignment. Keys use lowercase names. Input, case handling, lookup and output remain student work.
+- Other problems retain the existing light classroom scaffolds. General illustrative snippets, sample API responses, and examples of programs to count in Lines of Code are not inserted as solutions. File/image dependencies remain linked in the guides.
 
-| Sets | Support band | Intended assistance |
-| --- | --- | --- |
-| 0–1 | Guided | Concrete starting input, short TODOs, first-step direction |
-| 2–3 | Supported | Initial variables or structure; students design loops and decisions |
-| 4–5 | Targeted | Required function interfaces, library imports, and meaningful test prompts |
-| 6–8 | Independent | Minimum structure; students plan most of the algorithm and may name optional helpers |
+Placeholders are changed to TODO comments and `pass` so generated source parses. In unfinished tests, `pytest.skip` makes incompleteness visible. Optional helper placeholders remain comments. A provided example test passing is not evidence that the whole assignment is complete.
 
-Keep implementation decisions, actual return values, assertions, error handling, and algorithm design with the student. `pass` and `pytest.skip` explicitly indicate **unfinished work**, not success.
+## Attribution
 
-## Curriculum/contract spot checks
+Supplied snippets come from Harvard's CS50 Introduction to Programming with Python, linked per assignment in the fixture and generated source. CS50 course material is available under [CC BY-NC-SA 4.0](https://cs50.harvard.edu/python/license/). The supplied/adapted snippets retain that license; the repository's MIT license applies to the original extension code. Classroom modifications are the placeholder changes, named data variables, and teaching comments described above. The fixture preserves the reviewed originals.
 
-| Area | Verified guidance |
-| --- | --- |
-| [Testing my twttr](https://cs50.harvard.edu/python/psets/5/test_twttr/) | `main()` and `shorten(word)`, plus student-authored tests |
-| [Refueling](https://cs50.harvard.edu/python/psets/5/test_fuel/) | `convert(fraction)` and `gauge(percentage)`; test normal returns and exceptions |
-| [Little Professor](https://cs50.harvard.edu/python/psets/4/professor/) | `get_level()` and `generate_integer(level)` are required |
-| [NUMB3RS](https://cs50.harvard.edu/python/psets/7/numb3rs/) | `validate(ip)`, test valid/invalid IPv4 formats |
-| [Working 9 to 5](https://cs50.harvard.edu/python/psets/7/working/) | `convert(s)` required; `convert_time` not required; invalid input raises `ValueError` |
-| [Seasons of Love](https://cs50.harvard.edu/python/psets/8/seasons/) | `main()` **and at least one student-chosen helper**; tests must target helper functions |
-| [Cookie Jar](https://cs50.harvard.edu/python/psets/8/jar/) | `deposit(self, n)` and `withdraw(self, n)`; exact required class members |
-| [CS50P Problem Sets](https://cs50.harvard.edu/python/psets/) | Cross-check all assignment names, links, and instructions against the current course |
+Nutrition data: [FDA Raw Fruits Poster](https://www.fda.gov/food/nutrition-food-labeling-and-critical-foods/raw-fruits-poster-text-version-accessible-version).
 
-The remaining assignment specifications should be checked individually whenever Harvard revises them; this audit does **not** claim that every requirement on every official page was independently reverified.
+## Validation
 
-## Automated validation
+`npm test` checks all generated Python files for valid syntax, verifies that the recorded supplied code is retained, checks all 20 calorie values, and tests assignment creation and protection of existing student files. The snapshot records this review; it does not automatically detect future Harvard changes. Recheck the linked pages when updating the curriculum.
 
-Run `npm test`. The repository's `tests/starter.test.js` covers all 41 catalog items, required paths, solution-free TODO scaffolds, sample critical APIs, stage-specific support levels, generated Codespaces README alignment, and Python AST parsing (when Python 3 is available).
-
-When reviewing a change locally, additionally inspect representative cases from each band:
-
-- Set 0: `indoor`, `faces`, `tip`.
-- Set 2: `coke`, `plates`.
-- Set 3: `fuel`, `outdated`.
-- Set 4–5: `professor`, `test_fuel`.
-- Set 6: `scourgify`, `shirt`.
-- Set 7: `numb3rs`, `working`.
-- Set 8: `seasons`, `jar`, `shirtificate`.
-
-**Current verification limitation:** A connector-side in-memory structural validation inspected all 41 assignments and 50 Python files and their generated README relationships. It does not execute a Python interpreter, the full Node tests, `check50`, or a live Codespaces installation. Run `npm test` and inspect GitHub Actions before classroom release.
-
-## Student work protection
-
-The extension only creates starter files when an assignment folder is absent. Existing Python files are not rewritten during extension updates. Generated READMEs are refreshed automatically only when recognized as unchanged; replacing modified guides requires student approval and creates a backup.
-
-## Deployment
-
-The package is versioned **0.9.6** so that the classroom update mechanism can discover a newer release after GitHub Actions tests and publishes it. Verify the release checks and the Update button in one student Codespace before broad distribution.
+Existing student Python files are never overwritten. Updated starters apply to newly created assignment folders. The versioned release uses the existing classroom updater.
