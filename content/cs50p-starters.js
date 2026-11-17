@@ -1,6 +1,6 @@
 /* Original unsolved CS50P learning scaffolds for Python Lab.
  * Assignment names, filenames, and links correspond to Harvard's official
- * CS50P Problem Sets 0-8. Code and teaching prompts are newly authored.
+ * CS50P Problem Sets 0-8. Harvard-supplied code is attributed below; teaching prompts are newly authored.
  */
 (() => {
  'use strict';
@@ -758,7 +758,7 @@
  "2/nutrition": {
   "mission": "Look up the calories in a food.",
   "steps": [
-   "Make a dictionary with the foods from the problem page.",
+   "Use the supplied fruit-calorie dictionary from the FDA poster.",
    "Ask the user for a food name.",
    "Find the food in the dictionary.",
    "Print its calories if the food is listed."
@@ -786,7 +786,7 @@
  "3/taqueria": {
   "mission": "Add up the cost of food orders.",
   "steps": [
-   "Make a dictionary of the menu prices.",
+   "Review the supplied dictionary of menu prices.",
    "Ask for one food item at a time.",
    "Add each valid food price to the total.",
    "Show the new total until the user ends the order."
@@ -1190,7 +1190,11 @@
  const supportBand=set=>set<=1?'guided':set<=3?'supported':set<=5?'targeted':'independent';
  function header(problem){
   return '# '+problem.title+'\n# Read README.md for the assignment steps.\n'+
-   '# Learning support: '+supportBand(problem.set)+'. Write your own solution.\n\n';
+   '# Learning support: '+supportBand(problem.set)+'. Write your own solution.\n'+
+   (providedCode[problem.set+'/'+problem.slug]?
+    '# Based on Harvard CS50 starter material: '+problem.url+'\n'+
+    '# CC BY-NC-SA 4.0: https://cs50.harvard.edu/python/license/\n'+
+    '# Classroom adaptation: TODOs/placeholders and named data variables.\n':'')+'\n';
  }
  function functionBlock(signature,problem){
   const funcName=signature.split('(')[0];
@@ -1208,7 +1212,56 @@
    ''
   ].join('\n');
  }
+ // Harvard-supplied scaffolds are the minimum starting point. Sources and
+ // reviewed originals: tests/fixtures/cs50-provided-code.json.
+ // CS50 course material: https://cs50.harvard.edu/python/license/
+ const providedCode={
+  "0/tip": "def main():\n    dollars = dollars_to_float(input(\"How much was the meal? \"))\n    percent = percent_to_float(input(\"What percentage would you like to tip? \"))\n    tip = dollars * percent\n    print(f\"Leave ${tip:.2f}\")\n\n\ndef dollars_to_float(d):\n    # TODO\n\n\ndef percent_to_float(p):\n    # TODO\n\n\nmain()\n",
+  "1/meal": "def main():\n    ...\n\n\ndef convert(time):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "2/plates": "def main():\n    plate = input(\"Plate: \")\n    if is_valid(plate):\n        print(\"Valid\")\n    else:\n        print(\"Invalid\")\n\n\ndef is_valid(s):\n    ...\n\n\nmain()\n",
+  "4/professor": "import random\n\n\ndef main():\n    ...\n\n\ndef get_level():\n    ...\n\n\ndef generate_integer(level):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "5/test_twttr": "def main():\n    ...\n\n\ndef shorten(word):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "5/test_bank": "def main():\n    ...\n\n\ndef value(greeting):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "5/test_plates": "def main():\n    ...\n\n\ndef is_valid(s):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "5/test_fuel": "def main():\n    ...\n\n\ndef convert(fraction):\n    ...\n\n\ndef gauge(percentage):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "7/numb3rs": "import re\nimport sys\n\n\ndef main():\n    print(validate(input(\"IPv4 Address: \")))\n\n\ndef validate(ip):\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "7/watch": "import re\nimport sys\n\n\ndef main():\n    print(parse(input(\"HTML: \")))\n\n\ndef parse(s):\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "7/working": "import re\nimport sys\n\n\ndef main():\n    print(convert(input(\"Hours: \")))\n\n\ndef convert(s):\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "7/um": "import re\nimport sys\n\n\ndef main():\n    print(count(input(\"Text: \")))\n\n\ndef count(s):\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "8/seasons": "from datetime import date\n\n\ndef main():\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "8/jar": "class Jar:\n    def __init__(self, capacity=12):\n        ...\n\n    def __str__(self):\n        ...\n\n    def deposit(self, n):\n        ...\n\n    def withdraw(self, n):\n        ...\n\n    @property\n    def capacity(self):\n        ...\n\n    @property\n    def size(self):\n        ...\n",
+  "8/jar-tests": "from jar import Jar\n\n\ndef test_init():\n    ...\n\n\ndef test_str():\n    jar = Jar()\n    assert str(jar) == \"\"\n    jar.deposit(1)\n    assert str(jar) == \"🍪\"\n    jar.deposit(11)\n    assert str(jar) == \"🍪🍪🍪🍪🍪🍪🍪🍪🍪🍪🍪🍪\"\n\n\ndef test_deposit():\n    ...\n\n\ndef test_withdraw():\n    ...\n",
+  "3/taqueria": "menu = {\n    \"Baja Taco\": 4.25,\n    \"Burrito\": 7.50,\n    \"Bowl\": 8.50,\n    \"Nachos\": 11.00,\n    \"Quesadilla\": 8.50,\n    \"Super Burrito\": 8.50,\n    \"Super Quesadilla\": 9.50,\n    \"Taco\": 3.00,\n    \"Tortilla Salad\": 8.00\n}\n",
+  "3/outdated": "months = [\n    \"January\",\n    \"February\",\n    \"March\",\n    \"April\",\n    \"May\",\n    \"June\",\n    \"July\",\n    \"August\",\n    \"September\",\n    \"October\",\n    \"November\",\n    \"December\"\n]\n",
+  "4/figlet": "from pyfiglet import Figlet\n\nfiglet = Figlet()\n",
+  "4/bitcoin": "import requests\n\ntry:\n    ...\nexcept requests.RequestException:\n    ...\n"
+};
+ function suppliedStarter(key){
+  return providedCode[key].replace(/^( +)\.\.\.$/gm,'$1# TODO: Complete this part.\n$1pass')
+   .replace(/^( +)# TODO$/gm,'$1# TODO: Complete this helper.\n$1pass')
+   .replace(/^\.\.\.$/gm,'# TODO: Add helper functions here if needed.');
+ }
+ const fruitCalories={
+  "apple":130,"avocado":50,"banana":110,"cantaloupe":50,"grapefruit":60,
+  "grapes":90,"honeydew melon":50,"kiwifruit":90,"lemon":15,"lime":20,
+  "nectarine":60,"orange":80,"peach":60,"pear":100,"pineapple":50,
+  "plums":70,"strawberries":50,"sweet cherries":100,"tangerine":50,"watermelon":80
+ };
  function buildPython(problem){
+  const suppliedKey=problem.set+'/'+problem.slug;
+  if(providedCode[suppliedKey]&&!['3/taqueria','3/outdated','4/figlet','4/bitcoin'].includes(suppliedKey)){
+   let code=suppliedStarter(suppliedKey);
+   if(suppliedKey==='8/seasons')code+='\n# TODO: Add at least one helper function besides main() and test it.\n';
+   return header(problem)+'# Starter structure supplied by CS50: '+problem.url+'\n\n'+code;
+  }
+  if(suppliedKey==='2/nutrition')return header(problem)+
+   '# Fruit calories from the FDA poster linked in the assignment.\n'+
+   '# Dictionary provided by your teacher; keys use lowercase fruit names.\n'+
+   'calories = '+JSON.stringify(fruitCalories,null,4)+'\n\n'+
+   '# TODO: Ask for a fruit name and handle capitalization.\n'+
+   '# TODO: Look up known fruits and display their calories.\n'+
+   '# TODO: Ignore names that are not in the dictionary.\n';
+
   // Approved light scaffolds: keep the programming decisions with students.
   // The README provides the detailed steps, hints and testing advice.
   if(problem.set===0&&problem.slug==='indoor')return header(problem)+
@@ -1220,10 +1273,15 @@
    '# TODO: Repeat until enough money is inserted.\n\n'+
    '# TODO: Accept valid coins and update the amount due.\n\n'+
    '# TODO: Display the change owed.\n';
+  if(suppliedKey==='3/taqueria'||suppliedKey==='3/outdated')return header(problem)+
+   '# Data supplied by CS50: '+problem.url+'\n'+suppliedStarter(suppliedKey)+'\n'+
+   (suppliedKey==='3/taqueria'?'total = 0.0\n\n# TODO: Read orders until EOF and update/display the total.\n':'\n# TODO: Request and validate either date format, then display YYYY-MM-DD.\n');
+  if(suppliedKey==='4/bitcoin')return header(problem)+'import sys\n'+suppliedStarter(suppliedKey);
   const outline=shape(problem),signatures=outline.functions||problem.functions;
   const guide=safeGuide(problem);
   let body=(outline.imports||[]).join('\n');
   if(body)body+='\n\n';
+  if(suppliedKey==='4/figlet')body+='figlet = Figlet()\n\n';
   if(signatures.includes('Jar')){
    body+='class Jar:\n';
    for(const [signature,task] of [
@@ -1238,11 +1296,6 @@
     body+='    @property\n    def '+signature+':\n'+indentedHint('Return the requested value; do not print it.',2)+'        pass  # Replace this placeholder.\n\n';
    }
    return header(problem)+body;
-  }
-  if(problem.slug==='shirtificate'){
-   body+='class PDF(FPDF):\n    def header(self):\n'+
-    indentedHint('Add the top part of the PDF page.',2)+
-    '        pass\n\n\n';
   }
   const wantMain=!!outline.main;
   if(wantMain)body+=functionBlock('main()',problem);
@@ -1306,6 +1359,12 @@
  }
 };
  function buildTest(filename,source,problem){
+  if(problem.set===8&&problem.slug==='jar'){
+   const code=providedCode['8/jar-tests'].replace(/^( +)\.\.\.$/gm,
+    '$1# TODO: Write assertions for this case.\n$1pytest.skip("Not yet tested: replace this with your assertion.")');
+   return header(problem)+'# CS50 supplies test_str; complete the remaining tests.\nimport pytest\n'+code;
+  }
+
   const outline=shape(problem);
   const functions=(outline.functions||problem.functions).filter(x=>x!=='Jar'&&!x.startsWith('PDF.'));
   let imported;
@@ -1536,7 +1595,7 @@
    notes?'## Need another file or package?\n\n'+notes+'\n':'',
    '## Remember',
    '',
-   'Write your own code. The starter is NOT an official CS50 starter or an answer key.',
+   'Complete the unfinished code yourself. CS50-supplied starting code is retained with classroom guidance; this is not an answer key.',
    'Python Lab cannot send work to CS50 for you. Use CS50 Codespaces to submit.',
    ''
   ].join('\n');

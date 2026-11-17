@@ -169,7 +169,8 @@ function guideForCodespace(a){
   'cs50p-5-test_fuel':'Test both returned values and the exceptions the two functions must raise.',
   'cs50p-7-working':'Keep convert(s) as the required interface. Any additional helper is your choice.',
   'cs50p-8-seasons':'Harvard requires at least one function besides main(). Choose its name and test it in test_seasons.py.',
-  'cs50p-8-jar':'Use the exact Jar methods and parameter names shown on Harvard\'s page.',
+  'cs50p-8-jar':'Use the exact Jar methods and parameter names shown on Harvard\'s page. CS50 supplies test_str; keep that example and complete the other tests.',
+  'cs50p-2-nutrition':'Your teacher has supplied all 20 fruits in the calories dictionary. Write the input, case handling, lookup, and output yourself.',
   'cs50p-8-shirtificate':'A PDF subclass and header override are optional design choices, not requirements.'
  };
  const startHint=a.set<=1?'The starter includes a first action. Find the TODOs and make one small change.':

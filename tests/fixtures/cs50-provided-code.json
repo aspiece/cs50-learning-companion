@@ -1,0 +1,231 @@
+{
+  "reviewed": "2026-11-17",
+  "sources": [
+    {
+      "id": "cs50p-0-indoor",
+      "url": "https://cs50.harvard.edu/python/psets/0/indoor/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-0-playback",
+      "url": "https://cs50.harvard.edu/python/psets/0/playback/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-0-faces",
+      "url": "https://cs50.harvard.edu/python/psets/0/faces/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-0-einstein",
+      "url": "https://cs50.harvard.edu/python/psets/0/einstein/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-0-tip",
+      "url": "https://cs50.harvard.edu/python/psets/0/tip/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-1-deep",
+      "url": "https://cs50.harvard.edu/python/psets/1/deep/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-1-bank",
+      "url": "https://cs50.harvard.edu/python/psets/1/bank/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-1-extensions",
+      "url": "https://cs50.harvard.edu/python/psets/1/extensions/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-1-interpreter",
+      "url": "https://cs50.harvard.edu/python/psets/1/interpreter/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-1-meal",
+      "url": "https://cs50.harvard.edu/python/psets/1/meal/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-2-camel",
+      "url": "https://cs50.harvard.edu/python/psets/2/camel/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-2-coke",
+      "url": "https://cs50.harvard.edu/python/psets/2/coke/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-2-twttr",
+      "url": "https://cs50.harvard.edu/python/psets/2/twttr/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-2-plates",
+      "url": "https://cs50.harvard.edu/python/psets/2/plates/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-2-nutrition",
+      "url": "https://cs50.harvard.edu/python/psets/2/nutrition/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-3-fuel",
+      "url": "https://cs50.harvard.edu/python/psets/3/fuel/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-3-taqueria",
+      "url": "https://cs50.harvard.edu/python/psets/3/taqueria/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-3-grocery",
+      "url": "https://cs50.harvard.edu/python/psets/3/grocery/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-3-outdated",
+      "url": "https://cs50.harvard.edu/python/psets/3/outdated/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-4-emojize",
+      "url": "https://cs50.harvard.edu/python/psets/4/emojize/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-4-figlet",
+      "url": "https://cs50.harvard.edu/python/psets/4/figlet/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-4-adieu",
+      "url": "https://cs50.harvard.edu/python/psets/4/adieu/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-4-game",
+      "url": "https://cs50.harvard.edu/python/psets/4/game/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-4-professor",
+      "url": "https://cs50.harvard.edu/python/psets/4/professor/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-4-bitcoin",
+      "url": "https://cs50.harvard.edu/python/psets/4/bitcoin/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-5-test_twttr",
+      "url": "https://cs50.harvard.edu/python/psets/5/test_twttr/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-5-test_bank",
+      "url": "https://cs50.harvard.edu/python/psets/5/test_bank/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-5-test_plates",
+      "url": "https://cs50.harvard.edu/python/psets/5/test_plates/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-5-test_fuel",
+      "url": "https://cs50.harvard.edu/python/psets/5/test_fuel/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-6-lines",
+      "url": "https://cs50.harvard.edu/python/psets/6/lines/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-6-pizza",
+      "url": "https://cs50.harvard.edu/python/psets/6/pizza/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-6-scourgify",
+      "url": "https://cs50.harvard.edu/python/psets/6/scourgify/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-6-shirt",
+      "url": "https://cs50.harvard.edu/python/psets/6/shirt/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-7-numb3rs",
+      "url": "https://cs50.harvard.edu/python/psets/7/numb3rs/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-7-watch",
+      "url": "https://cs50.harvard.edu/python/psets/7/watch/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-7-working",
+      "url": "https://cs50.harvard.edu/python/psets/7/working/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-7-um",
+      "url": "https://cs50.harvard.edu/python/psets/7/um/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-7-response",
+      "url": "https://cs50.harvard.edu/python/psets/7/response/",
+      "provided": false
+    },
+    {
+      "id": "cs50p-8-seasons",
+      "url": "https://cs50.harvard.edu/python/psets/8/seasons/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-8-jar",
+      "url": "https://cs50.harvard.edu/python/psets/8/jar/",
+      "provided": true
+    },
+    {
+      "id": "cs50p-8-shirtificate",
+      "url": "https://cs50.harvard.edu/python/psets/8/shirtificate/",
+      "provided": false
+    }
+  ],
+  "code": {
+    "0/tip": "def main():\n    dollars = dollars_to_float(input(\"How much was the meal? \"))\n    percent = percent_to_float(input(\"What percentage would you like to tip? \"))\n    tip = dollars * percent\n    print(f\"Leave ${tip:.2f}\")\n\n\ndef dollars_to_float(d):\n    # TODO\n\n\ndef percent_to_float(p):\n    # TODO\n\n\nmain()\n",
+    "1/meal": "def main():\n    ...\n\n\ndef convert(time):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "2/plates": "def main():\n    plate = input(\"Plate: \")\n    if is_valid(plate):\n        print(\"Valid\")\n    else:\n        print(\"Invalid\")\n\n\ndef is_valid(s):\n    ...\n\n\nmain()\n",
+    "4/professor": "import random\n\n\ndef main():\n    ...\n\n\ndef get_level():\n    ...\n\n\ndef generate_integer(level):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "5/test_twttr": "def main():\n    ...\n\n\ndef shorten(word):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "5/test_bank": "def main():\n    ...\n\n\ndef value(greeting):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "5/test_plates": "def main():\n    ...\n\n\ndef is_valid(s):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "5/test_fuel": "def main():\n    ...\n\n\ndef convert(fraction):\n    ...\n\n\ndef gauge(percentage):\n    ...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "7/numb3rs": "import re\nimport sys\n\n\ndef main():\n    print(validate(input(\"IPv4 Address: \")))\n\n\ndef validate(ip):\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "7/watch": "import re\nimport sys\n\n\ndef main():\n    print(parse(input(\"HTML: \")))\n\n\ndef parse(s):\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "7/working": "import re\nimport sys\n\n\ndef main():\n    print(convert(input(\"Hours: \")))\n\n\ndef convert(s):\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "7/um": "import re\nimport sys\n\n\ndef main():\n    print(count(input(\"Text: \")))\n\n\ndef count(s):\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "8/seasons": "from datetime import date\n\n\ndef main():\n    ...\n\n\n...\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "8/jar": "class Jar:\n    def __init__(self, capacity=12):\n        ...\n\n    def __str__(self):\n        ...\n\n    def deposit(self, n):\n        ...\n\n    def withdraw(self, n):\n        ...\n\n    @property\n    def capacity(self):\n        ...\n\n    @property\n    def size(self):\n        ...\n",
+    "8/jar-tests": "from jar import Jar\n\n\ndef test_init():\n    ...\n\n\ndef test_str():\n    jar = Jar()\n    assert str(jar) == \"\"\n    jar.deposit(1)\n    assert str(jar) == \"🍪\"\n    jar.deposit(11)\n    assert str(jar) == \"🍪🍪🍪🍪🍪🍪🍪🍪🍪🍪🍪🍪\"\n\n\ndef test_deposit():\n    ...\n\n\ndef test_withdraw():\n    ...\n",
+    "3/taqueria": "menu = {\n    \"Baja Taco\": 4.25,\n    \"Burrito\": 7.50,\n    \"Bowl\": 8.50,\n    \"Nachos\": 11.00,\n    \"Quesadilla\": 8.50,\n    \"Super Burrito\": 8.50,\n    \"Super Quesadilla\": 9.50,\n    \"Taco\": 3.00,\n    \"Tortilla Salad\": 8.00\n}\n",
+    "3/outdated": "months = [\n    \"January\",\n    \"February\",\n    \"March\",\n    \"April\",\n    \"May\",\n    \"June\",\n    \"July\",\n    \"August\",\n    \"September\",\n    \"October\",\n    \"November\",\n    \"December\"\n]\n",
+    "4/figlet": "from pyfiglet import Figlet\n\nfiglet = Figlet()\n",
+    "4/bitcoin": "import requests\n\ntry:\n    ...\nexcept requests.RequestException:\n    ...\n"
+  }
+}
