@@ -92,9 +92,10 @@ function html(webview,extensionUri){
   <summary>More options</summary>
   <div class="start-more-actions">
    <button class="button link" id="openOfficial" type="button" hidden data-action="official">Open official CS50 instructions</button>
+   <button class="button secondary" id="reloadStarter" type="button" data-action="reloadStarter">Reload starter code</button>
    <button class="button secondary" id="updateGuide" type="button" data-action="updateGuide">Update my README guide</button>
   </div>
-  <p class="note">Updating the README asks for permission and saves a backup. Your Python work stays unchanged.</p>
+  <p class="note">Reload starter code asks first and backs up your saved Python files. Update README changes only the guide.</p>
  </details>
 </section>
 <section id="panel-test" class="panel" role="tabpanel" aria-labelledby="tab-test" hidden>

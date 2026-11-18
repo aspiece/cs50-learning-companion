@@ -288,3 +288,15 @@ test('Start includes a standalone collapsible string-method lookup with working 
  assert.equal(h.get('stringLookup').hidden,false,'Closing help does not hide the lookup');
  assert.equal(h.messages.length,1,'Lookup runs entirely in the sidebar');
 });
+
+test('Reload starter code is available for existing folders and sends its explicit action',()=>{
+ const h=harness();
+ h.sendState();
+ assert.equal(h.get('reloadStarter').disabled,true);
+ h.sendState({folderExists:true,entryExists:true,guideExists:true});
+ assert.equal(h.get('reloadStarter').disabled,false);
+ h.click('reloadStarter');
+ assert.equal(h.messages.at(-1).type,'reloadStarter');
+ h.sendState({folderExists:true,entryExists:false,guideExists:false});
+ assert.equal(h.get('reloadStarter').disabled,false,'Allow recovery of a missing starter');
+});

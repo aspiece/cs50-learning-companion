@@ -119,6 +119,54 @@ async function createStarter(a){
  return true;
 }
 
+async function reloadStarter(a){
+ safeAssignment(a);
+ const workspace=root();
+ if(!workspace){vscode.window.showWarningMessage('Open your CS50 Codespace workspace first.');return false;}
+ const dir=join(workspace,a.slug);
+ if(!await exists(dir)){vscode.window.showWarningMessage('Create the assignment folder first.');return false;}
+ // Guard repeated clicks while the confirmation or filesystem work is pending.
+ if(reloadStarter.busy)return false;
+ reloadStarter.busy=true;
+ let backup;
+ try{
+  const names=Object.keys(a.files).filter(name=>name.endsWith('.py'));
+  const paths=names.map(name=>join(dir,name));
+  const dirty=()=>paths.some(uri=>hasUnsavedGuide(uri));
+  if(dirty()){vscode.window.showWarningMessage('Save your Python edits before reloading starter code so they can be backed up.');return false;}
+  const originals=new Map();
+  for(const uri of paths)originals.set(uri,await exists(uri)?Buffer.from(await vscode.workspace.fs.readFile(uri)):null);
+  const choice=await vscode.window.showWarningMessage(
+   'Reload starter code for '+a.title+'? This replaces '+names.join(', ')+'. Your current saved code will be backed up outside the assignment folder. Your README and other files will stay unchanged.',
+   {modal:true},'Back up and reload');
+  if(choice!=='Back up and reload')return false;
+  async function unchanged(uri){
+   if(hasUnsavedGuide(uri))return false;
+   const previous=originals.get(uri),present=await exists(uri);
+   return previous===null?!present:present&&previous.equals(Buffer.from(await vscode.workspace.fs.readFile(uri)));
+  }
+  for(const uri of paths)if(!await unchanged(uri)){vscode.window.showWarningMessage('Your code changed while reload was open. No starter files were replaced. Try again.');return false;}
+  const backupRoot=join(workspace,'starter-code-backups',a.slug);
+  let n=1;
+  do{backup=join(backupRoot,'reload-'+n);n++;}while(await exists(backup));
+  await vscode.workspace.fs.createDirectory(backup);
+  // Finish every backup before replacing any source or test file.
+  for(let i=0;i<names.length;i++)if(originals.get(paths[i])!==null)
+   await vscode.workspace.fs.writeFile(join(backup,names[i]),originals.get(paths[i]));
+  for(const uri of paths)if(!await unchanged(uri)){vscode.window.showWarningMessage('Your code changed during backup. No starter files were replaced. Try again.');return false;}
+  for(let i=0;i<names.length;i++){
+   if(!await unchanged(paths[i]))throw Error('A Python file changed during reload.');
+   await vscode.workspace.fs.writeFile(paths[i],utf(a.files[names[i]]));
+  }
+  await openStarterFiles(a);
+  vscode.window.showInformationMessage('Starter code reloaded. Your previous code is in starter-code-backups/'+a.slug+'/reload-'+(n-1)+'/ at the workspace root.');
+  return true;
+ }catch(error){
+  vscode.window.showWarningMessage('Starter reload did not finish. '+(backup?'Check the backup folder '+backup.toString()+' before continuing. ':'No files were replaced before backup. ')+String(error.message||error));
+  return false;
+ }finally{reloadStarter.busy=false;}
+}
+
 async function saveAssignmentEdits(directory){
  const dirty=()=>vscode.workspace.textDocuments.filter(doc=>doc.isDirty&&
   doc.uri.scheme===directory.scheme&&doc.uri.authority===directory.authority&&
@@ -289,6 +337,7 @@ class Companion {
    const a=get(this.id);
    switch(m.type){
     case 'create':await createStarter(a);await this.refresh();break;
+    case 'reloadStarter':await reloadStarter(a);await this.refresh();break;
     case 'openFiles':await openStarterFiles(a);break;
     case 'cs50Status':{
      await vscode.env.openExternal(vscode.Uri.parse(CS50_GRADEBOOK));break;
@@ -367,4 +416,4 @@ function activate(ctx){
   if(choice)await createStarter(get(choice.id));
  }));
 }
-module.exports={activate,createStarter,openStarterFiles,updateStudentGuide,openFormattedMarkdown};
+module.exports={activate,reloadStarter,createStarter,openStarterFiles,updateStudentGuide,openFormattedMarkdown};
