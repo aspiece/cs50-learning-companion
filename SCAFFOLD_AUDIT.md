@@ -25,4 +25,4 @@ Nutrition data: [FDA Raw Fruits Poster](https://www.fda.gov/food/nutrition-food-
 
 `npm test` checks all generated Python files for valid syntax, verifies that the recorded supplied code is retained, checks all 20 calorie values, and tests assignment creation and protection of existing student files. The snapshot records this review; it does not automatically detect future Harvard changes. Recheck the linked pages when updating the curriculum.
 
-Existing student Python files are never overwritten. Updated starters apply to newly created assignment folders. The versioned release uses the existing classroom updater.
+Automatic updates never overwrite student Python files. The explicit Reload starter code action (v0.9.9) asks for confirmation and backs up the targeted Python files before replacing them. Updated starters apply to newly created assignment folders. The versioned release uses the existing classroom updater.

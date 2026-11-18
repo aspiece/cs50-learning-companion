@@ -30,7 +30,7 @@ function environment(assignment=get('cs50p-0-indoor')){
    }
   },
   window:{
-   showWarningMessage:async(text)=>{notifications.push({kind:'warning',text});return approval?(text.startsWith('Save your assignment')?'Save and continue':'Update README'):undefined;},
+   showWarningMessage:async(text)=>{notifications.push({kind:'warning',text});return approval?(text.startsWith('Save your assignment')?'Save and continue':text.startsWith('Reload starter code')?'Back up and reload':'Update README'):undefined;},
    showInformationMessage:async(text)=>{notifications.push({kind:'info',text});},
    showTextDocument:async(uri,options)=>{opened.push({kind:'code',uri,column:options.viewColumn});}
   }
@@ -44,12 +44,12 @@ function environment(assignment=get('cs50p-0-indoor')){
  const actions=Function(
   'root','join','exists','vscode','safeAssignment','guideForCodespace',
   'utf','openFormattedMarkdown','Buffer','isGeneratedGuide',
-  slice+'\nreturn {createStarter,openStarterFiles,updateStudentGuide,refreshGeneratedGuide,saveAssignmentEdits};'
+  slice+'\nreturn {reloadStarter,createStarter,openStarterFiles,updateStudentGuide,refreshGeneratedGuide,saveAssignmentEdits};'
  )(root,join,exists,vscode,safeAssignment,guideForCodespace,utf,
   openFormattedMarkdown,Buffer,isGeneratedGuide);
  const read=uri=>files.get(uri)?.toString('utf8');
  return {
-  actions,dirs,files,opened,notifications,read,assignment,documents,
+  actions,dirs,files,opened,notifications,read,assignment,documents,vscode,
   approve:()=>{approval=true;},
   set:(uri,text)=>files.set(uri,utf(text))
  };
@@ -164,4 +164,65 @@ test('terminal save asks first and touches only files in the selected assignment
  source.isDirty=true;
  source.save=async()=>false;
  assert.equal(await h.actions.saveAssignmentEdits(directory),false);
+});
+
+
+test('reload backs up all source/test files before replacing them, preserving other work',async()=>{
+ const h=environment(get('cs50p-5-test_fuel')),a=h.assignment;
+ await h.actions.createStarter(a);
+ h.set('/school/test_fuel/fuel.py','student implementation');
+ h.set('/school/test_fuel/test_fuel.py','student tests');
+ h.set('/school/test_fuel/extra.py','extra helper');
+ h.set('/school/test_fuel/README.md','my notes');
+ h.set('/school/test_fuel/LEARNING_JOURNAL.md','my journal');
+ const before=[...h.files].map(([k,v])=>[k,v.toString()]);
+ assert.equal(await h.actions.reloadStarter(a),false);
+ assert.deepEqual([...h.files].map(([k,v])=>[k,v.toString()]),before);
+ h.approve();
+ assert.equal(await h.actions.reloadStarter(a),true);
+ for(const name of ['fuel.py','test_fuel.py'])assert.equal(h.read('/school/test_fuel/'+name),a.files[name]);
+ assert.equal(h.read('/school/starter-code-backups/test_fuel/reload-1/fuel.py'),'student implementation');
+ assert.equal(h.read('/school/starter-code-backups/test_fuel/reload-1/test_fuel.py'),'student tests');
+ assert.equal(h.read('/school/test_fuel/extra.py'),'extra helper');
+ assert.equal(h.read('/school/test_fuel/README.md'),'my notes');
+ assert.equal(h.read('/school/test_fuel/LEARNING_JOURNAL.md'),'my journal');
+ assert.equal(await h.actions.reloadStarter(a),true);
+ assert.equal(h.read('/school/starter-code-backups/test_fuel/reload-1/fuel.py'),'student implementation');
+ assert.equal(h.read('/school/starter-code-backups/test_fuel/reload-2/fuel.py'),a.files['fuel.py']);
+});
+
+test('reload blocks unsaved code and concurrent edits during confirmation',async()=>{
+ const h=environment(),a=h.assignment;
+ await h.actions.createStarter(a);h.approve();
+ const uri='/school/indoor/indoor.py';
+ h.documents.push({uri,isDirty:true});
+ assert.equal(await h.actions.reloadStarter(a),false);
+ assert(![...h.dirs].some(x=>x.includes('starter-code-backups')));
+ h.documents.pop();
+ h.vscode.window.showWarningMessage=async()=>{h.set(uri,'changed during prompt');return 'Back up and reload';};
+ assert.equal(await h.actions.reloadStarter(a),false);
+ assert.equal(h.read(uri),'changed during prompt');
+});
+
+test('failed backup prevents any starter replacement',async()=>{
+ const h=environment(get('cs50p-5-test_fuel')),a=h.assignment;
+ await h.actions.createStarter(a);h.approve();
+ h.set('/school/test_fuel/fuel.py','my code');h.set('/school/test_fuel/test_fuel.py','my tests');
+ const write=h.vscode.workspace.fs.writeFile;
+ h.vscode.workspace.fs.writeFile=async(uri,bytes)=>{
+  if(uri.includes('starter-code-backups')&&uri.endsWith('test_fuel.py'))throw Error('Disk full');
+  return write(uri,bytes);
+ };
+ assert.equal(await h.actions.reloadStarter(a),false);
+ assert.equal(h.read('/school/test_fuel/fuel.py'),'my code');
+ assert.equal(h.read('/school/test_fuel/test_fuel.py'),'my tests');
+});
+
+test('reload restores missing starter file and includes supplied Nutrition dictionary',async()=>{
+ const h=environment(get('cs50p-2-nutrition')),a=h.assignment;
+ h.dirs.add('/school/nutrition');h.approve();
+ assert.equal(await h.actions.reloadStarter(a),true);
+ assert.equal(h.read('/school/nutrition/nutrition.py'),a.files['nutrition.py']);
+ assert.match(h.read('/school/nutrition/nutrition.py'),/"apple": 130/);
+ assert.equal(h.read('/school/nutrition/README.md'),undefined);
 });

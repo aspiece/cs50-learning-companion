@@ -172,6 +172,7 @@
   $('startNextStep').textContent=model.next;
   $('openGuide').disabled=!state.guideExists;
   $('openOfficial').hidden=state.guideExists;
+  $('reloadStarter').disabled=!state.folderExists;
   $('updateGuide').disabled=!state.folderExists;
   $('updateGuide').textContent=state.guideExists?'Update my README guide':'Create missing README guide';
   renderCoach();

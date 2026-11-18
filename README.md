@@ -320,3 +320,9 @@ Students may choose **Getting started**, **Some help**, or **Independent** to fa
 Selecting **Create starter files** opens both `README.md` (left editor group) and the assignment entry `.py` file (right editor group). If the assignment folder already exists, its files are opened without overwriting any content. The **Open README and Python file** action is also available for returning students. For unit-testing assignments, the entry Python file is the student test file; the related implementation Python file remains in Explorer.
 
 After updating, verify the existing assignment folders are unchanged, both editor panes open, notes survive navigating between problems, and terminal commands still run from the assignment directory.
+
+## Reload starter code (v0.9.9)
+
+For an existing assignment, open **Start → More options → Reload starter code**. Save any Python edits first. The confirmation lists the source and test files that will be replaced with the starters bundled in the installed Companion version. All existing target files are backed up first in `starter-code-backups/<assignment>/reload-N/` at the workspace root, outside the submission folder. To recover work, copy the desired Python file from that backup into the assignment folder. Each reload gets a separate backup folder.
+
+README files, learning journals, images, data, and extra student-created files are untouched. Extension updates and **Continue coding** still never reset student code automatically. If a reload fails, inspect the reported backup folder before continuing.
